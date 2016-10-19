@@ -1,0 +1,18 @@
+body {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	perspective: 2048px;
+}
+
+.box{
+	position: absolute;
+	background: #000;
+	color: #fff;
+	width: 100px;
+	height: 100px;
+	top: 50%;
+	left: 50%;
+	transition: initial;
+	transform-style: preserve-3d;
+}
