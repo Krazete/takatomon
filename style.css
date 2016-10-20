@@ -1,8 +1,19 @@
+* {
+	outline: 1px solid #eee;
+	transform-style: preserve-3d;
+	transition: transform 1s;
+}
+
+html, html:hover {
+	transform: none;
+	overflow: auto;
+}
+
 body {
 	position: absolute;
 	height: 100%;
 	width: 100%;
-	perspective: 2048px;
+	transition-property: none;
 }
 
 .box{
@@ -13,6 +24,5 @@ body {
 	height: 100px;
 	top: 50%;
 	left: 50%;
-	transition: initial;
-	transform-style: preserve-3d;
+	transition-property: none;
 }
