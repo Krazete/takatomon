@@ -1,29 +1,23 @@
-* {
-	outline: 1px solid #eee;
-	transform-style: preserve-3d;
-	transition: transform 1s;
-}
-
-html, html:hover {
-	transform: none;
-	overflow: auto;
-}
-
 body {
 	position: absolute;
 	height: 100%;
 	width: 100%;
 	margin: 0;
-	transition-property: none;
+	perspective: 1024px;
 }
-
-.box{
-	position: absolute;
-	background: #000;
-	color: #fff;
-	width: 100px;
-	height: 100px;
-	top: 50%;
-	left: 50%;
-	transition-property: none;
+.row {
+	position: relative;
+	height: 50px;
+	display: block;
+}
+.tile {
+	background: black;
+	position: relative;
+	height: 50px;
+	width: 50px;
+	display: inline-block;
+	cursor: pointer;
+}
+.tile:hover {
+	background: grey;
 }
