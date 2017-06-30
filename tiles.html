@@ -14,6 +14,7 @@
 		}
 		.tile {
 			background: black;
+			color: white;
 			position: relative;
 			height: 50px;
 			width: 50px;
@@ -37,6 +38,7 @@
 				for (var j = 0; j < c; j++) {
 					var tile = row.appendChild(document.createElement("div"));
 					tile.className = "tile";
+					tile.innerHTML = "TEST";
 					if (ted.some(e => j == e[0] && i == e[1])) {
 						tile.style.opacity = 0.75;
 					}
@@ -52,7 +54,7 @@
 				var x = (e.clientX - tilex) / innerWidth;
 				var y = (e.clientY - tiley) / innerHeight;
 				var wha = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-				tile.style.transform = "translateZ(" + 100 * wha + "px) rotateX(" + -(90 * y) + "deg) rotateY(" + (90 * x) + "deg)";
+				tile.style.transform = "translateZ(" + 100 * wha + "px) rotateX(" + -(90 * y) + "deg) rotateY(" + (90 * x) + "deg) rotateZ(" + (90 * x * y) + "deg)";
 				tile.style.transformOrigin = "50% 50% " + 100 * wha + "px";
 			}
 		});
