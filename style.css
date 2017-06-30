@@ -5,19 +5,13 @@ body {
 	margin: 0;
 	perspective: 1024px;
 }
-.row {
-	position: relative;
-	height: 50px;
-	display: block;
-}
 .tile {
-	background: black;
+	background: grey;
 	position: relative;
-	height: 50px;
-	width: 50px;
 	display: inline-block;
+	padding: 10px;
 	cursor: pointer;
 }
 .tile:hover {
-	background: grey;
+	background: slategrey;
 }
