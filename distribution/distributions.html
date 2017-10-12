@@ -1,0 +1,224 @@
+<!doctype html>
+<html>
+<head>
+	<title>Common Distributions</title>
+	<link rel="stylesheet" type="text/css" href="./distributions.css">
+	<script>
+		window.MathJax = {
+			"tex2jax": {
+				inlineMath: [["$", "$"]],
+				processEscapes: true
+			},
+			"styles": {
+				".MathJax_CHTML": {
+					outline: "none"
+				}
+			},
+			"showMathMenu": false,
+			"messageStyle": "simple"
+		};
+	</script>
+	<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML"></script>
+</head>
+<body>
+	<ul class="flex">
+		<li>
+			<h1>$\text{Common Discrete Distributions}$</h1>
+			<h2>$\text{Bernoulli}(p)$</h2>
+			<p>
+				$X$ indicates whether a trial that results in a success with probability $p$ is a success or not.
+				$$P\{X=1\}=p$$
+				$$P\{X=0\}=1-p$$
+				<ul>
+					<li>$$E[X]=p$$</li>
+					<li>$$Var(X)=p(1-p)$$</li>
+				</ul>
+				<canvas width="150" height="150" id="bernoulli"></canvas>
+			</p>
+			<h2>$\text{Binomial}(n,p)$</h2>
+			<p>
+				$X$ represents the number of successes in $n$ independent trials when each trial is a success with probability $p$.
+				$$P\{X=i\}=\binom{n}{i}p^i(1-p)^{n-i},\qquad i=0,1,...,n$$
+				<ul>
+					<li>$$E[X]=np$$</li>
+					<li>$$Var(X)=np(1-p)$$</li>
+				</ul>
+				Note.
+				<ol>
+					<li>$\text{Binomial}(1,p)=\text{Bernoulli}(p)$.</li>
+				</ol>
+				<canvas width="150" height="150" id="binomial"></canvas>
+			</p>
+			<h2>$\text{Geometric}(p)$</h2>
+			<p>
+				$X$ is the number of trials needed to obtain a success when each trial is independently a success with probability $p$.
+				$$P(X=i)=p(1-p)^{i-1},\qquad i=1,2,...$$
+				<ul>
+					<li>$$E[X]=\frac{1}{p}$$</li>
+					<li>$$Var(X)=\frac{1-p}{p^2}$$</li>
+				</ul>
+				<canvas width="150" height="150" id="geometric"></canvas>
+			</p>
+			<h2>$\text{Negative Binomial}(r,p)$</h2>
+			<p>
+				$X$ is the number of trials needed to obtain a total of $r$ successes when each trial is independently a success 	with probability $p$.
+				$$P(X=i)=\binom{i-1}{r-1}p^r(1-p)^{i-r},\qquad i=r,r+1,r+2,...$$
+				<ul>
+					<li>$$E[X]=\frac{r}{p}$$</li>
+					<li>$$Var(X)=r\frac{1-p}{p^2}$$</li>
+				</ul>
+				Notes.
+				<ol>
+					<li>$\text{Negative Binomial}(1,p)=\text{Geometric}(p)$.</li>
+					<li>Sum of $r$ independent $\text{Geometric}(p)$ random variables is $\text{Negative Binomial}(r,p)$.</li>
+				</ol>
+				<canvas width="150" height="150" id="negative_binomial"></canvas>
+			</p>
+			<h2>$\text{Poisson}(\lambda)$</h2>
+			<p>
+				$X$ is used to model the number of events that occur when these events are either independent or weakly dependent 	and each has a small probability of occurrence.
+				$$P\{X=i\}=\frac{e^{-\lambda}\lambda^i}{i!},\qquad i=0,1,2,...$$
+				<ul>
+					<li>$$E[X]=\lambda$$</li>
+					<li>$$Var(X)=\lambda$$</li>
+				</ul>
+				Notes.
+				<ol>
+					<li>A Poisson random variable $X$ with parameter $\lambda=np$ provides a good approximation to a $\text{Binomial}(n,p)$ random variable when $n$ is large and $p$ is small.</li>
+					<li>If events are occurring one at a time in a random manner for which (a) the number of events that occur in disjoint time intervals is independent and (b) the probability of an event occurring in any small time interval is approximately $\lambda$ times the length of the interval, then the number of events in an interval of length $t$ will be a $\text{Poisson}(\lambda t)$ random variable.</li>
+				</ol>
+				<canvas width="150" height="150" id="poisson"></canvas>
+			</p>
+			<h2>$\text{Hypergeometric}$</h2>
+			<p>
+				$X$ is the number of white balls in a random sample of $n$ balls chosen without replacement from an urn of $N$ balls 	of which $m$ are white.
+				$$P\{X=i\}=\frac{\binom{m}{i}\binom{N-m}{n-i}}{\binom{N}{n}},\qquad i=0,1,2,...$$
+				The preceding uses the convention that $\binom{r}{j}=0$ if either $j\lt0$ or $j\gt r$. With $p=m/N$,
+				<ul>
+					<li>$$E[X]=np$$</li>
+					<li>$$Var(X)=\frac{N-n}{N-1}np(1-p)$$</li>
+				</ul>
+				Note.
+				<ol>
+					<li>If each ball were replaced before the next selection, then $X$ would be a $\text{Binomial}(n,p)$ random variable.</li>
+				</ol>
+				<canvas width="150" height="150" id="hypergeometric"></canvas>
+			</p>
+			<h2>$\text{Negative Hypergeometric}$</h2>
+			<p>
+				$X$ is the number of balls that need to be removed from an urn that contains $n+m$ balls, of which $n$ are white, until a total of $r$ white balls has been removed, where $r\le n$.
+				$$P\{X=k\}=\frac{\binom{n}{r-1}\binom{m}{k-r}}{\binom{n+m}{k-1}}\frac{n-r+1}{n+m-k+1},\qquad k\ge r$$
+				<ul>
+					<li>$$E[X]=r\frac{n+m+1}{n+1}$$</li>
+					<li>$$Var(X)=\frac{mr(n+1-r)(n+m+1)}{(n+1)^2(n+2)}$$</li>
+				</ul>
+				<canvas width="150" height="150" id="negative_hypergeometric"></canvas>
+			</p>
+		</li>
+		<li>
+			<h1>$\text{Common Continuous Distributions}$</h1>
+			<h2>$\text{Uniform}(a,b)$</h2>
+			<p>
+				$X$ is equally likely to be near each value in the interval $(a,b)$. Its density function is
+				$$f(x)=\frac{1}{b-a},\qquad a\lt x\lt b$$
+				<ul>
+					<li>$$E[X]=\frac{a+b}{2}$$</li>
+					<li>$$Var(X)=\frac{(b-a)^2}{12}$$</li>
+				</ul>
+				<canvas width="150" height="150" id="uniform"></canvas>
+			</p>
+			<h2>$\text{Normal}(\mu,\sigma^2)$</h2>
+			<p>
+				$X$ is a random fluctuation arising from many causes. Its density function is
+				$$f(x)=\frac{1}{\sqrt{2\pi}\sigma}e^{-(x-\mu)^2/2\sigma^2},\qquad-\infty\lt x\lt\infty$$
+				<ul>
+					<li>$$E[X]=\mu$$</li>
+					<li>$$Var(X)=\sigma^2$$</li>
+				</ul>
+				Notes.
+				<ol>
+					<li>If $X$ is $\text{Normal}(\mu,\sigma^2)$, then $Z=\frac{X-\mu}{\sigma}$ is standard normal.</li>
+					<li>Sum of independent normal random variables is also normal.</li>
+					<li>An important result is the <i>central limit theorem</i>, which states that the distribution of the sum of the first $n$ of a sequence of independent and identically distributed random variables becomes normal as $n$ goes to infinity, for any distribution of these random variables that has a finite mean and variance.</li>
+				</ol>
+				<canvas width="150" height="150" id="normal"></canvas>
+			</p>
+			<h2>$\text{Exponential}(\lambda)$</h2>
+			<p>
+				$X$ is the waiting time until an event occurs when events are always occurring at a random rate $\lambda\gt 0$. Its density is
+				$$f(x)=\lambda e^{-\lambda x},\qquad x\gt0$$
+				<ul>
+					<li>$$E[X]=\frac{1}{\lambda}$$</li>
+					<li>$$Var(X)=\frac{1}{\lambda^2}$$</li>
+					<li>$$P(X>x)=e^{-\lambda x},\qquad x\gt0$$</li>
+				</ul>
+				Note.
+				<ol>
+					<li>$X$ is memoryless, in that the remaining life of an item whose life distribution is $\text{Exponential}(\lambda)$ is also $\text{Exponential}(\lambda)$, no matter what the current age of the item is.</li>
+				</ol>
+				<canvas width="150" height="150" id="exponential"></canvas>
+			</p>
+			<h2>$\text{Gamma}(\alpha,\lambda)$</h2>
+			<p>
+				When $\alpha=n$, $X$ is the waiting time until $n$ events occur when events are always occurring at a random rate $\lambda\gt0$. Its density is
+				$$f(t)=\frac{\lambda e^{-\lambda t}(\lambda t)^{\alpha-1}}{\Gamma(\alpha)},\qquad t\gt0$$
+				where $\Gamma(\alpha)=\int_0^\infty e^{-x}x^{\alpha-1}dx$ is called the gamma function.
+				<ul>
+					<li>$$E[X]=\frac{\alpha}{\lambda}$$</li>
+					<li>$$Var(X)=\frac{\alpha}{\lambda^2}$$</li>
+				</ul>
+				Notes.
+				<ol>
+					<li>$\text{Gamma}(1,\lambda)$ is $\text{exponential}(\lambda)$.</li>
+					<li>If the random variables are independent, then the sum of a $\text{Gamma}(\alpha_1,\lambda)$ and a $\text{Gamma}(\alpha_2,\lambda)$ is a $\text{Gamma}(\alpha_1+\alpha_2,\lambda)$.</li>
+					<li>The sum of $n$ independent and identically distributed exponentials with parameter $\lambda$ is a $\text{Gamma}(n,\lambda)$ random variable.</li>
+				</ol>
+				<canvas width="150" height="150" id="gamma"></canvas>
+			</p>
+			<h2>$\text{Beta}(a,b)$</h2>
+			<p>
+				$X$ is the distribution of a random variable taking on values in the interval $(0,1)$. Its density is
+				$$f(x)=\frac{1}{B(a,b)}x^{a-1}(1-x)^{b-1},\qquad0\lt x\lt1$$
+				where $B(a,b)=\int_0^1x^{a-1}(1-x)^{b-1}dx$ is called the beta function.
+				<ul>
+					<li>$$E[X]=\frac{a}{a+b}$$</li>
+					<li>$$Var(X)=\frac{ab}{(a+b)^2(a+b+1)}$$</li>
+				</ul>
+				Notes.
+				<ol>
+					<li>$\text{Beta}(1,1)$ and $\text{Uniform}(0,1)$ are identical.</li>
+					<li>The $j^{th}$ smallest of $n$ independent $\text{uniform}(0,1)$ random variables is a $\text{Beta}(j,n-j+1)$ random variable.</li>
+				</ol>
+				<canvas width="150" height="150" id="beta"></canvas>
+			</p>
+			<h2>$\text{Chi-Squared}(n)$</h2>
+			<p>
+				$X$ is the sum of the squares of $n$ independent standard normal random variables. Its density is
+				$$f(x)=\frac{e^{-x/2}x^{\frac{n}{2}-1}}{2^{n/2}\Gamma(n/2)},\qquad x\gt0$$
+				Notes.
+				<ol>
+					<li>The $\text{Chi-Squared}(n)$ distribution is the same as the $\text{Gamma}(n/2,1/2)$ distribution.</li>
+					<li>The sample variance of $n$ independent and identically distributed $\text{Normal}(\mu,\sigma^2)$ random variables multiplied by $\frac{n-1}{\sigma^2}$ is a $\text{Chi-Squared}(n-1)$ random variable, and it is independent of the sample mean.</li>
+				</ol>
+				<canvas width="150" height="150" id="chi_squared"></canvas>
+			</p>
+			<h2>$\text{Cauchy}$</h2>
+			<p>
+				$X$ is the tangent of a uniformly distributed random angle between $-\pi/2$ and $\pi/2$. Its density is
+				$$f(x)=\frac{1}{\pi(1+x^2)},\qquad-\infty\lt x\lt\infty$$
+				<ul>
+					<li>$$E[X]=0$$</li>
+					<li>$$Var(X)=\infty$$</li>
+				</ul>
+				<canvas width="150" height="150" id="cauchy"></canvas>
+			</p>
+		</li>
+	</ul>
+	<div class="variable" id="n"><span>$n$</span></div>
+	<div class="variable" id="p"><span>$p$</span></div>
+	<div class="variable" id="a"><span>$a$</span></div>
+	<div class="variable" id="b"><span>$b$</span></div>
+	<div class="variable" id="m"><span>$m$</span></div>
+	<script src="./distributions.js"></script>
+</body>
+</html>
