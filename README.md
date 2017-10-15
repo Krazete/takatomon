@@ -1,2 +1,2 @@
 # krazete.github.io
-My portfolio.
+My portfolio + some random projects.
