@@ -48,13 +48,13 @@ var binomial = {
 	"variance": function(n, p) {return n * p * (1 - p)},
 	"canvas": document.getElementById("binomial").getContext("2d"),
 	"draw": function(n, p) {
-		var w = 150 / (n + 1);
+		var w = 150 / (n + 1); // width of each bar (canvas width / number of bars)
 		var e = this.expectation(n, p);
 		var v = this.variance(n, p);
-		this.canvas.fillRect((e + 0.5) * w, 0, 1, 150);
-		this.canvas.fillRect((e + 0.5 - v) * w, 100, 1, 150);
-		this.canvas.fillRect((e + 0.5 + v) * w, 100, 1, 150);
-		for (var i = 0; i < n + 1; i++) {
+		this.canvas.fillRect((e + 0.5) * w, 0, 1, 150); // expectation line
+		this.canvas.fillRect((e + 0.5 - v) * w, 100, 1, 150); // left variance line
+		this.canvas.fillRect((e + 0.5 + v) * w, 100, 1, 150); // right variance line
+		for (var i = 0; i < n + 1; i++) { // probabilities
 			var m = this.mass(n, p, i);
 			this.canvas.strokeRect(i * w, 150 * (1 - m), w, 150 * m);
 		}
