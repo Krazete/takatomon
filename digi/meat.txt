@@ -1,0 +1,10 @@
+               +0       +1       +2       +3       +4
+Rookie         23 00000000 00000000 00000000 00000000
+Champion      229 00000000 00000000 00000000 00000000
+Ultimate      786 00000000 00000000 00000000 00000000
+Mega         1763 00000000 00000000 00000000 00000000
+
+             AWKN  DNA MOVE
+GaoGamon       +0    1 Ice Wolf Claw
+Goblimon       +1  ??? 
+Veemon         +4    1 Shining Gold Solar Storm
