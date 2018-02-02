@@ -365,7 +365,7 @@ function autocomplete() {
                 output.innerHTML = "previous: " + prev(mon) + "<br>next: " + next(mon);
             });
             output.appendChild(span);
-            var br = document.createElement("br");dig
+            var br = document.createElement("br");
             output.appendChild(br);
         }
     }
