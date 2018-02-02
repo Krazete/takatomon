@@ -343,9 +343,9 @@ function next(mon) {
 
 function prev(mon) {
     var list = [];
-    for (d in digi) {
-        if (digi[d].includes(mon)) {
-            list.push(d);
+    for (key in digi) {
+        if (next(key).includes(mon)) {
+            list.push(key);
         }
     }
     return list;
@@ -356,7 +356,8 @@ var output = document.getElementById("out");
 
 function autocomplete() {
     output.innerHTML = "";
-    for (mon in digi) {
+    var mons = Object.keys(digi);
+    mons.forEach(function (mon) {
         if (mon.includes(input.value.toLowerCase())) {
             var span = document.createElement("span");
             span.className = "mon";
@@ -368,7 +369,7 @@ function autocomplete() {
             var br = document.createElement("br");
             output.appendChild(br);
         }
-    }
+    });
 }
 
 input.addEventListener("input", autocomplete);
