@@ -357,7 +357,7 @@ var output = document.getElementById("out");
 function autocomplete() {
     output.innerHTML = "";
     for (mon in digi) {
-        if (mon.includes(input.value)) {
+        if (mon.includes(input.value.toLowerCase())) {
             var span = document.createElement("span");
             span.className = "mon";
             span.innerHTML = mon;
