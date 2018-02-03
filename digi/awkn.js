@@ -1,3 +1,21 @@
+var mons = Object.keys(digi).sort();
+mons.forEach(function (mon) {
+    var div = document.createElement("div");
+    div.className = "mon";
+    div.id = mon;
+    var img = document.createElement("img");
+    img.className = "thumb";
+    img.src = "mon/" + mon + ".png";
+    div.appendChild(img);
+    var a = document.createElement("a");
+    a.className = "alt";
+    a.href = "http://growlmon.net/digimon/" + mon;
+    a.target = "_blank";
+    a.innerHTML = mon;
+    div.appendChild(a);
+    document.getElementById(digi[mon].evol).getElementsByClassName("mons")[0].appendChild(div);
+});
+
 function evol(mon) {
     return digi[mon].evol;
 }
@@ -71,23 +89,16 @@ function autocomplete() {
 input.addEventListener("input", autocomplete);
 
 function line(a, b) {
-    if (typeof(oldMouse) == "undefined") { // temporary
-        oldMouse = b;
-        return;
-    }
-    var aMid = oldMouse; // temporary
-    var bMid = b; // temporary
-    oldMouse = b;
-    // var aRect = a.getBoundingClientRect();
-    // var bRect = b.getBoundingClientRect();
-    // var aMid = {
-    //     "x": (aRect.left + aRect.right) / 2,
-    //     "y": (aRect.top + aRect.bottom) / 2
-    // };
-    // var bMid = {
-    //     "x": (bRect.left + bRect.right) / 2,
-    //     "y": (bRect.top + bRect.bottom) / 2
-    // };
+    var aRect = a.getBoundingClientRect();
+    var bRect = b.getBoundingClientRect();
+    var aMid = {
+        "x": (aRect.left + aRect.right) / 2,
+        "y": (aRect.top + aRect.bottom) / 2
+    };
+    var bMid = {
+        "x": (bRect.left + bRect.right) / 2,
+        "y": (bRect.top + bRect.bottom) / 2
+    };
     var linelayer = document.getElementById("linelayer");
     var path = document.createElement("path");
     path.setAttribute("d",
@@ -96,15 +107,9 @@ function line(a, b) {
         " " + bMid.x + "," + aMid.y +
         " " + bMid.x + "," + bMid.y
     );
-    path.setAttribute("stroke", "#00000010"); // temporary
+    path.setAttribute("stroke", "black");
     path.setAttribute("stroke-width", "5");
     path.setAttribute("fill", "none");
     linelayer.appendChild(path);
     linelayer.innerHTML += ""; // force update
 }
-
-var oldMouse; // temporary
-
-window.addEventListener("mousemove", function (e) { // temporary
-    line(oldMouse, e);
-});

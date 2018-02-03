@@ -1,0 +1,82 @@
+body {
+    background: radial-gradient(cyan, blue) 0% 0% / 100% 3px;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    font-family: "Trebuchet MS", "Helvetica", "Arial", sans-serif;
+    text-align: center;
+    margin: 0px;
+}
+
+.category {
+    border-radius: 8px;
+    box-shadow: inset 0px 0px 16px black;
+    padding: 4px;
+    margin: 4px;
+}
+
+#in-training-i {
+    background: linear-gradient(#7ef, #4ac);
+}
+#in-training-ii {
+    background: linear-gradient(#4ac, #048);
+}
+#rookie {
+    background: linear-gradient(#b50, #310);
+}
+#champion {
+    background: linear-gradient(#fff, #666);
+}
+#ultimate {
+    background: linear-gradient(#ff4, #da0);
+}
+#mega {
+    background: linear-gradient(
+        #f00,
+        #ff0,
+        #0f0,
+        #0ff,
+        #00f,
+        #f0f,
+        #f00
+    );
+}
+
+.evol {
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 0 0 25% 25%;
+}
+
+.mons {
+    overflow: scroll;
+}
+
+.mon {
+    background: #000080;
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    padding: 2px;
+    margin: 2px;
+    display: inline-block;
+}
+
+.thumb {
+    border-radius: 8px;
+}
+
+.alt {
+    background: #000080;
+    color: #ffffff;
+    position: absolute;
+    margin-left: -64px;
+    display: none;
+}
+
+.mon:hover {
+}
+
+.mon:hover .alt{
+    display: inline;
+}
