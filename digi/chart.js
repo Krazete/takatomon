@@ -36,6 +36,18 @@ function showmon(mon) {
         output.appendChild(p);
         next(mon).forEach(showmon);
     });
+    div.addEventListener("touchstart", function (e) {
+        output.innerHTML = "";
+        showmon(mon);
+        var p = document.createElement("p");
+        p.innerHTML = "previous:";
+        output.appendChild(p);
+        prev(mon).forEach(showmon);
+        var p = document.createElement("p");
+        p.innerHTML = "next:";
+        output.appendChild(p);
+        next(mon).forEach(showmon);
+    });
     var img = document.createElement("img");
     img.src = "img/" + mon + ".png";
     img.alt = mon;
