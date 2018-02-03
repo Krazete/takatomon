@@ -20,11 +20,26 @@ function prev(mon) {
 
 var input = document.getElementById("in");
 var output = document.getElementById("out");
+input.addEventListener("touchstart", function () {
+    this.focus();
+});
 
 function showmon(mon) {
     var div = document.createElement("div");
     div.className = "mon";
     div.addEventListener("click", function (e) {
+        output.innerHTML = "";
+        showmon(mon);
+        var p = document.createElement("p");
+        p.innerHTML = "previous:";
+        output.appendChild(p);
+        prev(mon).forEach(showmon);
+        var p = document.createElement("p");
+        p.innerHTML = "next:";
+        output.appendChild(p);
+        next(mon).forEach(showmon);
+    });
+    div.addEventListener("touchstart", function (e) {
         output.innerHTML = "";
         showmon(mon);
         var p = document.createElement("p");
