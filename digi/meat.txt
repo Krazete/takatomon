@@ -1,8 +1,8 @@
                +0       +1       +2       +3       +4
-Rookie         23 00000000 00000000 00000000 00000000
-Champion      229 00000000 00000000 00000000 00000000
-Ultimate      786 00000000 00000000 00000000 00000000
-Mega         1763 00000000 00000000 00000000 00000000
+Rookie         23       52     ????     ????     ????
+Champion      229      333     ????     ????     ????
+Ultimate      786     ????     ????     ????     ????
+Mega         1763     ????     ????     ????     ????
 
 DigiEgg  Train1   Train2   Rookie   AWKN  DNA Mega             MOVE
 Red      Kuramon  Pagumon  Gazimon    +1    1 MetalGarurumon   Ice Wolf Claw
