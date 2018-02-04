@@ -50,12 +50,13 @@ body {
     font-weight: bold;
     border-radius: 0 0 25% 25%;
 }
-.any-or-all {
+.view-option {
     color: #888;
+    text-transform: uppercase;
     cursor: pointer;
     padding: 0px 8px;
 }
-.any-or-all.selected {
+.view-option.selected {
     color: #000;
     text-decoration: underline;
 }
@@ -82,29 +83,33 @@ body {
     display: inline-block;
     cursor: pointer;
 }
+.mon.leaf {
+    background: #fff;
+}
+.mon.hidden {
+    display: none;
+}
+
+.thumb {
+    border-radius: 8px;
+}
+#selection .mon .thumb {
+    opacity: 1;
+}
+#selection .mon:hover .thumb {
+    opacity: 0.5;
+}
 .mon .thumb {
     opacity: 0.5;
 }
 .mon:hover .thumb {
     opacity: 1;
 }
-
-.thumb {
-    border-radius: 8px;
-}
-
-.locked {
-    background: #fff;
-}
-.locked .thumb {
+.mon.root .thumb {
     opacity: 1;
 }
-
-.hidden {
-    display: none;
-}
-
-.mon:hover {
+.mon.leaf .thumb {
+    opacity: 1;
 }
 
 .alt {
@@ -115,7 +120,7 @@ body {
     display: none;
 }
 .mon:hover .alt{
-    display: inline;
+    /* display: inline; */
 }
 
 #linelayer {
