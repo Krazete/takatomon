@@ -1,5 +1,5 @@
 body {
-    background: radial-gradient(cyan, blue) 0% 0% / 100% 3px;
+    background: radial-gradient(#088, #004) 0% 0% / 100% 3px;
     position: absolute;
     width: 100%;
     height: 100%;
@@ -10,11 +10,14 @@ body {
 
 .category {
     border-radius: 8px;
-    box-shadow: inset 0px 0px 16px black;
+    box-shadow: inset 0px 0px 16px #000;
     padding: 4px;
     margin: 4px;
 }
-
+#selection {
+    background: #fff;
+    border-radius: 32px;
+}
 #in-training-i {
     background: linear-gradient(#7ef, #4ac);
 }
@@ -28,10 +31,10 @@ body {
     background: linear-gradient(#fff, #666);
 }
 #ultimate {
-    background: linear-gradient(#ff4, #da0);
+    background: linear-gradient(#ff4, #c90);
 }
 #mega {
-    background: linear-gradient(
+    background: linear-gradient(to bottom left,
         #f00,
         #ff0,
         #0f0,
@@ -47,36 +50,78 @@ body {
     font-weight: bold;
     border-radius: 0 0 25% 25%;
 }
+.any-or-all {
+    color: #888;
+    cursor: pointer;
+    padding: 0px 8px;
+}
+.any-or-all.selected {
+    color: #000;
+    text-decoration: underline;
+}
 
-.mons {
-    overflow: scroll;
+.box-wrapper {
+    overflow-x: scroll;
+    overflow-y: visible;
+}
+
+.box {
+    min-height: 74px;
+    width: max-content;
+    margin: auto;
 }
 
 .mon {
-    background: #000080;
+    background: #048;
     width: 64px;
     height: 64px;
+    border: 1px solid #000;
     border-radius: 8px;
     padding: 2px;
     margin: 2px;
     display: inline-block;
+    cursor: pointer;
+}
+.mon .thumb {
+    opacity: 0.5;
+}
+.mon:hover .thumb {
+    opacity: 1;
 }
 
 .thumb {
     border-radius: 8px;
 }
 
-.alt {
-    background: #000080;
-    color: #ffffff;
-    position: absolute;
-    margin-left: -64px;
+.locked {
+    background: #fff;
+}
+.locked .thumb {
+    opacity: 1;
+}
+
+.hidden {
     display: none;
 }
 
 .mon:hover {
 }
 
+.alt {
+    background: #048;
+    color: #fff;
+    position: absolute;
+    margin-left: -64px;
+    display: none;
+}
 .mon:hover .alt{
     display: inline;
+}
+
+#linelayer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    overflow: visible;
+    pointer-events: none;
 }
