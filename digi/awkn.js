@@ -7,7 +7,7 @@ function getBox(id) {
 
 function addTapListener(e, f) {
     e.addEventListener("click", f);
-    e.addEventListener("touchstart", f);
+    e.addEventListener("touchend", f);
 }
 
 function selectDigi(mon) {
