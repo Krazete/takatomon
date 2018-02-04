@@ -7,7 +7,7 @@ function getBox(id) {
 
 function addTapListener(e, f) {
     e.addEventListener("click", f);
-    e.addEventListener("touchend", f);
+    e.addEventListener("touchstart", function () {}); // dunno why this works, but enables responsiveness without unwanted clicks
 }
 
 function selectDigi(mon) {
@@ -25,38 +25,134 @@ function deselectDigi(mon) {
 function update() {
     var selection = getBox("selection");
     selection.innerHTML = "";
+    if (selectedDigi.size == 0) {
+        allDigi.forEach(function (mon) {
+            digi[mon].element.classList.remove("locked");
+            digi[mon].element.classList.remove("hidden");
+        });
+    }
+    else {
+        var trees = [];
+        selectedDigi.forEach(function (mon) {
+            var clone = digi[mon].element.cloneNode(true);
+            clone.className = "mon";
+            addTapListener(clone, function () {
+                deselectDigi(this.id);
+            })
+            selection.appendChild(clone);
+
+            var tree = new Set();
+            growTree(tree, mon, 0);
+            trees.push(tree);
+        });
+
+        allDigi.forEach(function (mon) {
+            digi[mon].element.classList.remove("locked");
+            digi[mon].element.classList.add("hidden");
+        });
+
+        linelayer.innerHTML = "";
+        var chosenTree = chosen(trees);
+        chosenTree.forEach(function (branchJSON) {
+            var branch = JSON.parse(branchJSON);
+            digi[branch[0]].element.classList.remove("hidden");
+            digi[branch[1]].element.classList.remove("hidden");
+        });
+        chosenTree.forEach(function (branchJSON) {
+            var branch = JSON.parse(branchJSON);
+            drawBranch(branch, "#000", 4);
+        });
+        chosenTree.forEach(function (branchJSON) {
+            var branch = JSON.parse(branchJSON);
+            drawBranch(branch, "#fff", 2);
+        });
+        linelayer.innerHTML += ""; // force linelayer to update
+    }
+}
+
+function growTree(tree, mon, direction) {
+    if (direction < 1) {
+        prev(mon).forEach(function (prevmon) {
+            var branch = [prevmon, mon];
+            var branchJSON = JSON.stringify(branch);
+            if (!tree.has(branchJSON)) {
+                tree.add(branchJSON);
+                growTree(tree, prevmon, -1);
+            }
+        });
+    }
+    if (direction > -1) {
+        next(mon).forEach(function (nextmon) {
+            var branch = [mon, nextmon];
+            var branchJSON = JSON.stringify(branch);
+            if (!tree.has(branchJSON)) {
+                tree.add(branchJSON);
+                growTree(tree, nextmon, 1);
+            }
+        });
+    }
+    return tree;
+}
+
+function union(trees) {
+    var unionTree = new Set();
+    trees.forEach(function (tree) {
+        tree.forEach(function (branch) {
+            unionTree.add(branch);
+        });
+    });
+    return unionTree;
+}
+
+function intersect(trees) {
+    var intersectTree = new Set();
+
+    var intersectLeaves = allDigi;
+    trees.forEach(function (tree) {
+        var leaves = new Set();
+        tree.forEach(function (branchJSON) {
+            var branch = JSON.parse(branchJSON);
+            if (intersectLeaves.has(branch[0])) {
+                leaves.add(branch[0]);
+            }
+            if (intersectLeaves.has(branch[1])) {
+                leaves.add(branch[1]);
+            }
+        });
+        intersectLeaves = leaves;
+    });
+    console.log(intersectLeaves);
+    trees.forEach(function (tree) {
+        tree.forEach(function (branchJSON) {
+            var branch = JSON.parse(branchJSON);
+            if (intersectLeaves.has(branch[0]) && intersectLeaves.has(branch[1])) {
+                intersectTree.add(branchJSON);
+            }
+        });
+    });
+
+    var p = [intersectTree];
     selectedDigi.forEach(function (mon) {
-        var clone = digi[mon].element.cloneNode(true);
-        clone.className = "mon";
-        addTapListener(clone, function () {
-            deselectDigi(this.id);
-        })
-        selection.appendChild(clone);
-    });
-
-    allDigi.forEach(function (mon) {
-        if (!selectedDigi.has(mon)) {
-            digi[mon].element.classList.add("locked");
-        }
-    });
+        p.push(growTree(new Set(), mon, 1));
+    })
+    return union(p);
 }
 
-function getTree(mon) {
-    var tree = new Set();
-    next(mon).forEach(function (nextmon) {
-        tree.add([mon, nextmon]);
-    });
+function chosen(trees) {
+    var any = document.getElementById("any");
+    var all = document.getElementById("all");
+    if (any.classList.contains("selected")) {
+        return union(trees);
+    }
+    if (all.classList.contains("selected")) {
+        return intersect(trees);
+    }
 }
 
-function intersection(t, u) { // TODO
-    var c = new Set();
-    a.forEach(function (mon) {
-        if (b.has(mon)) {
-            c.add(mon);
-        }
-    });
-    return c;
-}
+
+
+
+
 
 
 
@@ -81,10 +177,11 @@ function line(a, b, color, width) {
     var path = document.createElement("path");
     path.setAttribute("d",
         "M" + a.x + "," + a.y +
-        "S" + a.x + "," + (a.y + 16) +
-        " " + (a.x + b.x) / 2 + "," + (a.y + 16) +
-        "S" + b.x + "," + (a.y + 16) +
-        " " + b.x + "," + b.y
+        "L" + b.x + "," + b.y
+        // "S" + a.x + "," + (a.y + 16) +
+        // " " + (a.x + b.x) / 2 + "," + (a.y + 16) +
+        // "S" + b.x + "," + (a.y + 16) +
+        // " " + b.x + "," + b.y
     );
     path.setAttribute("stroke", color);
     path.setAttribute("stroke-width", width);
@@ -93,9 +190,9 @@ function line(a, b, color, width) {
     linelayer.appendChild(path);
 }
 
-function branch(monA, monB, p, k) {
-    var a = digi[monA].element;
-    var b = digi[monB].element;
+function drawBranch(branch, p, k) {
+    var a = digi[branch[0]].element;
+    var b = digi[branch[1]].element;
     a.classList.add("locked");
     b.classList.add("locked");
     var aRect = a.getBoundingClientRect();
@@ -110,7 +207,6 @@ function branch(monA, monB, p, k) {
     };
     var linelayer = document.getElementById("linelayer");
     line(aMid, bMid, p, k);
-    linelayer.innerHTML += ""; // force update
 }
 
 function reset() {
@@ -130,67 +226,18 @@ function hide() {
     });
 }
 
-var selection = [];
-var visited = [];
-function tree(mon, direction) {
-    if (direction == 0) {
-        visited = [];
-        var linelayer = document.getElementById("linelayer");
-        linelayer.innerHTML = "";
-    }
-    if (direction < 1) {
-        var prevmons = prev(mon);
-        for (var i = 0; i < prevmons.length; i++) {
-            var prevmon = prevmons[i];
-            var pair = prevmon + "+" + mon;
-            if (!visited.includes(pair)) {
-                tree(prevmon, -1)
-            }
-            visited.push(pair);
-            selection.push(prevmon);
-            selection.push(mon);
-        }
-    }
-    if (direction > -1) {
-        var nextmons = next(mon);
-        for (var i = 0; i < nextmons.length; i++) {
-            var nextmon = nextmons[i];
-            var pair = mon + "+" + nextmon;
-            if (!visited.includes(pair)) {
-                tree(nextmon, 1);
-            }
-            visited.push(pair);
-            selection.push(mon);
-            selection.push(nextmon);
-        }
-    }
-    if (direction == 0) {
-        reset();
-        hide();
-        visited.forEach(function (pair) {
-            var mons = pair.split("+");
-            branch(mons[0], mons[1], "#000", 4);
-        });
-        visited.forEach(function (pair) {
-            var mons = pair.split("+");
-            branch(mons[0], mons[1], "#fff", 2);
-        });
-    }
-}
-
-
 function init() {
-    var any = document.getElementById("any");
-    var all = document.getElementById("all");
-    addTapListener(any, function (e) {
-        any.classList.add("selected");
-        all.classList.remove("selected");
+    Array.from(document.getElementsByClassName("evol")).forEach(function (evol) {
+        addTapListener(evol, function () {
+            selectedDigi.clear();
+            Array.from(getBox(evol.parentElement.id).children).forEach(function (e) {
+                if (!e.classList.contains("hidden")) {
+                    selectedDigi.add(e.id);
+                }
+            });
+            update();
+        });
     });
-    addTapListener(all, function (e) {
-        any.classList.remove("selected");
-        all.classList.add("selected");
-    });
-    any.click();
 
     var mons = Object.keys(digi).sort(); // sort is redundant, but just in case
     mons.forEach(function (mon) {
@@ -213,6 +260,20 @@ function init() {
         digi[mon].element = div;
         getBox(digi[mon].evol).appendChild(div);
     });
+
+    var any = document.getElementById("any");
+    var all = document.getElementById("all");
+    addTapListener(any, function (e) {
+        any.classList.add("selected");
+        all.classList.remove("selected");
+        update();
+    });
+    addTapListener(all, function (e) {
+        any.classList.remove("selected");
+        all.classList.add("selected");
+        update();
+    });
+    any.click();
 }
 
 init();
