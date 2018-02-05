@@ -33,6 +33,7 @@ function update() {
             digi[mon].element.classList.remove("leaf");
             digi[mon].element.classList.remove("hidden");
         });
+        linelayer.innerHTML = "";
     }
     else {
         var trees = [];
