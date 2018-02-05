@@ -210,9 +210,9 @@ function line(a, b, color, width) {
     path.setAttribute("d",
         "M" + a.x + "," + a.y +
         // "L" + b.x + "," + b.y
-        "S" + a.x + "," + (a.y + 16) +
-        " " + (a.x + b.x) / 2 + "," + (a.y + 16) +
-        "S" + b.x + "," + (a.y + 16) +
+        "S" + a.x + "," + (0.75 * a.y + 0.25 * b.y) +
+        " " + (0.5 * a.x + 0.5 * b.x) + "," + (0.5 * a.y + 0.5 * b.y) +
+        "S" + b.x + "," + (0.25 * a.y + 0.75 * b.y) +
         " " + b.x + "," + b.y
     );
     path.setAttribute("stroke", color);
@@ -258,13 +258,19 @@ function hide() {
 
 function init() {
     Array.from(document.getElementsByClassName("evol")).forEach(function (evol) {
-        addTapListener(evol, function () {
+        addTapListener(evol, function (e) {
             selectedDigi.clear();
             Array.from(getBox(evol.parentElement.id).children).forEach(function (e) {
                 if (!e.classList.contains("hidden")) {
                     selectedDigi.add(e.id);
                 }
             });
+            update();
+        });
+    });
+
+    Array.from(document.getElementsByClassName("box-wrapper")).forEach(function (boxWrapper) {
+        boxWrapper.addEventListener("scroll", function (e) {
             update();
         });
     });
