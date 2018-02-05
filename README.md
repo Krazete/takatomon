@@ -7,7 +7,7 @@ A digivolution chart viewer for Digimon Links.
   - maybe do this in the webscraping step instead of dynamically
     - would need to figure out how to JSON.stringify set objects
 - color-code selected digimon
-  - allows showing ANY and ALL option simultaneously
+  - allows showing ANY and ALL options simultaneously
   - would need to figure out color randomization that avoids similarity (true-color similarity and color-blind similarity)
 - add search bar
 - display digimon names
