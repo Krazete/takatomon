@@ -66,15 +66,17 @@ function getDigimonImages() {
 
 /* Tribe Thumbnails */
 function getTribeImages() {
+	var labels = ["", "mirage", "blazing", "glacier", "electric", "earth", "bright", "abyss"];
     var tribes = new Set(
         Array.from(document.getElementsByClassName("blockListType")).map(function (blockListType) {
             return blockListType.src;
         })
     );
     tribes.forEach(function (tribe) {
+    	var index = tribe.match(/(\d+).png/)[1];
         var a = document.createElement("a");
         a.href = tribe;
-        a.setAttribute("download", "");
+        a.setAttribute("download", labels[index]);
         a.click();
     });
 } // resize to 32x32 and put into root/tribe folder
