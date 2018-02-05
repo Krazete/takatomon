@@ -9,7 +9,7 @@ A digivolution chart viewer for Digimon Links.
 - color-code selected digimon
   - allows showing ANY and ALL option simultaneously
   - would need to figure out color randomization that avoids similarity (true-color similarity and color-blind similarity)
-- display search bar
+- add search bar
 - display digimon names
 - display link to growlmon.net
   - maybe take data from growlmon.net or use an iframe
