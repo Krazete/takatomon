@@ -30,9 +30,11 @@ function update() {
     selection.innerHTML = "";
     if (selectedDigi.size == 0) {
         allDigi.forEach(function (mon) {
+            digi[mon].element.classList.remove("root");
             digi[mon].element.classList.remove("leaf");
             digi[mon].element.classList.remove("hidden");
         });
+        linelayer.innerHTML = "";
     }
     else {
         var trees = [];
