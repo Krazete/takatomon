@@ -16,3 +16,6 @@ A digivolution chart viewer for Digimon Links.
     - allows easier comparison
 - webscrape digimon tribe and rank from growlmon.net
   - and then display tribe and rank
+- add buttons to each selected digimon icon
+  - separate icon from deselect button
+  - add opacity toggle
