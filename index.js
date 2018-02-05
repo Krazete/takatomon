@@ -169,6 +169,12 @@ function intersect(trees) {
             if (intersectTree.leaves.has(branch[0]) && intersectTree.leaves.has(branch[1])) {
                 intersectTree.branchesJSON.add(branchJSON);
             }
+            if (intersectTree.roots.has(branch[0]) && intersectTree.leaves.has(branch[1])) { // TODO: combine with the above conditional
+                intersectTree.branchesJSON.add(branchJSON);
+            }
+            if (intersectTree.leaves.has(branch[0]) && intersectTree.roots.has(branch[1])) { // TODO: combine with the above conditional
+                intersectTree.branchesJSON.add(branchJSON);
+            }
         });
     });
     return intersectTree;
