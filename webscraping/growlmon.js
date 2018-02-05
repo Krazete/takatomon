@@ -44,7 +44,7 @@ function getDigimonInfo() {
         };
         xhr.send();
     });
-} // put output into digi folder
+} // put output into root folder
 
 /* Digimon Thumbnails */
 function getDigimonImages() {
@@ -62,7 +62,7 @@ function getDigimonImages() {
         a.setAttribute("download", mon.name);
         a.click();
     });
-} // resize to 64x64 and put into digi folder
+} // resize to 64x64 and put into root/mon folder
 
 /* Tribe Thumbnails */
 function getTribeImages() {
@@ -77,4 +77,4 @@ function getTribeImages() {
         a.setAttribute("download", "");
         a.click();
     });
-} // resize to 32x32 and put into digi folder
+} // resize to 32x32 and put into root/tribe folder
