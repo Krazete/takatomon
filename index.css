@@ -92,10 +92,6 @@ body {
     display: inline-block;
     cursor: pointer;
 }
-.mon:after {
-    content: "";
-    background: url("attr(data-tribe).png")
-}
 .mon.leaf {
     background: #fff;
 }
@@ -104,15 +100,17 @@ body {
 }
 
 .tribe {
-    position: absolute;
+    position: relative;
     width: 16px;
     height: 16px;
     border-radius: 8px;
+    margin-right: 100%;
     z-index: 1;
 }
 
 .thumb {
     border-radius: 8px;
+    margin-top: -20px;
 }
 #selection .mon .thumb {
     opacity: 1;
