@@ -2,10 +2,6 @@
 A digivolution chart viewer for Digimon Links.
 
 ## TODO
-- use memoization for trees
-  - not sure if this will be much faster
-  - maybe do this in the webscraping step instead of dynamically
-    - would need to figure out how to JSON.stringify set objects
 - untangle lines
 - color-code selected digimon
   - allows showing ANY and ALL options simultaneously
@@ -20,3 +16,17 @@ A digivolution chart viewer for Digimon Links.
 - add buttons to each selected digimon icon
   - separate icon from deselect button
   - add opacity toggle
+
+## DONT
+- minify code
+  - i prefer readability
+- combine code
+  - i want portability
+  - keep the tree file simple
+    - don't "compile" it, load branches etc. dynamically
+    - should be able to easily make and input some other tree file
+- store trees in cookies
+  - it's fast enough as is
+    - even the memoization wasn't necessary
+  - i don't like random things saved on my computer
+    - so avoid doing it to others
