@@ -99,15 +99,6 @@ body {
     display: none;
 }
 
-.tribe {
-    position: relative;
-    width: 16px;
-    height: 16px;
-    border-radius: 8px;
-    margin-right: 100%;
-    z-index: 1;
-}
-
 .thumb {
     border-radius: 8px;
     margin-top: -20px;
@@ -131,15 +122,23 @@ body {
     opacity: 1;
 }
 
-.alt {
-    background: #048;
-    color: #fff;
-    position: absolute;
-    margin-left: -64px;
-    display: none;
+.tribe {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    margin-right: 100%;
+    z-index: 1;
 }
-.mon:hover .alt{
-     /* display: inline; */
+
+.dnas {
+    background: black;
+    color: white;
+    font-size: 10px;
+    position: relative;
+    border-radius: 4px;
+    margin-top: -12px;
+    z-index: 1;
 }
 
 #linelayer {

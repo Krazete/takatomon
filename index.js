@@ -314,12 +314,6 @@ function init() {
         var div = document.createElement("div");
         div.className = "mon";
         div.id = mon;
-            var a = document.createElement("a");
-            a.className = "alt";
-            a.href = "http://growlmon.net/digimon/" + mon;
-            a.target = "_blank";
-            a.innerHTML = mon;
-        div.appendChild(a);
             var tribe = document.createElement("img");
             tribe.className = "tribe";
             tribe.src = "tribe/" + digi[mon].tribe + ".png";
@@ -328,6 +322,12 @@ function init() {
             img.className = "thumb";
             img.src = "mon/" + mon + ".png";
         div.appendChild(img);
+        if (digi[mon].dnas == 2) {
+            var dnas = document.createElement("div");
+            dnas.className = "dnas";
+            dnas.innerHTML = digi[mon].dnas + " skills";
+            div.appendChild(dnas);
+        }
         addTapListener(div, function (mouse) {
             selectDigi(this.id);
         });
