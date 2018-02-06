@@ -14,9 +14,10 @@ A digivolution chart viewer for Digimon Links.
 - color-code selected digimon
   - allows showing ANY and ALL options simultaneously
   - would need to figure out color randomization that avoids similarity (true-color similarity and color-blind similarity)
-- add buttons to each selected digimon icon
-  - separate icon from deselect button
-  - add opacity toggle
+- ~~add buttons to each selected digimon icon~~
+  - ~~separate icon from deselect button~~
+  - ~~add opacity toggle~~
+  - on second thought, color-coding will render this redundant
 
 ## DONT
 - minify code
