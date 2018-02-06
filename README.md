@@ -2,6 +2,14 @@
 A digivolution chart viewer for Digimon Links.
 
 ## TODO
+- add "last modified"
+- add a cache reset button (window.location.reload(true))
+- add popup search button
+  - with a search bar
+  - and tribe filtering
+  - and dna fork filtering
+- add "export to growlmon" button
+  - will open the growlmon page for each selected digimon
 - untangle lines
 - color-code selected digimon
   - allows showing ANY and ALL options simultaneously
