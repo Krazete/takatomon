@@ -1,29 +1,141 @@
-var fullOption;
-var viewOption;
+/* DATA */
 
+/* Indices */
 var allDigi = new Set(Object.keys(digi));
 var selectedDigi = new Set();
 
-function getBox(id) {
-    return document.getElementById(id).children[1].children[0];
+/* Digivolution Tree Navigator */
+function next(mon) {
+    return digi[mon].dvol;
+}
+function prev(mon) {
+    if (typeof(digi[mon].prev) == "undefined") { // memoization
+        var prevmons = [];
+        for (prevmon in digi) {
+            if (next(prevmon).includes(mon)) {
+                prevmons.push(prevmon);
+            }
+        }
+        digi[mon].prev = prevmons;
+    }
+    return digi[mon].prev;
 }
 
-function addTapListener(e, f) {
-    e.addEventListener("click", f);
-    e.addEventListener("touchstart", function () {}); // dunno why this works, but enables responsiveness without unwanted clicks
+/* Tree Data Structure */
+
+function newTree() {
+    return {
+        "roots": new Set(),
+        "leaves": new Set(),
+        "branchesJSON": new Set(), // because an array isn't equal to itself
+        "forEachBranch": function (f) {
+            this.branchesJSON.forEach(function (branchJSON) { // TODO: maybe split branch variable into leaf0 and leaf1
+                var branch = JSON.parse(branchJSON);
+                f(branch, branchJSON); // TODO: remove branchJSON parameter if unneeded
+            });
+        }
+    };
 }
 
-function selectDigi(mon) {
-    selectedDigi.add(mon);
-    update();
-    return selectedDigi;
+function getBranchesJSON(branches, mon, direction) { // must pass branches to avoid infinite recursion
+    if (direction < 1) {
+        prev(mon).forEach(function (prevmon) {
+            var branch = [prevmon, mon];
+            var branchJSON = JSON.stringify(branch);
+            if (!branches.has(branchJSON)) {
+                branches.add(branchJSON);
+                getBranchesJSON(branches, prevmon, -1);
+            }
+        });
+    }
+    if (direction > -1) {
+        next(mon).forEach(function (nextmon) {
+            var branch = [mon, nextmon];
+            var branchJSON = JSON.stringify(branch);
+            if (!branches.has(branchJSON)) {
+                branches.add(branchJSON);
+                getBranchesJSON(branches, nextmon, 1);
+            }
+        });
+    }
 }
 
-function deselectDigi(mon) {
-    selectedDigi.delete(mon);
-    update();
-    return selectedDigi;
+function memoize(obj, init) {
+    if (typeof(obj) == "undefined") {
+        init(obj);
+    }
+    return obj;
 }
+
+function getTree(mon) {
+    if (typeof(digi[mon].tree) == "undefined") { // memoization
+        var tree = newTree();
+        tree.roots.add(mon);
+        getBranchesJSON(tree.branchesJSON, mon, 0);
+        tree.forEachBranch(function (branch, branchJSON) {
+            tree.leaves.add(branch[0]);
+            tree.leaves.add(branch[1]);
+        });
+        digi[mon].tree = tree;
+    }
+    return digi[mon].tree;
+}
+
+function union(trees) {
+    var unionTree = newTree();
+    trees.forEach(function (tree) {
+        tree.roots.forEach(function (root) {
+            unionTree.roots.add(root);
+        });
+        tree.forEachBranch(function (branch, branchJSON) {
+            unionTree.leaves.add(branch[0]);
+            unionTree.leaves.add(branch[1]);
+            unionTree.branchesJSON.add(branchJSON);
+        });
+    });
+    return unionTree;
+}
+
+function intersect(trees) {
+    var intersectTree = newTree();
+    intersectTree.leaves = new Set(allDigi);
+    trees.forEach(function (tree) {
+        tree.roots.forEach(function (root) {
+            intersectTree.roots.add(root);
+        });
+        intersectTree.leaves.forEach(function (leaf) {
+            if (!tree.leaves.has(leaf)) {
+                intersectTree.leaves.delete(leaf);
+            }
+        });
+    });
+    // TODO: intermediate digimon??
+    trees.forEach(function (tree) {
+        tree.forEachBranch(function (branch, branchJSON) {
+            if (intersectTree.leaves.has(branch[0]) && intersectTree.leaves.has(branch[1])) {
+                intersectTree.branchesJSON.add(branchJSON);
+            }
+            if (intersectTree.roots.has(branch[0]) && intersectTree.leaves.has(branch[1])) { // TODO: combine with the above conditional
+                intersectTree.branchesJSON.add(branchJSON);
+            }
+            if (intersectTree.leaves.has(branch[0]) && intersectTree.roots.has(branch[1])) { // TODO: combine with the above conditional
+                intersectTree.branchesJSON.add(branchJSON);
+            }
+        });
+    });
+    return intersectTree;
+}
+
+
+
+
+
+
+
+
+
+
+/* Tree Visualization */
 
 function update() {
     var selection = getBox("selection");
@@ -87,132 +199,6 @@ function drawBranches(tree) {
     linelayer.innerHTML += ""; // force update linelayer
 }
 
-function getBranchesJSON(branches, mon, direction) { // must pass branches to avoid infinite recursion
-    if (direction < 1) {
-        prev(mon).forEach(function (prevmon) {
-            var branch = [prevmon, mon];
-            var branchJSON = JSON.stringify(branch);
-            if (!branches.has(branchJSON)) {
-                branches.add(branchJSON);
-                getBranchesJSON(branches, prevmon, -1);
-            }
-        });
-    }
-    if (direction > -1) {
-        next(mon).forEach(function (nextmon) {
-            var branch = [mon, nextmon];
-            var branchJSON = JSON.stringify(branch);
-            if (!branches.has(branchJSON)) {
-                branches.add(branchJSON);
-                getBranchesJSON(branches, nextmon, 1);
-            }
-        });
-    }
-}
-
-function newTree() {
-    return {
-        "roots": new Set(),
-        "leaves": new Set(),
-        "branchesJSON": new Set(), // because an array isn't equal to itself
-        "forEachBranch": function (f) {
-            this.branchesJSON.forEach(function (branchJSON) { // TODO: maybe split branch variable into leaf0 and leaf1
-                var branch = JSON.parse(branchJSON);
-                f(branch, branchJSON); // TODO: remove branchJSON parameter if unneeded
-            });
-        }
-    };
-}
-
-function getTree(mon) {
-    var tree = newTree();
-    tree.roots.add(mon);
-    getBranchesJSON(tree.branchesJSON, mon, 0);
-    tree.forEachBranch(function (branch, branchJSON) {
-        tree.leaves.add(branch[0]);
-        tree.leaves.add(branch[1]);
-    });
-    return tree;
-}
-
-function union(trees) {
-    var unionTree = newTree();
-    trees.forEach(function (tree) {
-        tree.roots.forEach(function (root) {
-            unionTree.roots.add(root);
-        });
-        tree.forEachBranch(function (branch, branchJSON) {
-            unionTree.leaves.add(branch[0]);
-            unionTree.leaves.add(branch[1]);
-            unionTree.branchesJSON.add(branchJSON);
-        });
-    });
-    return unionTree;
-}
-
-function intersect(trees) {
-    var intersectTree = newTree();
-    intersectTree.leaves = new Set(allDigi);
-    trees.forEach(function (tree) {
-        tree.roots.forEach(function (root) {
-            intersectTree.roots.add(root);
-        });
-        intersectTree.leaves.forEach(function (leaf) {
-            if (!tree.leaves.has(leaf)) {
-                intersectTree.leaves.delete(leaf);
-            }
-        });
-    });
-    // TODO: intermediate digimon??
-    trees.forEach(function (tree) {
-        tree.forEachBranch(function (branch, branchJSON) {
-            if (intersectTree.leaves.has(branch[0]) && intersectTree.leaves.has(branch[1])) {
-                intersectTree.branchesJSON.add(branchJSON);
-            }
-            if (intersectTree.roots.has(branch[0]) && intersectTree.leaves.has(branch[1])) { // TODO: combine with the above conditional
-                intersectTree.branchesJSON.add(branchJSON);
-            }
-            if (intersectTree.leaves.has(branch[0]) && intersectTree.roots.has(branch[1])) { // TODO: combine with the above conditional
-                intersectTree.branchesJSON.add(branchJSON);
-            }
-        });
-    });
-    return intersectTree;
-}
-
-function chosen(trees) {
-    if (viewOption == "any") {
-        return union(trees);
-    }
-    else if (viewOption == "all") {
-        return intersect(trees);
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-function next(mon) {
-    return digi[mon].dvol;
-}
-
-function prev(mon) {
-    var prevmons = [];
-    for (prevmon in digi) {
-        if (next(prevmon).includes(mon)) {
-            prevmons.push(prevmon);
-        }
-    }
-    return prevmons;
-}
-
 function line(a, b, color, width) {
     var path = document.createElement("path");
     path.setAttribute("d",
@@ -255,6 +241,35 @@ function reset() {
     });
 }
 
+/* HTML */
+
+var fullOption;
+var viewOption;
+
+function selectDigi(mon) {
+    selectedDigi.add(mon);
+    update();
+    return selectedDigi;
+}
+
+function deselectDigi(mon) {
+    selectedDigi.delete(mon);
+    update();
+    return selectedDigi;
+}
+
+
+/* HTML Element Handlers */
+
+function getBox(id) {
+    return document.getElementById(id).children[1].children[0];
+}
+
+function addTapListener(e, f) {
+    e.addEventListener("click", f);
+    e.addEventListener("touchstart", function () {}); // dunno why this works, but enables responsiveness without unwanted clicks
+}
+
 function hide() {
     var mons = Object.keys(digi);
     mons.forEach(function (mon) {
@@ -263,6 +278,17 @@ function hide() {
         }
     });
 }
+
+function chosen(trees) {
+    if (viewOption == "any") {
+        return union(trees);
+    }
+    else if (viewOption == "all") {
+        return intersect(trees);
+    }
+}
+
+/* Initialization */
 
 function init() {
     Array.from(document.getElementsByClassName("evol")).forEach(function (evol) {
@@ -288,16 +314,20 @@ function init() {
         var div = document.createElement("div");
         div.className = "mon";
         div.id = mon;
-            var img = document.createElement("img");
-            img.className = "thumb";
-            img.src = "mon/" + mon + ".png";
-        div.appendChild(img);
             var a = document.createElement("a");
             a.className = "alt";
             a.href = "http://growlmon.net/digimon/" + mon;
             a.target = "_blank";
             a.innerHTML = mon;
         div.appendChild(a);
+            var tribe = document.createElement("img");
+            tribe.className = "tribe";
+            tribe.src = "tribe/" + digi[mon].tribe + ".png";
+        div.appendChild(tribe);
+            var img = document.createElement("img");
+            img.className = "thumb";
+            img.src = "mon/" + mon + ".png";
+        div.appendChild(img);
         addTapListener(div, function (mouse) {
             selectDigi(this.id);
         });

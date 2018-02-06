@@ -92,11 +92,23 @@ body {
     display: inline-block;
     cursor: pointer;
 }
+.mon:after {
+    content: "";
+    background: url("attr(data-tribe).png")
+}
 .mon.leaf {
     background: #fff;
 }
 .mon.hidden {
     display: none;
+}
+
+.tribe {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    z-index: 1;
 }
 
 .thumb {
@@ -129,7 +141,7 @@ body {
     display: none;
 }
 .mon:hover .alt{
-    /* display: inline; */
+     /* display: inline; */
 }
 
 #linelayer {
