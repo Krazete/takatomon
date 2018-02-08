@@ -18,6 +18,8 @@ A digivolution chart viewer for Digimon Links.
   - ~~separate icon from deselect button~~
   - ~~add opacity toggle~~
   - on second thought, color-coding will render this redundant
+- add a credits section (for data and ideas)
+- use image parser to allow fragment-based search
 
 ## DONT
 - minify code
@@ -37,3 +39,13 @@ A digivolution chart viewer for Digimon Links.
   - i don't want to take too much traffic away from growlmon
   - a comparison popup would be too big on mobile
     - maybe
+
+## Data Credits
+/u/ChasingRaccoons - Growlmon
+
+## Idea Credits
+bro - Initial Idea; Skill Variety
+/u/dinwitt - Search Box
+/u/JudgemasterCid - Mutant Digivolution
+/u/tyger249 - Tribe
+/u/mviper13 - Fragment-Based Search
