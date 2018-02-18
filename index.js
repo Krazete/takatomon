@@ -287,13 +287,16 @@ function autocomplete() {
     var query = search.value;
     if (query != "") {
         linelayer.innerHTML = "";
+        allDigi.forEach(function (mon) {
+            digi[mon].element.classList.add("hidden");
+            if (mon.includes(query)) {
+                digi[mon].element.classList.remove("hidden");
+            }
+        });
     }
-    allDigi.forEach(function (mon) {
-        digi[mon].element.classList.add("hidden");
-        if (mon.includes(query)) {
-            digi[mon].element.classList.remove("hidden");
-        }
-    });
+    else {
+        update();
+    }
 }
 
 /* Initialization */
