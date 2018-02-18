@@ -164,6 +164,7 @@ function update() {
         var chosenTree = chosen(trees);
         drawTree(chosenTree);
     }
+    search.value = "";
 }
 
 function drawTree(tree) {
@@ -233,14 +234,6 @@ function drawBranch(branch, p, k) {
     line(aMid, bMid, p, k);
 }
 
-function reset() {
-    var mons = Object.keys(digi);
-    mons.forEach(function (mon) {
-        digi[mon].element.classList.remove("leaf");
-        digi[mon].element.classList.remove("hidden");
-    });
-}
-
 /* HTML */
 
 var viewOption;
@@ -259,7 +252,7 @@ function deselectDigi(mon) {
 }
 
 function getBox(id) {
-    return document.getElementById(id).children[1].children[0];
+    return document.getElementById(id).getElementsByClassName("box")[0];
 }
 
 function addTapListener(e, f) {
@@ -287,16 +280,17 @@ function chosen(trees) {
 
 /* Search */
 
+var search = document.getElementById("search");
+
 function autocomplete() {
+    linelayer.innerHTML = "";
     allDigi.forEach(function (mon) {
         digi[mon].element.classList.add("hidden");
-        if (mon.includes(document.getElementById("search").value.toLowerCase())) {
+        if (mon.includes(search.value.toLowerCase())) {
             digi[mon].element.classList.remove("hidden");
         }
     });
 }
-
-document.getElementById("search").addEventListener("input", autocomplete);
 
 /* Initialization */
 
@@ -379,6 +373,7 @@ function init() {
     });
 
     initOptions();
+    search.addEventListener("input", autocomplete);
 }
 
 init();
