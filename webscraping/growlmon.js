@@ -1,12 +1,19 @@
 /* run on http://growlmon.net/digivolvetree */
 
+/* Tribe Labels */
+function tribeFromSrc(src) {
+    var index = src.match(/(\d+).png/)[1];
+    return ["", "mirage", "blazing", "glacier", "electric", "earth", "bright", "abyss"][index];
+}
+
 /* Digivolution Tree */
 function getDigimonInfo() {
     var digi = {};
     var mons = Array.from(document.getElementsByClassName("blockListEl")).map(function (blockListEl) {
         return {
             "name": blockListEl.getElementsByTagName("a")[0].href.split("/")[4],
-            "evol": blockListEl.getElementsByClassName("blockListStage")[0].innerHTML.toLowerCase().replace(/ /g, "-")
+            "evol": blockListEl.getElementsByClassName("blockListStage")[0].innerHTML.toLowerCase().replace(/ /g, "-"),
+            "tribe": tribeFromSrc(blockListEl.getElementsByClassName("blockListType")[0].src)
         };
     }).filter(function (mon) {
         return !mon.name.endsWith("-mutant");
@@ -24,7 +31,9 @@ function getDigimonInfo() {
                     content.getElementsByClassName("dvolveTable")[0].rows[0].cells[2].getElementsByTagName("a")
                 ).map(function (a) {
                     return a.href.split("/")[4];
-                })
+                }),
+                "tribe": mon.tribe,
+                "dnas": content.querySelector("#move2box") ? 2 : 1
             };
             monsRegistered.push(mon.name);
             console.log("Digimon [" + mon.name + "] has been successfully registered.");
@@ -66,17 +75,15 @@ function getDigimonImages() {
 
 /* Tribe Thumbnails */
 function getTribeImages() {
-	var labels = ["", "mirage", "blazing", "glacier", "electric", "earth", "bright", "abyss"];
     var tribes = new Set(
         Array.from(document.getElementsByClassName("blockListType")).map(function (blockListType) {
             return blockListType.src;
         })
     );
-    tribes.forEach(function (tribe) {
-    	var index = tribe.match(/(\d+).png/)[1];
+    tribes.forEach(function (src) {
         var a = document.createElement("a");
-        a.href = tribe;
-        a.setAttribute("download", labels[index]);
+        a.href = src;
+        a.setAttribute("download", tribeFromSrc(src));
         a.click();
     });
 } // resize to 32x32 and put into root/tribe folder
