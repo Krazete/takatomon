@@ -11,7 +11,7 @@ body {
 .category {
     border-radius: 4px;
     box-shadow: inset 0px 0px 8px #000;
-    padding: 2px;
+    padding: 2px 4px;
     margin: 2px;
 }
 #selection {

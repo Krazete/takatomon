@@ -182,7 +182,7 @@ function drawLeaves(tree) {
         else if (tree.leaves.has(mon)) {
             digi[mon].element.classList.add("leaf");
         }
-        else if (!fullOption){
+        else if (viewOption){
             digi[mon].element.classList.add("hidden");
         }
     });
@@ -243,8 +243,8 @@ function reset() {
 
 /* HTML */
 
-var fullOption;
 var viewOption;
+var treeOption;
 
 function selectDigi(mon) {
     selectedDigi.add(mon);
@@ -257,9 +257,6 @@ function deselectDigi(mon) {
     update();
     return selectedDigi;
 }
-
-
-/* HTML Element Handlers */
 
 function getBox(id) {
     return document.getElementById(id).children[1].children[0];
@@ -280,15 +277,48 @@ function hide() {
 }
 
 function chosen(trees) {
-    if (viewOption == "any") {
+    if (treeOption == 0) {
         return union(trees);
     }
-    else if (viewOption == "all") {
+    else if (treeOption == 1) {
         return intersect(trees);
     }
 }
 
 /* Initialization */
+
+function initOptions() {
+    var allOption = document.getElementById("allOption");
+    var onlyOption = document.getElementById("onlyOption");
+    var unionOption = document.getElementById("unionOption");
+    var intersectOption = document.getElementById("intersectOption");
+    addTapListener(allOption, function (e) {
+        allOption.classList.add("selected");
+        onlyOption.classList.remove("selected");
+        viewOption = 0;
+        update();
+    });
+    addTapListener(onlyOption, function (e) {
+        allOption.classList.remove("selected");
+        onlyOption.classList.add("selected");
+        viewOption = 1;
+        update();
+    });
+    addTapListener(unionOption, function (e) {
+        unionOption.classList.add("selected");
+        intersectOption.classList.remove("selected");
+        treeOption = 0;
+        update();
+    });
+    addTapListener(intersectOption, function (e) {
+        unionOption.classList.remove("selected");
+        intersectOption.classList.add("selected");
+        treeOption = 1;
+        update();
+    });
+    allOption.click();
+    unionOption.click();
+}
 
 function init() {
     Array.from(document.getElementsByClassName("evol")).forEach(function (evol) {
@@ -316,11 +346,11 @@ function init() {
         div.id = mon;
             var tribe = document.createElement("img");
             tribe.className = "tribe";
-            tribe.src = "tribe/" + digi[mon].tribe + ".png";
+            tribe.src = "img/tribe/" + digi[mon].tribe + ".png";
         div.appendChild(tribe);
             var img = document.createElement("img");
             img.className = "thumb";
-            img.src = "mon/" + mon + ".png";
+            img.src = "img/mon/" + mon + ".png";
         div.appendChild(img);
         if (digi[mon].dnas == 2) {
             var dnas = document.createElement("div");
@@ -335,33 +365,7 @@ function init() {
         getBox(digi[mon].evol).appendChild(div);
     });
 
-    var full = document.getElementById("full");
-    var any = document.getElementById("any");
-    var all = document.getElementById("all");
-    addTapListener(full, function (e) {
-        full.classList.add("selected");
-        any.classList.remove("selected");
-        all.classList.remove("selected");
-        fullOption = true;
-        update();
-    });
-    addTapListener(any, function (e) {
-        full.classList.remove("selected");
-        any.classList.add("selected");
-        all.classList.remove("selected");
-        fullOption = false;
-        viewOption = "any";
-        update();
-    });
-    addTapListener(all, function (e) {
-        full.classList.remove("selected");
-        any.classList.remove("selected");
-        all.classList.add("selected");
-        fullOption = false;
-        viewOption = "all";
-        update();
-    });
-    any.click();
+    initOptions();
 }
 
 init();

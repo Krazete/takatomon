@@ -52,7 +52,7 @@ function showmon(mon) {
         next(mon).forEach(showmon);
     });
     var img = document.createElement("img");
-    img.src = "../mon/" + mon + ".png";
+    img.src = "../img/mon/" + mon + ".png";
     img.alt = mon;
     div.appendChild(img);
     output.appendChild(div);
