@@ -2,7 +2,6 @@
 A digivolution chart viewer for Digimon Links.
 
 ## TODO
-- add "last modified"
 - add a cache reset button (window.location.reload(true))
 - add popup search button
   - with a search bar
