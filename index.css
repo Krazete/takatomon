@@ -69,6 +69,9 @@ body {
     color: #000;
     text-decoration: underline;
 }
+.view-option:hover {
+    text-decoration: underline;
+}
 
 .box-wrapper {
     overflow-x: scroll;
@@ -87,8 +90,8 @@ body {
     height: 64px;
     border: 1px solid #000;
     border-radius: 8px;
-    padding: 2px;
-    margin: 2px;
+    padding: 4px;
+    margin: 1px;
     display: inline-block;
     cursor: pointer;
 }
@@ -100,8 +103,8 @@ body {
 }
 
 .thumb {
-    border-radius: 8px;
-    margin-top: -20px;
+    border-radius: 6px;
+    margin: -20px;
 }
 #selection .mon .thumb {
     opacity: 1;

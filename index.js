@@ -285,6 +285,19 @@ function chosen(trees) {
     }
 }
 
+/* Search */
+
+function autocomplete() {
+    allDigi.forEach(function (mon) {
+        digi[mon].element.classList.add("hidden");
+        if (mon.includes(document.getElementById("search").value.toLowerCase())) {
+            digi[mon].element.classList.remove("hidden");
+        }
+    });
+}
+
+document.getElementById("search").addEventListener("input", autocomplete);
+
 /* Initialization */
 
 function initOptions() {
