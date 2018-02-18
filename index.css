@@ -104,7 +104,7 @@ body {
 
 .thumb {
     border-radius: 6px;
-    margin: -20px;
+    margin-top: -20px;
 }
 #selection .mon .thumb {
     opacity: 1;
@@ -140,7 +140,7 @@ body {
     font-size: 10px;
     position: relative;
     border-radius: 4px;
-    margin-top: -12px;
+    margin-top: -13px;
     z-index: 1;
 }
 
