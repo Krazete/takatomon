@@ -41,11 +41,11 @@ A digivolution chart viewer for Digimon Links.
     - maybe
 
 ## Data Credits
-/u/ChasingRaccoons - Growlmon
+- /u/ChasingRaccoons - Growlmon
 
 ## Idea Credits
-bro - Initial Idea; Skill Variety
-/u/dinwitt - Search Box
-/u/JudgemasterCid - Mutant Digivolution
-/u/tyger249 - Tribe
-/u/mviper13 - Fragment-Based Search
+- bro - Initial Idea; Skill Variety
+- /u/dinwitt - Search Box
+- /u/JudgemasterCid - Mutant Digivolution
+- /u/tyger249 - Tribe
+- /u/mviper13 - Fragment-Based Search
