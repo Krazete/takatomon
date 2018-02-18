@@ -283,10 +283,14 @@ function chosen(trees) {
 var search = document.getElementById("search");
 
 function autocomplete() {
-    linelayer.innerHTML = "";
+    search.value = search.value.toLowerCase().replace(/\W/g, "");
+    var query = search.value;
+    if (query != "") {
+        linelayer.innerHTML = "";
+    }
     allDigi.forEach(function (mon) {
         digi[mon].element.classList.add("hidden");
-        if (mon.includes(search.value.toLowerCase())) {
+        if (mon.includes(query)) {
             digi[mon].element.classList.remove("hidden");
         }
     });

@@ -45,6 +45,10 @@ body {
     );
 }
 
+#search {
+    font-size: 12pt;
+}
+
 .evol {
     background: #fff8;
     width: max-content;
@@ -63,7 +67,7 @@ body {
     color: #888;
     text-transform: uppercase;
     cursor: pointer;
-    padding: 0px 8px;
+    padding: 0px 4px;
 }
 .view-option.selected {
     color: #000;
