@@ -5,7 +5,12 @@ body {
     height: 100%;
     font-family: "Trebuchet MS", "Helvetica", "Arial", sans-serif;
     text-align: center;
-    margin: 0px 0px 64px 0px;
+    margin: 0px;
+}
+body:after {
+    content: "";
+    display: block;
+    height: 64px;
 }
 
 .category {
