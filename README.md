@@ -18,6 +18,7 @@ A digivolution chart viewer for Digimon Links.
   - on second thought, color-coding will render this redundant
 - add a credits section (for data and ideas)
 - use image parser to allow fragment-based search
+- add an about/info/inquiry icon linking to this repo
 
 ## DONT
 - minify code
