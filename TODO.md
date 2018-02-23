@@ -1,11 +1,14 @@
 # TODO
+- rename classes and ids more appropriately
+- fix search box lag on mobile
+- fix selection box scroll
+- fix "export to growlmon" button
+  - add a warning before opening >10 pages
+  - doesn't work at all on mobile for >1 pages
 - add filters
   - for tribes
   - for dna forks
   - for dna pre-forks
-- fix "export to growlmon" button
-  - add a warning before opening >10 pages
-  - doesn't work at all on mobile for >1 pages
 - untangle lines
 - color-code selected digimon
   - allows showing ANY and ALL options simultaneously

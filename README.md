@@ -1,7 +1,7 @@
 # Takatomon
 A digivolution chart viewer for Digimon Links.
 
-<img alt="hina" src="img/hina/mirage.png" align="left">
+<img alt="hina" src="img/hina/mirage.png" align="right">
 
 ## Data Credits
 - Bandai Namco - Digimon Links
