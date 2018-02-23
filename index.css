@@ -1,27 +1,25 @@
 body {
     background: #000;
-    position: absolute;
+    font-family: "Trebuchet MS", "Helvetica", "Arial", sans-serif;
     width: 100%;
     height: 100%;
-    font-family: "Trebuchet MS", "Helvetica", "Arial", sans-serif;
-    text-align: center;
     margin: 0px;
 }
-body:after {
+body:after { /* bottom-padding for mobile */
     content: "";
-    display: block;
     height: 64px;
+    display: block;
 }
 
 .category {
-    border-radius: 4px;
     box-shadow: inset 0px 0px 8px #000;
-    padding: 2px 4px;
+    border-radius: 4px;
+    padding: 4px;
     margin: 2px;
 }
 #selection {
     background: #fff;
-    border-radius:  16px 16px 4px 4px;
+    text-align: center;
 }
 #in-training-i {
     background: linear-gradient(#7ef, #4ac);
@@ -33,13 +31,13 @@ body:after {
     background: linear-gradient(#b50, #310);
 }
 #champion {
-    background: linear-gradient(#fff, #666);
+    background: linear-gradient(#eee, #666);
 }
 #ultimate {
     background: linear-gradient(#ff4, #c90);
 }
 #mega {
-    background: linear-gradient(to bottom left,
+    background: linear-gradient(to top right,
         #f00,
         #ff0,
         #0f0,
@@ -50,107 +48,99 @@ body:after {
     );
 }
 
-#search {
-    font-size: 12pt;
-}
-
 .evol {
     background: #fff8;
-    width: max-content;
     font-size: 20px;
     font-weight: bold;
-    border-radius: 0 0 25% 25%;
-    margin: auto;
     cursor: pointer;
-}
-#selection .evol {
-    background: initial;
-    width: initial;
-    cursor: initial;
-}
-.view-option {
-    color: #888;
-    text-transform: uppercase;
-    cursor: pointer;
+    width: max-content;
+    border-radius: 4px;
     padding: 0px 4px;
-}
-.view-option.selected {
-    color: #000;
-    text-decoration: underline;
-}
-.view-option:hover {
-    text-decoration: underline;
+    margin: auto;
 }
 
 .box-wrapper {
     overflow-x: scroll;
-    overflow-y: visible;
+    overflow-y: hidden;
 }
 
 .box {
-    min-height: 80px; /* 96px */
+    height: 76px; /* based on .mon height + padding + border + margin */
     width: max-content;
     margin: auto;
 }
 
 .mon {
     background: #048;
+    vertical-align: bottom;
+    cursor: pointer;
     width: 64px;
     height: 64px;
     border: 1px solid #000;
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 4px;
     margin: 1px;
     display: inline-block;
-    cursor: pointer;
 }
-.mon.leaf {
-    background: #fff;
+.mon, #selection .mon:hover { /* TODO: move to special zone below */
+    opacity: 0.75;
 }
-.mon.hidden {
-    display: none;
+.mon:hover, #selection .mon {
+    opacity: 1;
+}
+.mon.root, .mon.leaf {
+    opacity: 1;
 }
 
 .thumb {
-    border-radius: 6px;
-    margin-top: -20px;
-}
-#selection .mon .thumb {
-    opacity: 1;
-}
-#selection .mon:hover .thumb {
-    opacity: 0.5;
-}
-.mon .thumb {
-    opacity: 0.5;
-}
-.mon:hover .thumb {
-    opacity: 1;
-}
-.mon.root .thumb {
-    opacity: 1;
-}
-.mon.leaf .thumb {
-    opacity: 1;
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    display: block;
 }
 
 .tribe {
-    position: relative;
     width: 16px;
     height: 16px;
-    border-radius: 8px;
-    margin-right: 100%;
-    z-index: 1;
+    border-radius: 8px; /* TODO: put circles as their own class */
+    margin: -66px 2px 66px -2px;
+    display: block;
 }
 
-.dnas {
-    background: black;
+.nametag {
+    background: #000a;
     color: white;
+    font-family: "Arial Narrow", Arial, sans-serif;
+    font-size: 10px;
+    text-align: center;
+    position: relative;
+    height: 12px;
+    border-radius: 0px 0px 8px 8px;
+    margin: -24px -4px 0px -4px;
+}
+.hiddenspace {
+    visibility: hidden;
+}
+
+.skills {
+    background: #000;
+    color: #fff;
     font-size: 10px;
     position: relative;
     border-radius: 4px;
-    margin-top: -13px;
-    z-index: 1;
+    padding: 2px;
+    margin-top: 2px;
+}
+
+.icon {
+    width: 12px;
+    height: 12px;
+    border-radius: 6px;
+    margin-bottom: -2px; /* TODO: find a better way to fix this */
+}
+
+.tier {
+    float: right;
 }
 
 #linelayer {
@@ -159,4 +149,134 @@ body:after {
     top: 0;
     overflow: visible;
     pointer-events: none;
+}
+
+/* special */
+#mega .box {
+    height: 111px;
+}
+.mon.leaf {
+    background: #fff;
+}
+.mon.hidden {
+    display: none;
+}
+
+/* within #selection */
+.boxxy {
+    width: 40px;
+}
+.left {
+    float: left;
+}
+.right {
+    float: right;
+}
+
+.buttonthing {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    box-shadow: inset 0px 0px 4px #000;
+    cursor: pointer;
+    display: block;
+    margin: 4px;
+}
+.buttonthing img {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+}
+
+#viewOption .buttonicon {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #000;
+    border-radius: 50%;
+    transform: translate(3px, 3px);
+}
+#viewOption .buttonicon:after {
+    content: "";
+    width: 20px;
+    height: 20px;
+    background: #000;
+    border-radius: 50%;
+    margin: 2px;
+    display: block;
+}
+#viewOption.selected .buttonicon:after {
+    width: 8px;
+    height: 8px;
+    margin: 8px;
+}
+
+#treeOption .buttonicon {
+    width: 12px;
+    height: 20px;
+    border-radius: 50%;
+    background: #000;
+    transform: translate(10px, 6px);
+}
+#treeOption .buttonicon:before {
+    content: "";
+    width: 20px;
+    height: 20px;
+    border: 1px solid #000;
+    border-radius: 50%;
+    background: #000;
+    margin: 0px 0px 0px -9px;
+    transform: translate(0px, -1px);
+    display: block;
+}
+#treeOption .buttonicon:after {
+    content: "";
+    width: 20px;
+    height: 20px;
+    border: 1px solid #000;
+    border-radius: 50%;
+    background: #000;
+    margin: -23px 0px 0px -1px;
+    display: block;
+}
+#treeOption.selected .buttonicon:before {
+    background: initial;
+}
+#treeOption.selected .buttonicon:after {
+    background: initial;
+}
+
+
+
+
+
+
+#focus {
+    background: #fff;
+    border: 1px solid #000;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+}
+#focus:after {
+    content: "";
+    background: #000;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: block;
+}
+
+
+#selection .box-wrapper {
+    border: solid #000;
+    border-width: 0px 2px;
+    border-radius: 16px;
+}
+
+#search {
+    font-size: 12pt;
+    border: 1px solid #000;
+    border-radius: 4px;
+    padding: 4px;
+    width: 50%;
 }

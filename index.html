@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-108437510-2"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'UA-108437510-2');
+	</script>
+
 	<meta charset="utf-8">
 	<meta name="google" content="notranslate">
 	<meta name="viewport" content="width=device-width, initial-scale=0.85">
@@ -9,13 +18,27 @@
 </head>
 <body>
 	<div class="category" id="selection">
-		<div class="evol">
-			View Mode: (<span class="view-option" id="allOption">all</span>|<span class="view-option" id="onlyOption">tree</span>)
-			Tree Mode: (<span class="view-option" id="unionOption">union</span>|<span class="view-option" id="intersectOption">intersection</span>)
-		</div>
-		<div class="box-wrapper">
-			<input type="text" placeholder="Search Digimon" id="search"></input>
-			<div class="box"></div>
+		<input type="text" placeholder="Search Digimon" id="search"></input>
+		<div>
+			<div class="left boxxy">
+				<div class="buttonthing" id="viewOption">
+					<div class="buttonicon"></div>
+				</div>
+				<div class="buttonthing" id="treeOption">
+					<div class="buttonicon"></div>
+				</div>
+			</div>
+			<div class="right boxxy">
+				<a href="https://github.com/Krazete/takatomon" target="_blank" class="buttonthing" id="github">
+					<img src="img/icons/github.png" alt="github" class="icon-thing">
+				</a>
+				<div class="buttonthing" id="growlmon-net">
+					<img src="img/icons/growlmon.png" alt="export-to-growlmon-net" class="icon-thing">
+				</div>
+			</div>
+			<div class="box-wrapper">
+				<div class="box"></div>
+			</div>
 		</div>
 	</div>
 	<div class="category" id="in-training-i">
