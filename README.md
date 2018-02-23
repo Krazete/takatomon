@@ -1,6 +1,9 @@
 # Takatomon
 A digivolution chart viewer for Digimon Links.
 
+| ![growlmon](https://raw.githubusercontent.com/Krazete/takatomon/master/img/mon/growlmon.png) | test |
+| --- | --- |
+
 ## TODO
 - add popup search button
   - with a search bar
