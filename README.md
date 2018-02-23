@@ -1,8 +1,7 @@
 # Takatomon
 A digivolution chart viewer for Digimon Links.
 
-| ![hina](https://raw.githubusercontent.com/Krazete/takatomon/master/img/hina/abyss.png) | test |
-| --- | --- |
+<img alt="hina" src="img/hina/mirage.png" align="left">
 
 ## Data Credits
 - Bandai Namco - Digimon Links
