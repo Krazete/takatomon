@@ -26,3 +26,5 @@
 - display too much information about digimon
   - cluttered is never a good look
   - iframes suck
+- mouseover events (besides opacity)
+  - should provide same experience on mobile as on desktop
