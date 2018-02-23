@@ -5,49 +5,44 @@ A digivolution chart viewer for Digimon Links.
 | --- | --- |
 
 ## TODO
-- add popup search button
-  - with a search bar
-  - and tribe filtering
-  - and dna fork filtering
-- add "export to growlmon" button
-  - will open the growlmon page for each selected digimon
+- add filters
+  - for tribes
+  - for dna forks
+  - for dna pre-forks
+- fix "export to growlmon" button
+  - add a warning before opening >10 pages
+  - doesn't work at all on mobile for >1 pages
 - untangle lines
 - color-code selected digimon
   - allows showing ANY and ALL options simultaneously
-  - would need to figure out color randomization that avoids similarity (true-color similarity and color-blind similarity)
-- ~~add buttons to each selected digimon icon~~
-  - ~~separate icon from deselect button~~
-  - ~~add opacity toggle~~
-  - on second thought, color-coding will render this redundant
-- add a credits section (for data and ideas)
+  - would need to figure out color randomization that avoids similarity
+    - would maybe need to study hue discrimination
 - use image parser to allow fragment-based search
-- add an about/info/inquiry icon linking to this repo
 
 ## DONT
-- minify code
-  - i prefer readability
-- combine code
-  - i want portability
+- minify code (readability is preferred)
+- combine code (portability/modularity is preferred)
   - keep the tree file simple
-    - don't "compile" it, load branches etc. dynamically
-    - should be able to easily make and input some other tree file
+    - don't "compile" it; just load branches etc. dynamically
+    - should be able to make and input some other tree file
 - store trees in cookies
   - it's fast enough as is
     - even the memoization wasn't necessary
   - i don't like random things saved on my computer
-    - so avoid doing it to others
 - display too much information about digimon
+  - cluttered is never a good look
   - iframes suck
-  - i don't want to take too much traffic away from growlmon
-  - a comparison popup would be too big on mobile
-    - maybe
 
 ## Data Credits
 - /u/ChasingRaccoons - Growlmon
 
 ## Idea Credits
-- bro - Initial Idea; Skill Variety
+- bro - Initial Concept, DNA Fork Labels
 - /u/dinwitt - Search Box
-- /u/JudgemasterCid - Mutant Digivolution
-- /u/tyger249 - Tribe
+- /u/tyger249 - Tribe Labels, Name Labels
+
+not yet implemented:
+- /u/JudgemasterCid - Mutant Digivolution Addition
 - /u/mviper13 - Fragment-Based Search
+- /u/tyger249 - Save Feature
+- /u/gashunum - DNA Fork Checkability Labels
