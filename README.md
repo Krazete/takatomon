@@ -1,14 +1,16 @@
 # Takatomon
 A digivolution chart viewer for Digimon Links.
 
-| ![dorumon](https://raw.githubusercontent.com/Krazete/takatomon/master/img/mon/dorumon.png) | test |
+| ![hina](https://raw.githubusercontent.com/Krazete/takatomon/master/img/hina/abyss.png) | FAQ |
 | --- | --- |
+| test | test |
 
 ## Data Credits
-- /u/ChasingRaccoons - Growlmon
+- Bandai Namco - Digimon Links
+- /u/ChasingRaccoons - Growlmon.net
 
 ## Idea Credits
-- bro - Initial Concept, DNA Fork Labels
+- Brother - Initial Concept, DNA Fork Labels
 - /u/dinwitt - Search Box
 - /u/tyger249 - Tribe Labels, Name Labels
 
