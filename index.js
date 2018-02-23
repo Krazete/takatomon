@@ -138,6 +138,9 @@ function intersect(trees) {
 /* Tree Visualization */
 
 function update() {
+    if (search.value) {
+        return;
+    }
     var selection = getBox("selection");
     selection.innerHTML = "";
     if (selectedDigi.size == 0) {
@@ -164,7 +167,6 @@ function update() {
         var chosenTree = chosen(trees);
         drawTree(chosenTree);
     }
-    search.value = "";
 }
 
 function drawTree(tree) {
@@ -183,7 +185,7 @@ function drawLeaves(tree) {
         else if (tree.leaves.has(mon)) {
             digi[mon].element.classList.add("leaf");
         }
-        else if (viewOption){
+        else if (viewOptionSelected){
             digi[mon].element.classList.add("hidden");
         }
     });
@@ -236,8 +238,8 @@ function drawBranch(branch, p, k) {
 
 /* HTML */
 
-var viewOption;
-var treeOption;
+var viewOptionSelected;
+var treeOptionSelected;
 
 function selectDigi(mon) {
     selectedDigi.add(mon);
@@ -270,68 +272,121 @@ function hide() {
 }
 
 function chosen(trees) {
-    if (treeOption == 0) {
+    if (treeOptionSelected == 0) {
         return union(trees);
     }
-    else if (treeOption == 1) {
+    else if (treeOptionSelected == 1) {
         return intersect(trees);
-    }
-}
-
-/* Search */
-
-var search = document.getElementById("search");
-
-function autocomplete() {
-    search.value = search.value.toLowerCase().replace(/\W/g, "");
-    var query = search.value;
-    if (query != "") {
-        linelayer.innerHTML = "";
-        allDigi.forEach(function (mon) {
-            digi[mon].element.classList.add("hidden");
-            if (mon.includes(query)) {
-                digi[mon].element.classList.remove("hidden");
-            }
-        });
-    }
-    else {
-        update();
     }
 }
 
 /* Initialization */
 
+function initMons() {
+    var mons = Object.keys(digi); // sorting is done in growlmon.js
+    mons.forEach(function (mon) {
+        var div = document.createElement("div");
+        div.className = "mon";
+        div.id = mon;
+        var img = document.createElement("img");
+            img.className = "thumb";
+            img.src = "img/mon/" + mon + ".png";
+            div.appendChild(img);
+        var tribe = document.createElement("img");
+            tribe.className = "tribe";
+            tribe.src = "img/tribe/" + digi[mon].tribe + ".png";
+            tribe.alt = digi[mon].tribe;
+            div.appendChild(tribe);
+        var nametag = document.createElement("div");
+            nametag.className = "nametag";
+            nametag.innerHTML = mon; // instead of digi[mon].name due to space
+            div.appendChild(nametag);
+        var skills = document.createElement("div");
+            skills.className = "skills";
+            digi[mon].skills.forEach(function (skill) {
+                if (skill.length > 0) {
+                    var dna = document.createElement("div");
+                        var skilltribe = document.createElement("img");
+                            skilltribe.className = "icon";
+                            skilltribe.src = "img/tribe/" + skill[0] + ".png";
+                            skilltribe.alt = skill[0];
+                            dna.appendChild(skilltribe);
+                        var skilltype = document.createElement("span");
+                            skilltype.innerHTML = ["Support", "Single", "AoE"][skill[1]];
+                            dna.appendChild(skilltype);
+                            skills.appendChild(dna);
+                        var tier = document.createElement("span");
+                            tier.className = "tier";
+                            tier.innerHTML = skill[2] ? ("[" + skill[2] + "]") : "";
+                            dna.appendChild(tier);
+                }
+            });
+            div.appendChild(skills);
+        addTapListener(div, function (e) {
+            search.value = "";
+            selectDigi(this.id);
+        });
+        digi[mon].element = div;
+        getBox(digi[mon].evol).appendChild(div);
+    });
+}
+
 function initOptions() {
-    var allOption = document.getElementById("allOption");
-    var onlyOption = document.getElementById("onlyOption");
-    var unionOption = document.getElementById("unionOption");
-    var intersectOption = document.getElementById("intersectOption");
-    addTapListener(allOption, function (e) {
-        allOption.classList.add("selected");
-        onlyOption.classList.remove("selected");
-        viewOption = 0;
+    var viewOption = document.getElementById("viewOption");
+    var treeOption = document.getElementById("treeOption");
+    addTapListener(viewOption, function (e) {
+        if (viewOptionSelected) {
+            viewOption.classList.remove("selected");
+            viewOptionSelected = 0;
+        }
+        else {
+            viewOption.classList.add("selected");
+            viewOptionSelected = 1;
+        }
         update();
     });
-    addTapListener(onlyOption, function (e) {
-        allOption.classList.remove("selected");
-        onlyOption.classList.add("selected");
-        viewOption = 1;
+    addTapListener(treeOption, function (e) {
+        if (treeOptionSelected) {
+            treeOption.classList.remove("selected");
+            treeOptionSelected = 0;
+        }
+        else {
+            treeOption.classList.add("selected");
+            treeOptionSelected = 1;
+        }
         update();
     });
-    addTapListener(unionOption, function (e) {
-        unionOption.classList.add("selected");
-        intersectOption.classList.remove("selected");
-        treeOption = 0;
-        update();
+    viewOption.click();
+    treeOption.click();
+}
+
+function initSearch() {
+    var search = document.getElementById("search");
+    search.addEventListener("input", function (e) {
+        search.value = search.value.toLowerCase().replace(/\s/g, "");
+        if (search.value != "") {
+            linelayer.innerHTML = "";
+            allDigi.forEach(function (mon) {
+                digi[mon].element.classList.add("hidden");
+                if (digi[mon].element.innerText.toLowerCase().includes(search.value)) {
+                    digi[mon].element.classList.remove("hidden");
+                }
+            });
+        }
+        else {
+            update();
+        }
     });
-    addTapListener(intersectOption, function (e) {
-        unionOption.classList.remove("selected");
-        intersectOption.classList.add("selected");
-        treeOption = 1;
-        update();
+}
+
+function initGrowlmon() {
+    var growlmon = document.getElementById("growlmon-net");
+    var net = "https://growlmon.net/digimon/"
+    addTapListener(growlmon, function (e) {
+        selectedDigi.forEach(function (mon) {
+            open(net + mon);
+        });
     });
-    allOption.click();
-    unionOption.click();
 }
 
 function init() {
@@ -348,39 +403,14 @@ function init() {
     });
 
     Array.from(document.getElementsByClassName("box-wrapper")).forEach(function (boxWrapper) {
-        boxWrapper.addEventListener("scroll", function (e) {
-            update();
-        });
+        boxWrapper.addEventListener("scroll", update);
     });
+    window.addEventListener("resize", update);
 
-    var mons = Object.keys(digi).sort(); // sort is redundant, but just in case
-    mons.forEach(function (mon) {
-        var div = document.createElement("div");
-        div.className = "mon";
-        div.id = mon;
-            var tribe = document.createElement("img");
-            tribe.className = "tribe";
-            tribe.src = "img/tribe/" + digi[mon].tribe + ".png";
-        div.appendChild(tribe);
-            var img = document.createElement("img");
-            img.className = "thumb";
-            img.src = "img/mon/" + mon + ".png";
-        div.appendChild(img);
-        if (digi[mon].dnas == 2) {
-            var dnas = document.createElement("div");
-            dnas.className = "dnas";
-            dnas.innerHTML = digi[mon].dnas + " skills";
-            div.appendChild(dnas);
-        }
-        addTapListener(div, function (mouse) {
-            selectDigi(this.id);
-        });
-        digi[mon].element = div;
-        getBox(digi[mon].evol).appendChild(div);
-    });
-
+    initMons();
     initOptions();
-    search.addEventListener("input", autocomplete);
+    initSearch();
+    initGrowlmon();
 }
 
 init();
