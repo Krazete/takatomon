@@ -5,11 +5,12 @@ A digivolution chart viewer for Digimon Links.
 
 ## Data Credits
 - Bandai Namco - Digimon Links
-- /u/ChasingRaccoons - Growlmon.net
+- /u/ChasingRaccoons - Growlmon
 
 ## Idea Credits
 - Brother - Initial Concept, DNA Fork Labels
 - /u/dinwitt - Search Box
+- /u/mviper13 - Link to Growlmon
 - /u/tyger249 - Tribe Labels, Name Labels
 
 not yet implemented:
