@@ -2,6 +2,7 @@
 - rename classes and ids more appropriately
 - fix search box lag on mobile
 - fix selection box scroll
+- fix github button's target_blank problem
 - fix "export to growlmon" button
   - add a warning before opening >10 pages
   - doesn't work at all on mobile for >1 pages
