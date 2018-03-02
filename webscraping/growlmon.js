@@ -1,5 +1,13 @@
 /* run on http://growlmon.net/digivolvetree */
 
+/* Messages */
+function warning(message) {
+    console.log("%cWARNING: " + message, "background: #ff08; padding: 3px 13px;");
+}
+function error(message) {
+    console.log("%cERROR: " + message, "background: #f008; padding: 3px 13px;");
+}
+
 /* Tribe Labels (for getDigimonInfo and getTribeImages) */
 function tribeFromSrc(src) {
     var index = src.match(/(\d+).png/)[1];
@@ -17,7 +25,7 @@ function skillTribe(src) {
 }
 function skillType(mon, text) {
     var lower = text.toLowerCase();
-    if (lower.includes("all enem") || mon.name == "omegamon-x") {
+    if (lower.includes("all enem") || mon.name == "omegamon-x") { // delete omegamon-x condition when he arrives
         return 2;
     }
     else if (lower.includes("single enem") || lower.includes("no signature")) {
@@ -27,7 +35,7 @@ function skillType(mon, text) {
         return 0;
     }
     else {
-        console.log("Warning: No skill type found for " + mon.name + ".");
+        warning("No skill type found for " + mon.name + ".");
         return -1;
     }
 }
@@ -35,27 +43,31 @@ function skillTier(mon, type, tables) {
     var table = tables[tables.length - 1];
     if (table) {
         var cells = table.rows[(type + 2) % 3].cells;
-        return cells[cells.length - 1].innerText;
+        var tier = cells[cells.length - 1].innerText;
+        if (!tier.toLowerCase().includes("digi")) {
+            return tier;
+        }
     }
-    else {
-        console.log("Warning: No skill tier found for " + mon.name + ".");
-        return "";
-    }
+    warning("No skill tier found for " + mon.name + ".");
+    return "";
 }
 function skillset(mon, content, released) {
     var skills = [];
     for (var i = 1; i < 3; i++) {
         var id = "#move" + i + "box";
         if (content.querySelector(id)) {
+            var skill = [];
             var tribe = skillTribe(content.querySelectorAll(id + " .movedesc td > *")[0].src);
+            skill.push(tribe);
             var type = skillType(mon, content.querySelectorAll(id + " .movedesc td > *")[1].innerHTML);
+            skill.push(type);
             if (mon.evol == "mega" && released && mon.name != "lucemon-sm") {
                 var tier = skillTier(mon, type, content.querySelectorAll("table"));
-                skills.push([tribe, type, tier]);
+                if (tier != "") {
+                    skill.push(tier);
+                }
             }
-            else {
-                skills.push([tribe, type]);
-            }
+            skills.push(skill);
         }
     }
     return skills;
@@ -100,11 +112,16 @@ function getDigimonInfo() {
         var xhr = new XMLHttpRequest();
         xhr.open("GET", "http://growlmon.net/digimon/" + mon.name, true);
         xhr.onload = function () {
-            var content = document.createElement("div");
-            content.innerHTML = this.response;
-            digi[mon.name] = newDigimon(mon, content);
+            if (this.readyState == 4 && this.status == 200) {
+                var content = document.createElement("div");
+                content.innerHTML = this.response;
+                digi[mon.name] = newDigimon(mon, content);
+                console.log("Digimon [" + mon.name + "] has been successfully registered.");
+            }
+            else {
+                error("Digimon [" + mon.name + "] could not be registered.")
+            }
             monsRegistered.push(mon.name);
-            console.log("Digimon [" + mon.name + "] has been successfully registered.");
             if (mons.length == monsRegistered.length) {
                 digi["belphemon-rm"].dvol.push("belphemon-sm"); // delete if growlmon.net ever fixes this
                 var prettyJSON = "{\n\t" +
@@ -121,7 +138,7 @@ function getDigimonInfo() {
         };
         xhr.send();
     });
-} // put output into root folder
+} // add lavobomons and put output into root folder
 
 /* Digimon Thumbnails */
 function getDigimonImages() {
@@ -139,7 +156,7 @@ function getDigimonImages() {
         a.setAttribute("download", mon.name);
         a.click();
     });
-} // resize to 64x64 and put into root/mon folder
+} // fix lavobomons and resize to 64x64 and put into root/mon folder
 
 /* Tribe Thumbnails */
 function getTribeImages() {
