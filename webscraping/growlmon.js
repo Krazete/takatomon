@@ -138,7 +138,7 @@ function getDigimonInfo() {
         };
         xhr.send();
     });
-} // add lavobomons, replace "obo" with "orvo," and put output into root folder
+} // add lavobomons, replace "obo" with "orvo," replace "garito" with "garita," and put output into root folder
 
 /* Digimon Thumbnails */
 function getDigimonImages() {
@@ -156,7 +156,7 @@ function getDigimonImages() {
         a.setAttribute("download", mon.name);
         a.click();
     });
-} // fix lavobomons, replace "obo" with "orvo," and resize to 64x64 and put into root/mon folder
+} // fix lavobomons, replace "obo" with "orvo," replace "garito" with "garita," and resize to 64x64 and put into root/mon folder
 
 /* Tribe Thumbnails */
 function getTribeImages() {
