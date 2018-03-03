@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "A digivolution chart viewer for Digimon Links.",
   "main": "main.js",
+  "dependencies": {
+    "express": "expressjs/express"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,7 +13,7 @@
     "type": "git",
     "url": "git+https://github.com/Krazete/takatomon.git"
   },
-  "keywords": [],
+  "keywords": ["digimon", "chart", "tree", "digimon-links", "digimon-linkz", "digivolution"],
   "author": "Ted Michael Celis",
   "license": "ISC",
   "bugs": {
