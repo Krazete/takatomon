@@ -123,7 +123,7 @@ function getDigimonInfo() {
             }
             monsRegistered.push(mon.name);
             if (mons.length == monsRegistered.length) {
-                digi["belphemon-rm"].dvol.push("belphemon-sm"); // delete if growlmon.net ever fixes this
+                digi["belphemon-rm"].dvol.push("belphemon-sm"); // delete if growlmon ever fixes this
                 var prettyJSON = "{\n\t" +
                     JSON.stringify(digi)
                     .slice(1, -2).split("},").sort().join("},\n\t")
@@ -138,7 +138,7 @@ function getDigimonInfo() {
         };
         xhr.send();
     });
-} // add lavobomons, replace "obo" with "orvo," replace "garito" with "garita," and put output into root folder
+} // add lavorvomon-spd-atk and put output into root folder
 
 /* Digimon Thumbnails */
 function getDigimonImages() {
@@ -156,7 +156,7 @@ function getDigimonImages() {
         a.setAttribute("download", mon.name);
         a.click();
     });
-} // fix lavobomons, replace "obo" with "orvo," replace "garito" with "garita," and resize to 64x64 and put into root/mon folder
+} // resize to 64x64 and put into root/mon folder
 
 /* Tribe Thumbnails */
 function getTribeImages() {
