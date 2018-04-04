@@ -65,7 +65,7 @@
 					<key>newName</key>
 					<string>mon</string>
 					<key>targetLocation</key>
-					<string>~/Downloads</string>
+					<string>~/Desktop</string>
 				</dict>
 				<key>BundleIdentifier</key>
 				<string>com.apple.Automator.MakeNewFolder</string>
@@ -581,26 +581,26 @@
 	</array>
 	<key>connectors</key>
 	<dict>
-		<key>0B208B52-AFA9-48E6-B5F2-1044D3E87394</key>
+		<key>04323171-9B1C-49E8-99F5-467E6A2BBE3A</key>
 		<dict>
 			<key>from</key>
 			<string>C0FE34EC-2E79-4BDE-A277-02BA3E2E573F - C0FE34EC-2E79-4BDE-A277-02BA3E2E573F</string>
 			<key>to</key>
 			<string>4214B132-4961-45EE-9099-E272F8F734BE - 4214B132-4961-45EE-9099-E272F8F734BE</string>
 		</dict>
-		<key>60184267-D395-4F21-B241-C79FA5366AF3</key>
-		<dict>
-			<key>from</key>
-			<string>4214B132-4961-45EE-9099-E272F8F734BE - 4214B132-4961-45EE-9099-E272F8F734BE</string>
-			<key>to</key>
-			<string>DF87D850-7D2B-4249-B3B9-47A0ECCA31A8 - DF87D850-7D2B-4249-B3B9-47A0ECCA31A8</string>
-		</dict>
-		<key>6AE0CBA8-B7B9-4168-98A6-E396CCB4151A</key>
+		<key>35873A19-B332-46EE-8DC4-909C02602554</key>
 		<dict>
 			<key>from</key>
 			<string>DF87D850-7D2B-4249-B3B9-47A0ECCA31A8 - DF87D850-7D2B-4249-B3B9-47A0ECCA31A8</string>
 			<key>to</key>
 			<string>812985A4-DA4F-4865-A1D1-733F21BE7532 - 812985A4-DA4F-4865-A1D1-733F21BE7532</string>
+		</dict>
+		<key>D12DE898-E064-4CA1-920A-DF261262714F</key>
+		<dict>
+			<key>from</key>
+			<string>4214B132-4961-45EE-9099-E272F8F734BE - 4214B132-4961-45EE-9099-E272F8F734BE</string>
+			<key>to</key>
+			<string>DF87D850-7D2B-4249-B3B9-47A0ECCA31A8 - DF87D850-7D2B-4249-B3B9-47A0ECCA31A8</string>
 		</dict>
 	</dict>
 	<key>variables</key>

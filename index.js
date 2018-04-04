@@ -290,7 +290,7 @@ function initMons() {
         div.id = mon;
         var img = document.createElement("img");
             img.className = "thumb";
-            img.src = "img/mon/" + mon + ".png";
+            img.src = "img/awkn0/" + mon + ".png";
             div.appendChild(img);
         var tribe = document.createElement("img");
             tribe.className = "tribe";

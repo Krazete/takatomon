@@ -141,7 +141,7 @@ function getDigimonInfo() {
 } // add lavorvomon-spd-atk and put output into root folder
 
 /* Digimon Thumbnails */
-function getDigimonImages() {
+function getDigimonImages(n) { // n = 2 returns nothing; +1 images == +2 images
     var mons = Array.from(document.getElementsByClassName("blockListEl")).map(function (blockListEl) {
         return {
             "name": blockListEl.getElementsByTagName("a")[0].href.split("/")[4],
@@ -152,7 +152,7 @@ function getDigimonImages() {
     });
     mons.forEach(function (mon) {
         var a = document.createElement("a");
-        a.href = mon.src;
+        a.href = mon.src.replace(/-0/g, "-" + n);
         a.setAttribute("download", mon.name);
         a.click();
     });
