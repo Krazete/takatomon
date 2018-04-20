@@ -39,7 +39,7 @@ function skillType(mon, text) {
         return -1;
     }
 }
-function skillTier(mon, type, tables) {
+function skillTier(mon, type, tables) { /* NOTE: getting tier by using type as an identifier is erroneous (e.g. examon) */
     var table = tables[tables.length - 1];
     if (table) {
         var cells = table.rows[(type + 2) % 3].cells;

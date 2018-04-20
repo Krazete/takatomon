@@ -62,7 +62,7 @@ var digi = {
 	"ebemon": {"name": "Ebemon", "evol": "mega", "dvol": [], "tribe": "electric", "released": 1, "skills": [["electric", 1, "A"]]},
 	"elecmon": {"name": "Elecmon", "evol": "rookie", "dvol": ["garurumon", "leomon", "nanimon", "sukamon", "garurumon-black", "geremon"], "tribe": "electric", "released": 1, "skills": [["electric", 1]]},
 	"etemon": {"name": "Etemon", "evol": "ultimate", "dvol": ["metaletemon", "piedmon", "platinumnumemon", "kingetemon"], "tribe": "abyss", "released": 1, "skills": [["abyss", 1]]},
-	"examon": {"name": "Examon", "evol": "mega", "dvol": [], "tribe": "blazing", "released": 1, "skills": [["electric", 2, "A"], ["blazing", 2, "A"]]},
+	"examon": {"name": "Examon", "evol": "mega", "dvol": [], "tribe": "blazing", "released": 1, "skills": [["electric", 2, "SS"], ["blazing", 2, "A"]]},
 	"exveemon": {"name": "ExVeemon", "evol": "champion", "dvol": ["magnaangemon", "paildramon", "rizegreymon"], "tribe": "mirage", "released": 1, "skills": [["bright", 1]]},
 	"falcomon": {"name": "Falcomon", "evol": "rookie", "dvol": ["stingmon", "exveemon", "aquilamon", "peckmon"], "tribe": "mirage", "released": 1, "skills": [["earth", 1]]},
 	"flamedramon": {"name": "Flamedramon", "evol": "champion", "dvol": [], "tribe": "blazing", "released": 1, "skills": [["blazing", 1]]},
