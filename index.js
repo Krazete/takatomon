@@ -282,7 +282,7 @@ function chosen(trees) {
 
 /* Initialization */
 
-function initMons() {
+function initMons(AWKN) {
     var mons = Object.keys(digi); // sorting is done in growlmon.js
     mons.forEach(function (mon) {
         var div = document.createElement("div");
@@ -290,7 +290,7 @@ function initMons() {
         div.id = mon;
         var img = document.createElement("img");
             img.className = "thumb";
-            img.src = "img/awkn0/" + mon + ".png";
+            img.src = "img/awkn" + AWKN + "/" + mon + ".png";
             div.appendChild(img);
         var tribe = document.createElement("img");
             tribe.className = "tribe";
@@ -407,7 +407,15 @@ function init() {
     });
     window.addEventListener("resize", update);
 
-    initMons();
+    Array.from(document.getElementById("toolbar").children).forEach(function (child, i) {
+        addTapListener(child, function () {
+            Array.from(document.getElementsByClassName("thumb")).forEach(function (thumb) {
+                thumb.src = thumb.src.replace(/awkn\d+/, "awkn" + (i == 2 ? 1 : i));
+            });
+        });
+    });
+
+    initMons(0);
     initOptions();
     initSearch();
     initGrowlmon();

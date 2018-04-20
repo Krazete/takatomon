@@ -21,6 +21,9 @@ body:after { /* bottom-padding for mobile */
     background: #fff;
     text-align: center;
 }
+#toolbar {
+    background: #888;
+}
 #in-training-i {
     background: linear-gradient(#7ef, #4ac);
 }
@@ -62,6 +65,7 @@ body:after { /* bottom-padding for mobile */
 .box-wrapper {
     overflow-x: scroll;
     overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
 }
 
 .box {
@@ -249,7 +253,6 @@ body:after { /* bottom-padding for mobile */
 
 
 
-
 #focus {
     background: #fff;
     border: 1px solid #000;
@@ -279,4 +282,13 @@ body:after { /* bottom-padding for mobile */
     border-radius: 4px;
     padding: 4px;
     width: 50%;
+}
+
+
+
+
+
+.awkntest:hover {
+    text-decoration: underline;
+    cursor: pointer;
 }
