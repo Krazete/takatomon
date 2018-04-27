@@ -407,7 +407,7 @@ function init() {
     });
     window.addEventListener("resize", update);
 
-    Array.from(document.getElementById("toolbar").children).forEach(function (child, i) {
+    Array.from(document.getElementById("toolbar").getElementsByTagName("span")).forEach(function (child, i) {
         addTapListener(child, function () {
             Array.from(document.getElementsByClassName("thumb")).forEach(function (thumb) {
                 thumb.src = thumb.src.replace(/awkn\d+/, "awkn" + (i == 2 ? 1 : i));
