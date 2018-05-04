@@ -140,7 +140,7 @@ function getDigimonInfo() {
     });
 } // add lavorvomon-spd-atk and put output into root folder
 
-/* NOTE: THE FOLLOWING METHOD NO LONGER WORK. */
+/* NOTE: THE FOLLOWING METHODS NO LONGER WORK. */
 /* Using an autoclicker to rapidly download images must have been marked as a security flaw or something. :( */
 
 /* Digimon Thumbnails */
