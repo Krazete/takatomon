@@ -1,139 +1,125 @@
 /* DATA */
 
-/* Indices */
+/* Name Collections */
+
 var allDigi = new Set(Object.keys(digi));
 var selectedDigi = new Set();
 
-/* Digivolution Tree Navigator */
-function next(mon) {
-    return digi[mon].dvol;
-}
-function prev(mon) {
-    if (typeof(digi[mon].prev) == "undefined") { // memoization
-        var prevmons = [];
-        for (prevmon in digi) {
-            if (next(prevmon).includes(mon)) {
-                prevmons.push(prevmon);
+/* Tree Structure */
+
+function Tree(root) {
+    this.roots = new Set(); // allow multiple roots for Forest
+    this.leaves = new Set();
+    this.JSONbranches = new Set(); // store as JSON strings because identical arrays aren't equal
+    if (typeof root != "undefined") {
+        // pointers for initialization
+        var leaves = this.leaves;
+        var JSONbranches = this.JSONbranches;
+        // initialization
+        this.roots.add(root);
+        this.leaves.add(root);
+        function next(mon) {
+            return digi[mon].dvol;
+        }
+        function prev(mon) {
+            if (typeof(digi[mon].prev) == "undefined") { // memoization
+                var prevmons = [];
+                for (prevmon in digi) {
+                    if (next(prevmon).includes(mon)) {
+                        prevmons.push(prevmon);
+                    }
+                }
+                digi[mon].prev = prevmons;
+            }
+            return digi[mon].prev;
+        }
+        function init(mon, direction) {
+            if (direction < 1) {
+                for (var prevmon of prev(mon)) {
+                    leaves.add(prevmon);
+                    var branch = [prevmon, mon];
+                    var JSONbranch = JSON.stringify(branch);
+                    if (!JSONbranches.has(JSONbranch)) {
+                        JSONbranches.add(JSONbranch);
+                        init(prevmon, -1);
+                    }
+                }
+            }
+            if (direction > -1) {
+                for (var nextmon of next(mon)) {
+                    leaves.add(nextmon);
+                    var branch = [mon, nextmon];
+                    var JSONbranch = JSON.stringify(branch);
+                    if (!JSONbranches.has(JSONbranch)) {
+                        JSONbranches.add(JSONbranch);
+                        init(nextmon, 1);
+                    }
+                }
             }
         }
-        digi[mon].prev = prevmons;
-    }
-    return digi[mon].prev;
-}
-
-/* Tree Data Structure */
-
-function newTree() {
-    return {
-        "roots": new Set(),
-        "leaves": new Set(),
-        "branchesJSON": new Set(), // because an array isn't equal to itself
-        "forEachBranch": function (f) {
-            this.branchesJSON.forEach(function (branchJSON) { // TODO: maybe split branch variable into leaf0 and leaf1
-                var branch = JSON.parse(branchJSON);
-                f(branch, branchJSON); // TODO: remove branchJSON parameter if unneeded
-            });
-        }
-    };
-}
-
-function getBranchesJSON(branches, mon, direction) { // must pass branches to avoid infinite recursion
-    if (direction < 1) {
-        prev(mon).forEach(function (prevmon) {
-            var branch = [prevmon, mon];
-            var branchJSON = JSON.stringify(branch);
-            if (!branches.has(branchJSON)) {
-                branches.add(branchJSON);
-                getBranchesJSON(branches, prevmon, -1);
-            }
-        });
-    }
-    if (direction > -1) {
-        next(mon).forEach(function (nextmon) {
-            var branch = [mon, nextmon];
-            var branchJSON = JSON.stringify(branch);
-            if (!branches.has(branchJSON)) {
-                branches.add(branchJSON);
-                getBranchesJSON(branches, nextmon, 1);
-            }
-        });
+        init(root, 0);
     }
 }
-
-function memoize(obj, init) {
-    if (typeof(obj) == "undefined") {
-        init(obj);
+Tree.prototype.forEachBranch = function (f) {
+    for (var JSONbranch of this.JSONbranches) {
+        var branch = JSON.parse(JSONbranch);
+        f(branch, JSONbranch);
     }
-    return obj;
-}
-
+};
 function getTree(mon) {
     if (typeof(digi[mon].tree) == "undefined") { // memoization
-        var tree = newTree();
-        tree.roots.add(mon);
-        getBranchesJSON(tree.branchesJSON, mon, 0);
-        tree.forEachBranch(function (branch, branchJSON) {
-            tree.leaves.add(branch[0]);
-            tree.leaves.add(branch[1]);
-        });
-        digi[mon].tree = tree;
+        digi[mon].tree = new Tree(mon);
     }
     return digi[mon].tree;
 }
 
-function union(trees) {
-    var unionTree = newTree();
-    trees.forEach(function (tree) {
-        tree.roots.forEach(function (root) {
+/* Tree Collection */
+
+function Forest(roots) {
+    this.trees = new Set();
+    for (root of roots) {
+        var tree = getTree(root);
+        this.trees.add(tree);
+    }
+}
+Forest.prototype.union = function () {
+    var unionTree = new Tree();
+    for (var tree of this.trees) {
+        for (var root of tree.roots) { // should only have one root
             unionTree.roots.add(root);
-        });
-        tree.forEachBranch(function (branch, branchJSON) {
+        }
+        tree.forEachBranch(function (branch, JSONbranch) {
             unionTree.leaves.add(branch[0]);
             unionTree.leaves.add(branch[1]);
-            unionTree.branchesJSON.add(branchJSON);
+            unionTree.JSONbranches.add(JSONbranch);
         });
-    });
+    }
     return unionTree;
-}
-
-function intersect(trees) {
-    var intersectTree = newTree();
-    intersectTree.leaves = new Set(allDigi);
-    trees.forEach(function (tree) {
-        tree.roots.forEach(function (root) {
-            intersectTree.roots.add(root);
-        });
-        intersectTree.leaves.forEach(function (leaf) {
-            if (!tree.leaves.has(leaf)) {
-                intersectTree.leaves.delete(leaf);
+};
+Forest.prototype.intersection = function () {
+    var intersectionTree = new Tree();
+    intersectionTree.leaves = new Set(allDigi);
+    for (var tree of this.trees) {
+        for (var root of tree.roots) { // should only have one root
+            intersectionTree.roots.add(root);
+        }
+    }
+    for (var tree of this.trees) {
+        for (var leaf of intersectionTree.leaves) {
+            if (!(tree.leaves.has(leaf) || intersectionTree.roots.has(leaf))) {
+                intersectionTree.leaves.delete(leaf);
+            }
+        }
+    }
+    for (var tree of this.trees) {
+        tree.forEachBranch(function (branch, JSONbranch) {
+            if (intersectionTree.leaves.has(branch[0]) && intersectionTree.leaves.has(branch[1])) {
+                intersectionTree.JSONbranches.add(JSONbranch);
             }
         });
-    });
-    // TODO: intermediate digimon??
-    trees.forEach(function (tree) {
-        tree.forEachBranch(function (branch, branchJSON) {
-            if (intersectTree.leaves.has(branch[0]) && intersectTree.leaves.has(branch[1])) {
-                intersectTree.branchesJSON.add(branchJSON);
-            }
-            if (intersectTree.roots.has(branch[0]) && intersectTree.leaves.has(branch[1])) { // TODO: combine with the above conditional
-                intersectTree.branchesJSON.add(branchJSON);
-            }
-            if (intersectTree.leaves.has(branch[0]) && intersectTree.roots.has(branch[1])) { // TODO: combine with the above conditional
-                intersectTree.branchesJSON.add(branchJSON);
-            }
-        });
-    });
-    return intersectTree;
-}
-
-
-
-
-
-
-
-
-
+    }
+    return intersectionTree;
+};
 
 /* Tree Visualization */
 
@@ -141,30 +127,27 @@ function update() {
     if (search.value) {
         return;
     }
-    var selection = getBox("selection");
+    var selection = getTrain("selection");
     selection.innerHTML = "";
     if (selectedDigi.size == 0) {
-        allDigi.forEach(function (mon) {
+        for (var mon of allDigi) {
             digi[mon].element.classList.remove("root");
             digi[mon].element.classList.remove("leaf");
             digi[mon].element.classList.remove("hidden");
-        });
+        }
         linelayer.innerHTML = "";
     }
     else {
-        var trees = [];
-        selectedDigi.forEach(function (mon) {
+        for (var mon of selectedDigi) {
             var clone = digi[mon].element.cloneNode(true);
-            clone.className = "mon";
+            clone.className = "mon"; // remove leaf and root class
             addTapListener(clone, function () {
                 deselectDigi(this.id);
             });
             selection.appendChild(clone);
-
-            var tree = getTree(mon);
-            trees.push(tree);
-        });
-        var chosenTree = chosen(trees);
+        }
+        var forest = new Forest(selectedDigi);
+        var chosenTree = forest[treeOptionSelected]();
         drawTree(chosenTree);
     }
 }
@@ -175,7 +158,7 @@ function drawTree(tree) {
 }
 
 function drawLeaves(tree) {
-    allDigi.forEach(function (mon) { // reset elements
+    for (var mon of allDigi) {
         digi[mon].element.classList.remove("root");
         digi[mon].element.classList.remove("leaf");
         digi[mon].element.classList.remove("hidden");
@@ -188,21 +171,10 @@ function drawLeaves(tree) {
         else if (viewOptionSelected){
             digi[mon].element.classList.add("hidden");
         }
-    });
+    }
 }
 
-function drawBranches(tree) {
-    linelayer.innerHTML = ""; // refresh linelayer
-    tree.forEachBranch(function (branch) {
-        drawBranch(branch, "#000", 4);
-    });
-    tree.forEachBranch(function (branch) {
-        drawBranch(branch, "#fff", 2);
-    });
-    linelayer.innerHTML += ""; // force update linelayer
-}
-
-function line(a, b, color, width) {
+function drawLine(a, b, color, width) {
     var path = document.createElement("path");
     path.setAttribute("d",
         "M" + a.x + "," + a.y +
@@ -219,7 +191,7 @@ function line(a, b, color, width) {
     linelayer.appendChild(path);
 }
 
-function drawBranch(branch, p, k) {
+function drawBranch(branch, color, width) {
     var a = digi[branch[0]].element;
     var b = digi[branch[1]].element;
     var aRect = a.getBoundingClientRect();
@@ -233,7 +205,18 @@ function drawBranch(branch, p, k) {
         "y": window.scrollY + bRect.top + 1
     };
     var linelayer = document.getElementById("linelayer");
-    line(aMid, bMid, p, k);
+    drawLine(aMid, bMid, color, width);
+}
+
+function drawBranches(tree) {
+    linelayer.innerHTML = ""; // refresh linelayer
+    tree.forEachBranch(function (branch) {
+        drawBranch(branch, "#000", 4);
+    });
+    tree.forEachBranch(function (branch) {
+        drawBranch(branch, "#fff", 2);
+    });
+    linelayer.innerHTML += ""; // force-update linelayer
 }
 
 /* HTML */
@@ -253,8 +236,8 @@ function deselectDigi(mon) {
     return selectedDigi;
 }
 
-function getBox(id) {
-    return document.getElementById(id).getElementsByClassName("box")[0];
+function getTrain(id) {
+    return document.getElementById(id).getElementsByClassName("train")[0];
 }
 
 function addTapListener(e, f) {
@@ -262,29 +245,11 @@ function addTapListener(e, f) {
     e.addEventListener("touchstart", function () {}); // dunno why this works, but enables responsiveness without unwanted clicks
 }
 
-function hide() {
-    var mons = Object.keys(digi);
-    mons.forEach(function (mon) {
-        if (!selection.includes(mon)) {
-            digi[mon].element.classList.add("hidden");
-        }
-    });
-}
-
-function chosen(trees) {
-    if (treeOptionSelected == 0) {
-        return union(trees);
-    }
-    else if (treeOptionSelected == 1) {
-        return intersect(trees);
-    }
-}
-
 /* Initialization */
 
 function initMons(AWKN) {
     var mons = Object.keys(digi); // sorting is done in growlmon.js
-    mons.forEach(function (mon) {
+    for (var mon of mons) {
         var div = document.createElement("div");
         div.className = "mon";
         div.id = mon;
@@ -299,11 +264,11 @@ function initMons(AWKN) {
             div.appendChild(tribe);
         var nametag = document.createElement("div");
             nametag.className = "nametag";
-            nametag.innerHTML = mon; // instead of digi[mon].name due to space
+            nametag.innerHTML = mon; // instead of digi[mon].name due to space constraint
             div.appendChild(nametag);
         var skills = document.createElement("div");
             skills.className = "skills";
-            digi[mon].skills.forEach(function (skill) {
+            for (var skill of digi[mon].skills) {
                 if (skill.length > 0) {
                     var dna = document.createElement("div");
                         var skilltribe = document.createElement("img");
@@ -320,39 +285,39 @@ function initMons(AWKN) {
                             tier.innerHTML = skill[2] ? ("[" + skill[2] + "]") : "";
                             dna.appendChild(tier);
                 }
-            });
+            }
             div.appendChild(skills);
-        addTapListener(div, function (e) {
+        addTapListener(div, function () {
             search.value = "";
             selectDigi(this.id);
         });
         digi[mon].element = div;
-        getBox(digi[mon].evol).appendChild(div);
-    });
+        getTrain(digi[mon].evol).appendChild(div);
+    }
 }
 
 function initOptions() {
     var viewOption = document.getElementById("viewOption");
     var treeOption = document.getElementById("treeOption");
-    addTapListener(viewOption, function (e) {
-        if (viewOptionSelected) {
-            viewOption.classList.remove("selected");
+    addTapListener(viewOption, function () {
+        if (this.classList.contains("selected")) {
+            this.classList.remove("selected");
             viewOptionSelected = 0;
         }
         else {
-            viewOption.classList.add("selected");
+            this.classList.add("selected");
             viewOptionSelected = 1;
         }
         update();
     });
-    addTapListener(treeOption, function (e) {
-        if (treeOptionSelected) {
-            treeOption.classList.remove("selected");
-            treeOptionSelected = 0;
+    addTapListener(treeOption, function () {
+        if (this.classList.contains("selected")) {
+            this.classList.remove("selected");
+            treeOptionSelected = "union";
         }
         else {
-            treeOption.classList.add("selected");
-            treeOptionSelected = 1;
+            this.classList.add("selected");
+            treeOptionSelected = "intersection";
         }
         update();
     });
@@ -366,12 +331,12 @@ function initSearch() {
         search.value = search.value.toLowerCase().replace(/\s/g, "");
         if (search.value != "") {
             linelayer.innerHTML = "";
-            allDigi.forEach(function (mon) {
+            for (var mon of allDigi) {
                 digi[mon].element.classList.add("hidden");
                 if (digi[mon].element.innerText.toLowerCase().includes(search.value)) {
                     digi[mon].element.classList.remove("hidden");
                 }
-            });
+            }
         }
         else {
             update();
@@ -382,39 +347,37 @@ function initSearch() {
 function initGrowlmon() {
     var growlmon = document.getElementById("growlmon-net");
     var net = "https://growlmon.net/digimon/"
-    addTapListener(growlmon, function (e) {
-        selectedDigi.forEach(function (mon) {
+    addTapListener(growlmon, function () {
+        for (var mon of selectedDigi) {
             open(net + mon);
-        });
+        }
     });
 }
 
 function init() {
-    Array.from(document.getElementsByClassName("evol")).forEach(function (evol) {
-        addTapListener(evol, function (e) {
+    for (var evol of document.getElementsByClassName("evol")) {
+        addTapListener(evol, function () {
             selectedDigi.clear();
-            Array.from(getBox(evol.parentElement.id).children).forEach(function (e) {
-                if (!e.classList.contains("hidden")) {
-                    selectedDigi.add(e.id);
+            for (var card of getTrain(this.parentElement.id).children) {
+                if (!card.classList.contains("hidden")) {
+                    selectedDigi.add(card.id);
                 }
-            });
+            }
             update();
         });
-    });
-
-    Array.from(document.getElementsByClassName("box-wrapper")).forEach(function (boxWrapper) {
-        boxWrapper.addEventListener("scroll", update);
-    });
+    }
+    for (var track of document.getElementsByClassName("track")) {
+        track.addEventListener("scroll", update);
+    }
     window.addEventListener("resize", update);
-
-    Array.from(document.getElementById("toolbar").getElementsByTagName("span")).forEach(function (child, i) {
+    for (var child of document.getElementById("toolbar").getElementsByTagName("span")) {
         addTapListener(child, function () {
-            Array.from(document.getElementsByClassName("thumb")).forEach(function (thumb) {
+            for (var thumb of document.getElementsByClassName("thumb")) {
+                var i = parseInt(this.innerHTML);
                 thumb.src = thumb.src.replace(/awkn\d+/, "awkn" + (i == 2 ? 1 : i));
-            });
+            }
         });
-    });
-
+    }
     initMons(0);
     initOptions();
     initSearch();

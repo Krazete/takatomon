@@ -62,13 +62,13 @@ body:after { /* bottom-padding for mobile */
     margin: auto;
 }
 
-.box-wrapper {
+.track {
     overflow-x: scroll;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
 }
 
-.box {
+.train {
     height: 76px; /* based on .mon height + padding + border + margin */
     width: max-content;
     margin: auto;
@@ -156,7 +156,7 @@ body:after { /* bottom-padding for mobile */
 }
 
 /* special */
-#mega .box {
+#mega .train {
     height: 111px;
 }
 .mon.leaf {
@@ -167,7 +167,7 @@ body:after { /* bottom-padding for mobile */
 }
 
 /* within #selection */
-.boxxy {
+.trainxy {
     width: 40px;
 }
 .left {
@@ -270,7 +270,7 @@ body:after { /* bottom-padding for mobile */
 }
 
 
-#selection .box-wrapper {
+#selection .track {
     border: solid #000;
     border-width: 0px 2px;
     border-radius: 16px;
