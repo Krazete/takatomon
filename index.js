@@ -19,7 +19,7 @@ function Tree(root) {
         this.roots.add(root);
         this.leaves.add(root);
         function next(mon) {
-            return digi[mon].dvol;
+            return digi[mon].next;
         }
         function prev(mon) {
             if (typeof(digi[mon].prev) == "undefined") { // memoization
@@ -140,7 +140,7 @@ function update() {
     else {
         for (var mon of selectedDigi) {
             var clone = digi[mon].element.cloneNode(true);
-            clone.className = "mon"; // remove leaf and root class
+            clone.className = "card"; // remove leaf and root class
             addTapListener(clone, function () {
                 deselectDigi(this.id);
             });
@@ -192,8 +192,8 @@ function drawLine(a, b, color, width) {
 }
 
 function drawBranch(branch, color, width) {
-    var a = digi[branch[0]].element;
-    var b = digi[branch[1]].element;
+    var a = digi[branch[0]].element.children[0];
+    var b = digi[branch[1]].element.children[0];
     var aRect = a.getBoundingClientRect();
     var bRect = b.getBoundingClientRect();
     var aMid = {
@@ -250,49 +250,50 @@ function addTapListener(e, f) {
 function initMons(AWKN) {
     var mons = Object.keys(digi); // sorting is done in growlmon.js
     for (var mon of mons) {
-        var div = document.createElement("div");
-        div.className = "mon";
-        div.id = mon;
-        var img = document.createElement("img");
-            img.className = "thumb";
-            img.src = "img/awkn" + AWKN + "/" + mon + ".png";
-            div.appendChild(img);
-        var tribe = document.createElement("img");
-            tribe.className = "tribe";
-            tribe.src = "img/tribe/" + digi[mon].tribe + ".png";
-            tribe.alt = digi[mon].tribe;
-            div.appendChild(tribe);
-        var nametag = document.createElement("div");
-            nametag.className = "nametag";
-            nametag.innerHTML = mon; // instead of digi[mon].name due to space constraint
-            div.appendChild(nametag);
+        var card = document.createElement("div");
+        card.className = "card";
+        card.id = mon;
+        var icon = document.createElement("div");
+            icon.className = "icon";
+            var img = document.createElement("img");
+                img.className = "thumb";
+                img.src = "img/awkn" + AWKN + "/" + mon + ".png";
+                icon.appendChild(img);
+            var tribe = document.createElement("img");
+                tribe.className = "tribe";
+                tribe.src = "img/tribe/" + digi[mon].tribe + ".png";
+                tribe.alt = digi[mon].tribe;
+                icon.appendChild(tribe);
+            var nametag = document.createElement("div");
+                nametag.className = "nametag";
+                nametag.innerHTML = digi[mon].name;
+                icon.appendChild(nametag);
+            card.appendChild(icon);
         var skills = document.createElement("div");
             skills.className = "skills";
             for (var skill of digi[mon].skills) {
-                if (skill.length > 0) {
-                    var dna = document.createElement("div");
-                        var skilltribe = document.createElement("img");
-                            skilltribe.className = "icon";
-                            skilltribe.src = "img/tribe/" + skill[0] + ".png";
-                            skilltribe.alt = skill[0];
-                            dna.appendChild(skilltribe);
-                        var skilltype = document.createElement("span");
-                            skilltype.innerHTML = ["Support", "Single", "AoE"][skill[1]];
-                            dna.appendChild(skilltype);
-                            skills.appendChild(dna);
-                        var tier = document.createElement("span");
-                            tier.className = "tier";
-                            tier.innerHTML = skill[2] ? ("[" + skill[2] + "]") : "";
-                            dna.appendChild(tier);
-                }
+                var dna = document.createElement("div");
+                    var skilltribe = document.createElement("img");
+                        skilltribe.className = "skill-icon";
+                        skilltribe.src = "img/tribe/" + skill[0] + ".png";
+                        skilltribe.alt = skill[0];
+                        dna.appendChild(skilltribe);
+                    var skilltype = document.createElement("span");
+                        skilltype.innerHTML = ["Support", "Single", "AoE"][skill[1]];
+                        dna.appendChild(skilltype);
+                        skills.appendChild(dna);
+                    var tier = document.createElement("span");
+                        tier.className = "tier";
+                        tier.innerHTML = skill[2] ? ("[" + skill[2] + "]") : "";
+                dna.appendChild(tier);
             }
-            div.appendChild(skills);
-        addTapListener(div, function () {
+            card.appendChild(skills);
+        addTapListener(icon, function () {
             search.value = "";
-            selectDigi(this.id);
+            selectDigi(this.parentElement.id);
         });
-        digi[mon].element = div;
-        getTrain(digi[mon].evol).appendChild(div);
+        digi[mon].element = card;
+        getTrain(digi[mon].evol).appendChild(card);
     }
 }
 
@@ -382,6 +383,9 @@ function init() {
     initOptions();
     initSearch();
     initGrowlmon();
+    for (var mon in advent) {
+        digi[mon].element.classList.add("advent");
+    }
 }
 
 init();

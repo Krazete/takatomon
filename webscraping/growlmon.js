@@ -77,7 +77,7 @@ function skillset(mon, content, released) {
 function newDigimon(mon, content) {
     var name = content.getElementsByClassName("digiTopper")[0].children[1].innerHTML; // unused for now
     var evol = mon.evol;
-    var dvol = Array.from(
+    var next = Array.from(
         content.getElementsByClassName("dvolveTable")[0].rows[0].cells[2].getElementsByTagName("a")
     ).map(function (a) {
         return a.href.split("/")[4];
@@ -88,7 +88,7 @@ function newDigimon(mon, content) {
     return {
         "name": name,
         "evol": evol,
-        "dvol": dvol,
+        "next": next,
         "tribe": tribe,
         "released": released,
         "skills": skills
@@ -123,7 +123,7 @@ function getDigimonInfo() {
             }
             monsRegistered.push(mon.name);
             if (mons.length == monsRegistered.length) {
-                digi["belphemon-rm"].dvol.push("belphemon-sm"); // delete if growlmon ever fixes this
+                digi["belphemon-rm"].next.push("belphemon-sm"); // delete if growlmon ever fixes this
                 var prettyJSON = "{\n\t" +
                     JSON.stringify(digi)
                     .slice(1, -2).split("},").sort().join("},\n\t")

@@ -5,7 +5,7 @@ body {
     height: 100%;
     margin: 0px;
 }
-body:after { /* bottom-padding for mobile */
+body:after { /* bottom padding for mobile */
     content: "";
     height: 64px;
     display: block;
@@ -17,30 +17,29 @@ body:after { /* bottom-padding for mobile */
     padding: 4px;
     margin: 2px;
 }
+#toolbar {
+    background: #444;
+}
 #selection {
     background: #fff;
-    text-align: center;
-}
-#toolbar {
-    background: #888;
 }
 #in-training-i {
-    background: linear-gradient(#7ef, #4ac);
+    background: radial-gradient(#7ef, #4ac);
 }
 #in-training-ii {
-    background: linear-gradient(#4ac, #048);
+    background: radial-gradient(#4ac, #048);
 }
 #rookie {
-    background: linear-gradient(#b50, #310);
+    background: radial-gradient(#b50, #310);
 }
 #champion {
-    background: linear-gradient(#eee, #666);
+    background: radial-gradient(#eee, #666);
 }
 #ultimate {
-    background: linear-gradient(#ff4, #c90);
+    background: radial-gradient(#ff4, #c90);
 }
 #mega {
-    background: linear-gradient(to top right,
+    background: radial-gradient(#0000, #0004), linear-gradient(to top right,
         #f00,
         #ff0,
         #0f0,
@@ -51,7 +50,7 @@ body:after { /* bottom-padding for mobile */
     );
 }
 
-.evol {
+.evol { /* TODO: make these labels look better */
     background: #fff8;
     font-size: 20px;
     font-weight: bold;
@@ -63,67 +62,73 @@ body:after { /* bottom-padding for mobile */
 }
 
 .track {
-    overflow-x: scroll;
-    overflow-y: hidden;
+    overflow: scroll;
     -webkit-overflow-scrolling: touch;
 }
 
 .train {
-    height: 76px; /* based on .mon height + padding + border + margin */
     width: max-content;
+    min-height: 72px;
     margin: auto;
 }
 
-.mon {
-    background: #048;
-    vertical-align: bottom;
-    cursor: pointer;
-    width: 64px;
-    height: 64px;
-    border: 1px solid #000;
-    border-radius: 10px;
-    padding: 4px;
+.card {
+    vertical-align: top;
     margin: 1px;
     display: inline-block;
 }
-.mon, #selection .mon:hover { /* TODO: move to special zone below */
-    opacity: 0.75;
+.card.hidden {
+    display: none;
 }
-.mon:hover, #selection .mon {
+
+.icon {
+    background: #fff;
+    width: 64px;
+    cursor: pointer;
+    border: 1px solid #000;
+    border-radius: 11%;
+    padding: 2px;
+}
+.icon {
+    opacity: 0.8;
+}
+#selection > .icon:hover { /* TODO: fix this up */
+    background: yellow;
+    opacity: 0.8;
+}
+.icon:hover, #selection .icon {
     opacity: 1;
 }
-.mon.root, .mon.leaf {
+.card.root > .icon, .card.leaf > .icon {
     opacity: 1;
+}
+.card.leaf > .icon {
+    background: #fff;
 }
 
 .thumb {
-    width: 64px;
-    height: 64px;
-    border-radius: 8px;
+    width: 100%;
+    border-radius: 10%;
     display: block;
 }
 
 .tribe {
-    width: 16px;
-    height: 16px;
-    border-radius: 8px; /* TODO: put circles as their own class */
-    margin: -66px 2px 66px -2px;
+    width: 25%;
+    border-radius: 50%;
+    margin: -101% 1% 76% -1%; /* 101 - 25 = 76 */
     display: block;
 }
 
-.nametag {
-    background: #000a;
-    color: white;
-    font-family: "Arial Narrow", Arial, sans-serif;
+.nametag { /* TODO: figure how to autoscroll text */
+    position: relative;
+    background: #fffc;
+    height: 12px;
+    font-family: "Arial Narrow", "Arial", sans-serif;
     font-size: 10px;
     text-align: center;
-    position: relative;
-    height: 12px;
-    border-radius: 0px 0px 8px 8px;
-    margin: -24px -4px 0px -4px;
-}
-.hiddenspace {
-    visibility: hidden;
+    white-space: nowrap;
+    margin-top: -12px;
+    overflow: hidden;
 }
 
 .skills {
@@ -134,17 +139,20 @@ body:after { /* bottom-padding for mobile */
     border-radius: 4px;
     padding: 2px;
     margin-top: 2px;
+    display: none;
+}
+#mega > .track > .train > .card > .skills {
+    display: block;
 }
 
-.icon {
+.skill-icon {
     width: 12px;
-    height: 12px;
-    border-radius: 6px;
+    border-radius: 4px;
     margin-bottom: -2px; /* TODO: find a better way to fix this */
 }
 
 .tier {
-    float: right;
+    float: right; /* TODO: maybe change this whole .skills element to grid or table */
 }
 
 #linelayer {
@@ -155,16 +163,20 @@ body:after { /* bottom-padding for mobile */
     pointer-events: none;
 }
 
-/* special */
-#mega .train {
-    height: 111px;
-}
-.mon.leaf {
-    background: #fff;
-}
-.mon.hidden {
-    display: none;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* within #selection */
 .trainxy {
@@ -249,9 +261,13 @@ body:after { /* bottom-padding for mobile */
     background: initial;
 }
 
-
-
-
+/* within toolbar */
+#filters, #visuals {
+    display: flex;
+}
+#filters > *, #visuals > * {
+    flex: 1;
+}
 
 #focus {
     background: #fff;
@@ -284,11 +300,25 @@ body:after { /* bottom-padding for mobile */
     width: 50%;
 }
 
-
-
-
-
 .awkntest:hover {
     text-decoration: underline;
     cursor: pointer;
+}
+
+@keyframes spinner {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.advent:after {
+    content: "";
+    position: relative;
+    width: 64px;
+    height: 64px;
+    border-top: 2px solid white;
+    animation: spinner 1s linear infinite;
 }
