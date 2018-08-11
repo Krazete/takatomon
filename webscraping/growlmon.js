@@ -82,6 +82,10 @@ function newDigimon(mon, content) {
     ).map(function (a) {
         return a.href.split("/")[4];
     });
+    if (content.getElementsByClassName("dvolveTable")[0].innerText.toLowerCase().includes("can mode change") ||
+        content.getElementsByClassName("dvolveTable")[0].innerText.toLowerCase().includes("by paying gold at any time")) {
+        warning("Digimon [" + mon + "] is able to mode change."); // because growlmon doesn't want to deal with recursion
+    }
     var tribe = mon.tribe;
     var released = content.getElementsByClassName("digidesc")[0].innerText.toLowerCase().includes("to be released") ? 0 : 1;
     var skills = skillset(mon, content, released);
@@ -123,7 +127,11 @@ function getDigimonInfo() {
             }
             monsRegistered.push(mon.name);
             if (mons.length == monsRegistered.length) {
-                digi["belphemon-rm"].next.push("belphemon-sm"); // delete if growlmon ever fixes this
+                // special additions for mode change
+                digi["belphemon-rm"].next.push("belphemon-sm");
+                digi["imperialdramon-fm"].next.push("imperialdramon-dm");
+                digi["leopardmon-lm"].next.push("leopardmon");
+                // because growlmon doesn't want to deal with recursion
                 var prettyJSON = "{\n\t" +
                     JSON.stringify(digi)
                     .slice(1, -2).split("},").sort().join("},\n\t")
