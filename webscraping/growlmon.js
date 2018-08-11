@@ -75,7 +75,7 @@ function skillset(mon, content, released) {
 
 /* Digimon Object Builder (for getDigimonInfo) */
 function newDigimon(mon, content) {
-    var name = content.getElementsByClassName("digiTopper")[0].children[1].innerHTML; // unused for now
+    var name = content.getElementsByClassName("digiTopper")[0].children[1].innerHTML;
     var evol = mon.evol;
     var next = Array.from(
         content.getElementsByClassName("dvolveTable")[0].rows[0].cells[2].getElementsByTagName("a")
@@ -156,19 +156,19 @@ function getDigimonImages(n) { // n = 2 returns nothing; +1 images == +2 images
         a.setAttribute("download", mon.name);
         a.click();
     });
-} // resize to 64x64 and put into root/mon folder
+} // put into appropriate root/img/awkn# folder
 
-/* Tribe Thumbnails */
-function getTribeImages() {
-    var tribes = new Set(
-        Array.from(document.getElementsByClassName("blockListType")).map(function (blockListType) {
-            return blockListType.src;
-        })
-    );
-    tribes.forEach(function (src) {
-        var a = document.createElement("a");
-        a.href = src;
-        a.setAttribute("download", tribeFromSrc(src));
-        a.click();
-    });
-} // resize to 32x32 and put into root/tribe folder
+// /* Tribe Thumbnails */
+// function getTribeImages() { // obsolete; now using some image found on google, cropped and transparentified via matlab
+//     var tribes = new Set(
+//         Array.from(document.getElementsByClassName("blockListType")).map(function (blockListType) {
+//             return blockListType.src;
+//         })
+//     );
+//     tribes.forEach(function (src) {
+//         var a = document.createElement("a");
+//         a.href = src;
+//         a.setAttribute("download", tribeFromSrc(src));
+//         a.click();
+//     });
+// } // put into root/img/tribe folder
