@@ -131,15 +131,15 @@ function update() {
     selection.innerHTML = "";
     if (selectedDigi.size == 0) {
         for (var mon of allDigi) {
-            digi[mon].element.classList.remove("root");
-            digi[mon].element.classList.remove("leaf");
-            digi[mon].element.classList.remove("hidden");
+            digi[mon].card.classList.remove("root");
+            digi[mon].card.classList.remove("leaf");
+            digi[mon].card.classList.remove("hidden");
         }
         linelayer.innerHTML = "";
     }
     else {
         for (var mon of selectedDigi) {
-            var clone = digi[mon].element.cloneNode(true);
+            var clone = digi[mon].card.cloneNode(true);
             clone.className = "card"; // remove leaf and root class
             addTapListener(clone, function () {
                 deselectDigi(this.id);
@@ -159,17 +159,17 @@ function drawTree(tree) {
 
 function drawLeaves(tree) {
     for (var mon of allDigi) {
-        digi[mon].element.classList.remove("root");
-        digi[mon].element.classList.remove("leaf");
-        digi[mon].element.classList.remove("hidden");
+        digi[mon].card.classList.remove("root");
+        digi[mon].card.classList.remove("leaf");
+        digi[mon].card.classList.remove("hidden");
         if (tree.roots.has(mon)) {
-            digi[mon].element.classList.add("root");
+            digi[mon].card.classList.add("root");
         }
         else if (tree.leaves.has(mon)) {
-            digi[mon].element.classList.add("leaf");
+            digi[mon].card.classList.add("leaf");
         }
         else if (viewOptionSelected){
-            digi[mon].element.classList.add("hidden");
+            digi[mon].card.classList.add("hidden");
         }
     }
 }
@@ -192,8 +192,8 @@ function drawLine(a, b, color, width) {
 }
 
 function drawBranch(branch, color, width) {
-    var a = digi[branch[0]].element.children[0];
-    var b = digi[branch[1]].element.children[0];
+    var a = digi[branch[0]].card.children[0];
+    var b = digi[branch[1]].card.children[0];
     var aRect = a.getBoundingClientRect();
     var bRect = b.getBoundingClientRect();
     var aMid = {
@@ -247,53 +247,57 @@ function addTapListener(e, f) {
 
 /* Initialization */
 
-function initMons(AWKN) {
-    var mons = Object.keys(digi); // sorting is done in growlmon.js
-    for (var mon of mons) {
-        var card = document.createElement("div");
+
+function initCard(mon) {
+    var card = document.createElement("div");
         card.className = "card";
         card.id = mon;
-        var icon = document.createElement("div");
-            icon.className = "icon";
-            var img = document.createElement("img");
-                img.className = "thumb";
-                img.src = "img/awkn" + AWKN + "/" + mon + ".png";
-                icon.appendChild(img);
+        var profile = document.createElement("div");
+            profile.className = "profile";
+            var portrait = document.createElement("img");
+                portrait.className = "portrait";
+                portrait.src = "img/awkn0/" + mon + ".png";
+            profile.appendChild(portrait);
             var tribe = document.createElement("img");
                 tribe.className = "tribe";
                 tribe.src = "img/tribe/" + digi[mon].tribe + ".png";
                 tribe.alt = digi[mon].tribe;
-                icon.appendChild(tribe);
-            var nametag = document.createElement("div");
-                nametag.className = "nametag";
-                nametag.innerHTML = digi[mon].name;
-                icon.appendChild(nametag);
-            card.appendChild(icon);
-        var skills = document.createElement("div");
-            skills.className = "skills";
+            profile.appendChild(tribe);
+            var moniker = document.createElement("div");
+                moniker.className = "moniker";
+                moniker.innerHTML = digi[mon].name;
+            profile.appendChild(moniker);
+        card.appendChild(profile);
+        var signatures = document.createElement("div");
+            signatures.className = "signatures";
             for (var skill of digi[mon].skills) {
-                var dna = document.createElement("div");
-                    var skilltribe = document.createElement("img");
-                        skilltribe.className = "skill-icon";
-                        skilltribe.src = "img/tribe/" + skill[0] + ".png";
-                        skilltribe.alt = skill[0];
-                        dna.appendChild(skilltribe);
-                    var skilltype = document.createElement("span");
-                        skilltype.innerHTML = ["Support", "Single", "AoE"][skill[1]];
-                        dna.appendChild(skilltype);
-                        skills.appendChild(dna);
+                var signature = document.createElement("div");
+                    var rival = document.createElement("img");
+                        rival.className = "rival";
+                        rival.src = "img/tribe/" + skill[0] + ".png";
+                        rival.alt = skill[0];
+                    signature.appendChild(rival);
+                    var effect = document.createElement("span");
+                        effect.innerHTML = ["Spt", "ST", "AoE"][skill[1]];
+                    signature.appendChild(effect);
                     var tier = document.createElement("span");
                         tier.className = "tier";
                         tier.innerHTML = skill[2] ? ("[" + skill[2] + "]") : "";
-                dna.appendChild(tier);
+                    signature.appendChild(tier);
+                signatures.appendChild(signature);
             }
-            card.appendChild(skills);
-        addTapListener(icon, function () {
-            search.value = "";
-            selectDigi(this.parentElement.id);
-        });
-        digi[mon].element = card;
-        getTrain(digi[mon].evol).appendChild(card);
+        card.appendChild(signatures);
+    getTrain(digi[mon].evol).appendChild(card);
+    addTapListener(profile, function () {
+        search.value = "";
+        selectDigi(this.parentElement.id);
+    });
+    digi[mon].card = card;
+}
+
+function initCards() {
+    for (var mon in digi) {
+        initCard(mon);
     }
 }
 
@@ -333,9 +337,9 @@ function initSearch() {
         if (search.value != "") {
             linelayer.innerHTML = "";
             for (var mon of allDigi) {
-                digi[mon].element.classList.add("hidden");
-                if (digi[mon].element.innerText.toLowerCase().includes(search.value)) {
-                    digi[mon].element.classList.remove("hidden");
+                digi[mon].card.classList.add("hidden");
+                if (digi[mon].card.innerText.toLowerCase().includes(search.value)) {
+                    digi[mon].card.classList.remove("hidden");
                 }
             }
         }
@@ -379,12 +383,12 @@ function init() {
             }
         });
     }
-    initMons(0);
+    initCards();
     initOptions();
     initSearch();
     initGrowlmon();
     for (var mon in advent) {
-        digi[mon].element.classList.add("advent");
+        digi[mon].card.classList.add("advent");
     }
 }
 
