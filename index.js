@@ -61,14 +61,31 @@ function drawLeaves(gemel) {
 
 function drawLine(a, b, color, width) {
     var path = document.createElement("path");
-    path.setAttribute("d",
-        "M" + a.x + "," + a.y +
-        // "L" + b.x + "," + b.y
-        "S" + a.x + "," + (0.75 * a.y + 0.25 * b.y) +
-        " " + (0.5 * a.x + 0.5 * b.x) + "," + (0.5 * a.y + 0.5 * b.y) +
-        "S" + b.x + "," + (0.25 * a.y + 0.75 * b.y) +
-        " " + b.x + "," + b.y
-    );
+    if (a.y < b.y) {
+        path.setAttribute("d",
+            "M" + a.x + "," + a.y +
+            "S" + a.x + "," + (0.75 * a.y + 0.25 * b.y) +
+            " " + (0.5 * a.x + 0.5 * b.x) + "," + (0.5 * a.y + 0.5 * b.y) +
+            "M" + b.x + "," + b.y +
+            "S" + b.x + "," + (0.25 * a.y + 0.75 * b.y) +
+            " " + (0.5 * a.x + 0.5 * b.x) + "," + (0.5 * a.y + 0.5 * b.y)
+        );
+    }
+    else {
+        var sign = b.x - a.x >= 0 ? 1 : -1;
+        var dx = sign * 32;
+        var dy = 16;
+        path.setAttribute("d",
+            "M" + a.x + "," + a.y +
+            "C" + a.x + "," + (a.y + dy) +
+            " " + (a.x + dx) + "," + (a.y + dy) +
+            " " + (0.5 * a.x + 0.5 * b.x) + "," + (0.5 * a.y + 0.5 * b.y) +
+            "M" + b.x + "," + b.y +
+            "C" + b.x + "," + (b.y - dy) +
+            " " + (b.x - dx) + "," + (b.y - dy) +
+            " " + (0.5 * a.x + 0.5 * b.x) + "," + (0.5 * a.y + 0.5 * b.y)
+        );
+    }
     path.setAttribute("stroke", color);
     path.setAttribute("stroke-width", width);
     path.setAttribute("fill", "none");
