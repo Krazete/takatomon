@@ -5,122 +5,6 @@
 var allDigi = new Set(Object.keys(digi));
 var selectedDigi = new Set();
 
-/* Tree Structure */
-
-function Tree(root) {
-    this.roots = new Set(); // allow multiple roots for Forest
-    this.leaves = new Set();
-    this.JSONbranches = new Set(); // store as JSON strings because identical arrays aren't equal
-    if (typeof root != "undefined") {
-        // pointers for initialization
-        var leaves = this.leaves;
-        var JSONbranches = this.JSONbranches;
-        // initialization
-        this.roots.add(root);
-        this.leaves.add(root);
-        function next(mon) {
-            return digi[mon].next;
-        }
-        function prev(mon) {
-            if (typeof(digi[mon].prev) == "undefined") { // memoization
-                var prevmons = [];
-                for (prevmon in digi) {
-                    if (next(prevmon).includes(mon)) {
-                        prevmons.push(prevmon);
-                    }
-                }
-                digi[mon].prev = prevmons;
-            }
-            return digi[mon].prev;
-        }
-        function init(mon, direction) {
-            if (direction < 1) {
-                for (var prevmon of prev(mon)) {
-                    leaves.add(prevmon);
-                    var branch = [prevmon, mon];
-                    var JSONbranch = JSON.stringify(branch);
-                    if (!JSONbranches.has(JSONbranch)) {
-                        JSONbranches.add(JSONbranch);
-                        init(prevmon, -1);
-                    }
-                }
-            }
-            if (direction > -1) {
-                for (var nextmon of next(mon)) {
-                    leaves.add(nextmon);
-                    var branch = [mon, nextmon];
-                    var JSONbranch = JSON.stringify(branch);
-                    if (!JSONbranches.has(JSONbranch)) {
-                        JSONbranches.add(JSONbranch);
-                        init(nextmon, 1);
-                    }
-                }
-            }
-        }
-        init(root, 0);
-    }
-}
-Tree.prototype.forEachBranch = function (f) {
-    for (var JSONbranch of this.JSONbranches) {
-        var branch = JSON.parse(JSONbranch);
-        f(branch, JSONbranch);
-    }
-};
-function getTree(mon) {
-    if (typeof(digi[mon].tree) == "undefined") { // memoization
-        digi[mon].tree = new Tree(mon);
-    }
-    return digi[mon].tree;
-}
-
-/* Tree Collection */
-
-function Forest(roots) {
-    this.trees = new Set();
-    for (root of roots) {
-        var tree = getTree(root);
-        this.trees.add(tree);
-    }
-}
-Forest.prototype.union = function () {
-    var unionTree = new Tree();
-    for (var tree of this.trees) {
-        for (var root of tree.roots) { // should only have one root
-            unionTree.roots.add(root);
-        }
-        tree.forEachBranch(function (branch, JSONbranch) {
-            unionTree.leaves.add(branch[0]);
-            unionTree.leaves.add(branch[1]);
-            unionTree.JSONbranches.add(JSONbranch);
-        });
-    }
-    return unionTree;
-};
-Forest.prototype.intersection = function () {
-    var intersectionTree = new Tree();
-    intersectionTree.leaves = new Set(allDigi);
-    for (var tree of this.trees) {
-        for (var root of tree.roots) { // should only have one root
-            intersectionTree.roots.add(root);
-        }
-    }
-    for (var tree of this.trees) {
-        for (var leaf of intersectionTree.leaves) {
-            if (!(tree.leaves.has(leaf) || intersectionTree.roots.has(leaf))) {
-                intersectionTree.leaves.delete(leaf);
-            }
-        }
-    }
-    for (var tree of this.trees) {
-        tree.forEachBranch(function (branch, JSONbranch) {
-            if (intersectionTree.leaves.has(branch[0]) && intersectionTree.leaves.has(branch[1])) {
-                intersectionTree.JSONbranches.add(JSONbranch);
-            }
-        });
-    }
-    return intersectionTree;
-};
-
 /* Tree Visualization */
 
 function update() {
@@ -129,44 +13,45 @@ function update() {
     }
     var selection = getTrain("selection");
     selection.innerHTML = "";
-    if (selectedDigi.size == 0) {
-        for (var mon of allDigi) {
-            digi[mon].card.classList.remove("root");
-            digi[mon].card.classList.remove("leaf");
-            digi[mon].card.classList.remove("hidden");
-        }
-        linelayer.innerHTML = "";
-    }
-    else {
+    if (selectedDigi.size) {
         for (var mon of selectedDigi) {
             var clone = digi[mon].card.cloneNode(true);
-            clone.className = "card"; // remove leaf and root class
+            clone.className = "card"; // remove node and root class
             addTapListener(clone, function () {
                 deselectDigi(this.id);
             });
             selection.appendChild(clone);
         }
-        var forest = new Forest(selectedDigi);
-        var chosenTree = forest[treeOptionSelected]();
-        drawTree(chosenTree);
+        var gemel = new Gemel(selectedDigi); // TODO: don't call this every single time, store it somewhere globally
+        drawTree(gemel);
+    }
+    else {
+        for (var mon in digi) {
+            digi[mon].card.classList.remove("root");
+            digi[mon].card.classList.remove("node");
+            digi[mon].card.classList.remove("hidden");
+        }
+        linelayer.innerHTML = "";
     }
 }
 
-function drawTree(tree) {
-    drawLeaves(tree);
-    drawBranches(tree);
+function drawTree(gemel) {
+    drawLeaves(gemel);
+    drawEdges(gemel);
 }
 
-function drawLeaves(tree) {
-    for (var mon of allDigi) {
+function drawLeaves(gemel) {
+    var tree = gemel[treeOptionSelected]();
+    for (var mon in digi) {
         digi[mon].card.classList.remove("root");
-        digi[mon].card.classList.remove("leaf");
+        digi[mon].card.classList.remove("node");
         digi[mon].card.classList.remove("hidden");
-        if (tree.roots.has(mon)) {
+        if (gemel.roots.has(mon)) {
+            digi[mon].card.classList.add("node");
             digi[mon].card.classList.add("root");
         }
-        else if (tree.leaves.has(mon)) {
-            digi[mon].card.classList.add("leaf");
+        else if (tree.nodes.has(mon)) {
+            digi[mon].card.classList.add("node");
         }
         else if (viewOptionSelected){
             digi[mon].card.classList.add("hidden");
@@ -191,9 +76,9 @@ function drawLine(a, b, color, width) {
     linelayer.appendChild(path);
 }
 
-function drawBranch(branch, color, width) {
-    var a = digi[branch[0]].card.children[0];
-    var b = digi[branch[1]].card.children[0];
+function drawEdge(edge, color, width) {
+    var a = digi[edge[0]].card.children[0];
+    var b = digi[edge[1]].card.children[0];
     var aRect = a.getBoundingClientRect();
     var bRect = b.getBoundingClientRect();
     var aMid = {
@@ -208,13 +93,14 @@ function drawBranch(branch, color, width) {
     drawLine(aMid, bMid, color, width);
 }
 
-function drawBranches(tree) {
+function drawEdges(gemel) {
+    var tree = gemel[treeOptionSelected]();
     linelayer.innerHTML = ""; // refresh linelayer
-    tree.forEachBranch(function (branch) {
-        drawBranch(branch, "#000", 4);
+    tree.forEachEdge(function (edge) {
+        drawEdge(edge, "#000", 4);
     });
-    tree.forEachBranch(function (branch) {
-        drawBranch(branch, "#fff", 2);
+    tree.forEachEdge(function (edge) {
+        drawEdge(edge, "#fff", 2);
     });
     linelayer.innerHTML += ""; // force-update linelayer
 }
