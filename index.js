@@ -1,8 +1,9 @@
+/* NOTE: read "digi" as "nodeset" and "mon" as "node" */
+
 /* DATA */
 
 /* Name Collections */
 
-var allDigi = new Set(Object.keys(digi));
 var selectedDigi = new Set();
 
 /* Tree Visualization */
@@ -190,7 +191,21 @@ function initCard(mon) {
                 signatures.appendChild(signature);
             }
         card.appendChild(signatures);
-    getTrain(digi[mon].evol).appendChild(card);
+    if (digi[mon].evol == "mega") {
+        new Tree(mon);
+        if (digi[mon].prev.some(e => digi[e].evol != "mega")) { // TODO: fix
+            document.getElementById("mega").getElementsByClassName("train")[0].appendChild(card);
+        }
+        else if (digi[mon].prev.some(e => digi[e].prev.some(a => digi[a].evol != "mega" && a != mon))) {
+            document.getElementById("mega").getElementsByClassName("train")[1].appendChild(card);
+        }
+        else {
+            document.getElementById("mega").getElementsByClassName("train")[2].appendChild(card);
+        }
+    }
+    else {
+        getTrain(digi[mon].evol).appendChild(card);
+    }
     addTapListener(profile, function () {
         search.value = "";
         selectDigi(this.parentElement.id);
