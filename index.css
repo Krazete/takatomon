@@ -193,6 +193,58 @@ body {
 
 
 
+.button {
+    background: #000;
+    color: #fff;
+    text-align: center;
+    vertical-align: middle;
+    min-width: 24px;
+    height: 24px;
+    line-height: 24px;
+    font-size: 10px;
+    border: 1px solid #000;
+    border-radius: 25%;
+    display: inline-block;
+    cursor: pointer;
+    filter: brightness(5) brightness(0.5) grayscale(1);
+}
+.button:hover, .button.selected {
+    filter: none;
+}
+.button:hover {
+    border-color: #888;
+}
+.button.selected {
+    border-color: #fff;
+}
+
+.advent {
+    animation: rainbow 1s alternate infinite;
+}
+
+@keyframes rainbow {
+    0% {
+        filter: hue-rotate(0deg) brightness(1.25);
+    }
+    100% {
+        filter: hue-rotate(360deg) brightness(1);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* within #selection */
 .trainxy {
     width: 40px;
@@ -277,29 +329,6 @@ body {
 }
 
 /* within toolbar */
-#filters, #visuals {
-    display: flex;
-}
-#filters > *, #visuals > * {
-    flex: 1;
-}
-
-#focus {
-    background: #fff;
-    border: 1px solid #000;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-}
-#focus:after {
-    content: "";
-    background: #000;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    display: block;
-}
-
 
 #selection .track {
     border: solid #000;

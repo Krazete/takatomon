@@ -5,6 +5,15 @@
 /* Name Collections */
 
 var selectedDigi = new Set();
+var treeOptionSelected = "intersection";
+var viewOptionSelected = 1;
+var filter = {
+    "filter": new Set(),
+    "tribe": new Set(),
+    "rival": new Set(),
+    "effect": new Set(),
+    "event": new Set()
+};
 
 /* Tree Visualization */
 
@@ -31,9 +40,19 @@ function update() {
             digi[mon].card.classList.remove("root");
             digi[mon].card.classList.remove("node");
             digi[mon].card.classList.remove("hidden");
+            if (filterIncludes(mon)) {
+                digi[mon].card.classList.add("hidden");
+            }
         }
         linelayer.innerHTML = "";
     }
+}
+
+function filterIncludes(mon) {
+    var tribeIncludes = filter.tribe.size && !filter.tribe.has(digi[mon].tribe);
+    var rivalIncludes = filter.rival.size && !digi[mon].skills.some(skill => filter.rival.has(skill[0]));
+    var effectIncludes = filter.effect.size && !digi[mon].skills.some(skill => filter.effect.has(["sup", "st", "aoe"][skill[1]]));
+    return tribeIncludes || rivalIncludes || effectIncludes;
 }
 
 function drawTree(gemel) {
@@ -125,9 +144,6 @@ function drawEdges(gemel) {
 
 /* HTML */
 
-var viewOptionSelected;
-var treeOptionSelected;
-
 function selectDigi(mon) {
     selectedDigi.add(mon);
     update();
@@ -150,7 +166,6 @@ function addTapListener(e, f) {
 }
 
 /* Initialization */
-
 
 function initCard(mon) {
     var card = document.createElement("div");
@@ -254,7 +269,7 @@ function initSearch() {
         search.value = search.value.toLowerCase().replace(/\s/g, "");
         if (search.value != "") {
             linelayer.innerHTML = "";
-            for (var mon of allDigi) {
+            for (var mon in digi) {
                 digi[mon].card.classList.add("hidden");
                 if (digi[mon].card.innerText.toLowerCase().includes(search.value)) {
                     digi[mon].card.classList.remove("hidden");
@@ -302,12 +317,37 @@ function init() {
         });
     }
     initCards();
-    initOptions();
     initSearch();
+    initFilters();
     initGrowlmon();
+    initOptions();
     for (var mon in advent) {
         digi[mon].card.classList.add("advent");
     }
 }
 
 init();
+
+function initFilters() {
+    var ids = [
+        "event-ongoing",
+        "tribe-mirage", "tribe-blazing", "tribe-glacier", "tribe-electric", "tribe-earth", "tribe-bright", "tribe-abyss",
+        "rival-mirage", "rival-blazing", "rival-glacier", "rival-electric", "rival-earth", "rival-bright", "rival-abyss",
+        "effect-aoe", "effect-st", "effect-sup"
+    ];
+    for (var id of ids) {
+        var button = document.getElementById(id);
+        addTapListener(button, function () {
+            var idPart = this.id.split("-");
+            if (this.classList.contains("selected")) {
+                filter[idPart[0]].delete(idPart[1]);
+                this.classList.remove("selected");
+            }
+            else {
+                filter[idPart[0]].add(idPart[1]);
+                this.classList.add("selected");
+            }
+            update();
+        });
+    }
+}
