@@ -206,21 +206,22 @@ function initCard(mon) {
                 signatures.appendChild(signature);
             }
         profile.appendChild(signatures);
-    if (digi[mon].evol == "mega") {
-        new Tree(mon);
-        if (digi[mon].prev.some(e => digi[e].evol != "mega")) { // TODO: fix
-            document.getElementById("mega").getElementsByClassName("train")[0].appendChild(profile);
-        }
-        else if (digi[mon].prev.some(e => digi[e].prev.some(a => digi[a].evol != "mega" && a != mon))) {
-            document.getElementById("mega").getElementsByClassName("train")[1].appendChild(profile);
-        }
-        else {
-            document.getElementById("mega").getElementsByClassName("train")[2].appendChild(profile);
-        }
-    }
-    else {
-        getTrain(digi[mon].evol).appendChild(profile);
-    }
+    // if (digi[mon].evol == "mega") {
+    //     new Tree(mon);
+    //     if (digi[mon].prev.some(e => digi[e].evol != "mega")) {
+    //         document.getElementById("mega").getElementsByClassName("train")[0].appendChild(profile);
+    //     }
+    //     else if (digi[mon].prev.some(e => digi[e].prev.some(a => digi[a].evol != "mega" && a != mon))) {
+    //         document.getElementById("mega").getElementsByClassName("train")[1].appendChild(profile);
+    //     }
+    //     else {
+    //         document.getElementById("mega").getElementsByClassName("train")[2].appendChild(profile);
+    //     }
+    // }
+    // else {
+    //     getTrain(digi[mon].evol).appendChild(profile);
+    // }
+    getTrain(digi[mon].evol).appendChild(profile);
     addTapListener(card, function () {
         search.value = "";
         selectDigi(this.parentElement.id);
