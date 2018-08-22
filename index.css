@@ -65,44 +65,44 @@ body {
     margin: auto;
 }
 
-.card {
+.profile {
     vertical-align: top;
     margin: 2px 1px;
     display: inline-block;
     /* transition: margin 333ms, transform 333ms; */
 }
-.card.hidden {
+.profile.hidden {
     display: none;
     /* transform: scale(0); */
     /* margin: -35px -35px; */
 }
 
-.profile {
+.card {
     width: 64px;
     cursor: pointer;
     border: 1px solid #000;
     border-radius: 10%;
     padding: 2px;
 }
-.profile:hover {
+.card:hover {
     border-color: #fff;
 }
-#in-training-i .profile {
+#in-training-i .card {
     background: #7ee;
 }
-#in-training-ii .profile {
+#in-training-ii .card {
     background: #4be;
 }
-#rookie .profile {
+#rookie .card {
     background: #e70;
 }
-#champion .profile {
+#champion .card {
     background: #eee;
 }
-#ultimate .profile {
+#ultimate .card {
     background: #fe3;
 }
-#mega .profile {
+#mega .card {
     background: linear-gradient(
         to top right,
         #f44,
@@ -114,17 +114,20 @@ body {
         #f44
     );
 }
-.card.node .profile {
+.profile.node .card {
     box-shadow: 0px 0px 1px 1px #fff;
 }
-.card.root .profile {
+.profile.root .card {
     box-shadow: 0px 0px 0px 2px #fff;
     border-color: #000;
     cursor: default;
 }
 
 .portrait {
-    width: 100%;
+    background: url(img/mon/none.png);
+    background-size: 64px;
+    width: 64px;
+    height: 64px;
     border-radius: 10%;
     display: block;
 }

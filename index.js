@@ -25,8 +25,8 @@ function update() {
     selection.innerHTML = "";
     if (selectedDigi.size) {
         for (var mon of selectedDigi) {
-            var clone = digi[mon].card.cloneNode(true);
-            clone.className = "card"; // remove node and root class
+            var clone = digi[mon].profile.cloneNode(true);
+            clone.className = "profile"; // remove node and root class
             addTapListener(clone, function () {
                 deselectDigi(this.id);
             });
@@ -37,11 +37,11 @@ function update() {
     }
     else {
         for (var mon in digi) {
-            digi[mon].card.classList.remove("root");
-            digi[mon].card.classList.remove("node");
-            digi[mon].card.classList.remove("hidden");
+            digi[mon].profile.classList.remove("root");
+            digi[mon].profile.classList.remove("node");
+            digi[mon].profile.classList.remove("hidden");
             if (filterIncludes(mon)) {
-                digi[mon].card.classList.add("hidden");
+                digi[mon].profile.classList.add("hidden");
             }
         }
         linelayer.innerHTML = "";
@@ -63,18 +63,18 @@ function drawTree(gemel) {
 function drawLeaves(gemel) {
     var tree = gemel[treeOptionSelected]();
     for (var mon in digi) {
-        digi[mon].card.classList.remove("root");
-        digi[mon].card.classList.remove("node");
-        digi[mon].card.classList.remove("hidden");
+        digi[mon].profile.classList.remove("root");
+        digi[mon].profile.classList.remove("node");
+        digi[mon].profile.classList.remove("hidden");
         if (gemel.roots.has(mon)) {
-            digi[mon].card.classList.add("node");
-            digi[mon].card.classList.add("root");
+            digi[mon].profile.classList.add("node");
+            digi[mon].profile.classList.add("root");
         }
         else if (tree.nodes.has(mon)) {
-            digi[mon].card.classList.add("node");
+            digi[mon].profile.classList.add("node");
         }
         else if (viewOptionSelected){
-            digi[mon].card.classList.add("hidden");
+            digi[mon].profile.classList.add("hidden");
         }
     }
 }
@@ -114,8 +114,8 @@ function drawLine(a, b, color, width) {
 }
 
 function drawEdge(edge, color, width) {
-    var a = digi[edge[0]].card.children[0];
-    var b = digi[edge[1]].card.children[0];
+    var a = digi[edge[0]].profile.children[0];
+    var b = digi[edge[1]].profile.children[0];
     var aRect = a.getBoundingClientRect();
     var bRect = b.getBoundingClientRect();
     var aMid = {
@@ -168,25 +168,25 @@ function addTapListener(e, f) {
 /* Initialization */
 
 function initCard(mon) {
-    var card = document.createElement("div");
-        card.className = "card";
-        card.id = mon;
-        var profile = document.createElement("div");
-            profile.className = "profile";
+    var profile = document.createElement("div");
+        profile.className = "profile";
+        profile.id = mon;
+        var card = document.createElement("div");
+            card.className = "card";
             var portrait = document.createElement("img");
                 portrait.className = "portrait";
-                portrait.src = "img/awkn0/" + mon + ".png";
-            profile.appendChild(portrait);
+                portrait.src = "img/mon/0/" + mon + ".png";
+            card.appendChild(portrait);
             var tribe = document.createElement("img");
                 tribe.className = "tribe";
                 tribe.src = "img/tribe/" + digi[mon].tribe + ".png";
                 tribe.alt = digi[mon].tribe;
-            profile.appendChild(tribe);
+            card.appendChild(tribe);
             var moniker = document.createElement("div");
                 moniker.className = "moniker";
                 moniker.innerHTML = digi[mon].name;
-            profile.appendChild(moniker);
-        card.appendChild(profile);
+            card.appendChild(moniker);
+        profile.appendChild(card);
         var signatures = document.createElement("div");
             signatures.className = "signatures";
             for (var skill of digi[mon].skills) {
@@ -205,27 +205,27 @@ function initCard(mon) {
                     signature.appendChild(tier);
                 signatures.appendChild(signature);
             }
-        card.appendChild(signatures);
+        profile.appendChild(signatures);
     if (digi[mon].evol == "mega") {
         new Tree(mon);
         if (digi[mon].prev.some(e => digi[e].evol != "mega")) { // TODO: fix
-            document.getElementById("mega").getElementsByClassName("train")[0].appendChild(card);
+            document.getElementById("mega").getElementsByClassName("train")[0].appendChild(profile);
         }
         else if (digi[mon].prev.some(e => digi[e].prev.some(a => digi[a].evol != "mega" && a != mon))) {
-            document.getElementById("mega").getElementsByClassName("train")[1].appendChild(card);
+            document.getElementById("mega").getElementsByClassName("train")[1].appendChild(profile);
         }
         else {
-            document.getElementById("mega").getElementsByClassName("train")[2].appendChild(card);
+            document.getElementById("mega").getElementsByClassName("train")[2].appendChild(profile);
         }
     }
     else {
-        getTrain(digi[mon].evol).appendChild(card);
+        getTrain(digi[mon].evol).appendChild(profile);
     }
-    addTapListener(profile, function () {
+    addTapListener(card, function () {
         search.value = "";
         selectDigi(this.parentElement.id);
     });
-    digi[mon].card = card;
+    digi[mon].profile = profile;
 }
 
 function initCards() {
@@ -270,9 +270,9 @@ function initSearch() {
         if (search.value != "") {
             linelayer.innerHTML = "";
             for (var mon in digi) {
-                digi[mon].card.classList.add("hidden");
-                if (digi[mon].card.innerText.toLowerCase().includes(search.value)) {
-                    digi[mon].card.classList.remove("hidden");
+                digi[mon].profile.classList.add("hidden");
+                if (digi[mon].profile.innerText.toLowerCase().includes(search.value)) {
+                    digi[mon].profile.classList.remove("hidden");
                 }
             }
         }
@@ -296,9 +296,9 @@ function init() {
     for (var evol of document.getElementsByClassName("evol")) {
         addTapListener(evol, function () {
             selectedDigi.clear();
-            for (var card of getTrain(this.parentElement.id).children) {
-                if (!card.classList.contains("hidden")) {
-                    selectedDigi.add(card.id);
+            for (var profile of getTrain(this.parentElement.id).children) {
+                if (!profile.classList.contains("hidden")) {
+                    selectedDigi.add(profile.id);
                 }
             }
             update();
@@ -312,7 +312,7 @@ function init() {
         addTapListener(child, function () {
             for (var thumb of document.getElementsByClassName("thumb")) {
                 var i = parseInt(this.innerHTML);
-                thumb.src = thumb.src.replace(/awkn\d+/, "awkn" + (i == 2 ? 1 : i));
+                thumb.src = thumb.src.replace(/mon\/\d+/, "mon/" + (i == 2 ? 1 : i));
             }
         });
     }
@@ -322,7 +322,7 @@ function init() {
     initGrowlmon();
     initOptions();
     for (var mon in advent) {
-        digi[mon].card.classList.add("advent");
+        digi[mon].profile.classList.add("advent");
     }
 }
 
