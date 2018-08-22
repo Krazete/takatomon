@@ -19,21 +19,21 @@ function dfs(mon) {
 		visited.add(mon);
 		console.log(mon);
 		for (var prevmon of prev(mon)) {
-			if (!digi[prevmon].card.classList.contains("hidden")) { // skip hidden cards for efficiency
+			if (!digi[prevmon].profile.classList.contains("hidden")) { // skip hidden profiles for efficiency
 				dfs(prevmon);
 			}
 		}
 		for (var nextmon of next(mon)) {
-			if (!digi[nextmon].card.classList.contains("hidden")) { // skip hidden cards for efficiency
+			if (!digi[nextmon].profile.classList.contains("hidden")) { // skip hidden profiles for efficiency
 				dfs(nextmon);
 			}
 		}
 		// var train = getTrain(digi[mon].evol);
-		// train.appendChild(digi[mon].card);
+		// train.appendChild(digi[mon].profile);
 	}
 }
 for (var root in digi) {
-	if (digi[root].evol == "in-training-i" && !digi[root].card.classList.contains("hidden")) {
+	if (digi[root].evol == "in-training-i" && !digi[root].profile.classList.contains("hidden")) {
 		console.log(root);
 		dfs(root);
 	}
@@ -41,7 +41,7 @@ for (var root in digi) {
 for (var mon of visited) {
 	console.log(mon);
 	// var train = getTrain(digi[mon].evol);
-	// train.appendChild(digi[mon].card);
-	digi[mon].card.parentNode.appendChild(digi[mon].card);
+	// train.appendChild(digi[mon].profile);
+	digi[mon].profile.parentNode.appendChild(digi[mon].profile);
 }
 update();
