@@ -176,6 +176,7 @@ function initCard(mon) {
             var portrait = document.createElement("img");
                 portrait.className = "portrait";
                 portrait.src = "img/mon/0/" + mon + ".png";
+                portrait.alt = mon;
             card.appendChild(portrait);
             var tribe = document.createElement("img");
                 tribe.className = "tribe";
@@ -184,7 +185,7 @@ function initCard(mon) {
             card.appendChild(tribe);
             var moniker = document.createElement("div");
                 moniker.className = "moniker";
-                moniker.innerHTML = digi[mon].name;
+                moniker.innerHTML = digi[mon].name.replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2");
             card.appendChild(moniker);
         profile.appendChild(card);
         var signatures = document.createElement("div");

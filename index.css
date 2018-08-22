@@ -1,15 +1,14 @@
 body {
     background: #000;
     font-family: "Trebuchet MS", "Helvetica", "Arial", sans-serif;
-    width: 100%;
-    margin: 0px;
+    margin: 0;
 }
 
 .category {
-    box-shadow: inset 0px 0px 8px #000;
+    box-shadow: inset 0 0 8px #000;
 }
 #toolbar {
-    background: #444;
+    background: #666;
 }
 #selection {
     background: #fff;
@@ -30,16 +29,8 @@ body {
     background: radial-gradient(#ff4, #c90);
 }
 #mega {
-    background: radial-gradient(#0000, #0004), linear-gradient(
-        to top right,
-        #f00,
-        #ff0,
-        #0f0,
-        #0ff,
-        #00f,
-        #f0f,
-        #f00
-    );
+    background: radial-gradient(#0000, #0004),
+        linear-gradient(to top right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
 }
 
 .evol { /* TODO: make these labels look better */
@@ -48,25 +39,22 @@ body {
     left: 50%;
     transform: translateX(-50%);
     background: #fff8;
+    width: max-content;
     font-weight: bold;
     cursor: pointer;
-    width: max-content;
+    padding: 0 4px;
     border-radius: 4px;
-    padding: 0px 4px;
 }
 
 .track {
     overflow: scroll;
     -webkit-overflow-scrolling: touch; /* for iOS */
-    padding: 4px 0px;
-}
-#selection .track {
-    flex: 1;
+    padding: 4px 0;
 }
 
 .train {
     width: max-content;
-    padding: 0px 4px;
+    padding: 0 4px;
     margin: auto;
 }
 
@@ -77,17 +65,17 @@ body {
     /* transition: margin 333ms, transform 333ms; */
 }
 .profile.hidden {
-    display: none;
     /* transform: scale(0); */
     /* margin: -35px -35px; */
+    display: none;
 }
 
 .card {
     width: 64px;
     cursor: pointer;
+    padding: 2px;
     border: 1px solid #000;
     border-radius: 10%;
-    padding: 2px;
 }
 .card:hover {
     border-color: #fff;
@@ -96,10 +84,10 @@ body {
     background: #7ee;
 }
 #in-training-ii .card {
-    background: #4be;
+    background: #5cf;
 }
 #rookie .card {
-    background: #e70;
+    background: #f82;
 }
 #champion .card {
     background: #eee;
@@ -108,23 +96,13 @@ body {
     background: #fe3;
 }
 #mega .card {
-    background: linear-gradient(
-        to top right,
-        #f44,
-        #ff4,
-        #4f4,
-        #4ff,
-        #44f,
-        #f4f,
-        #f44
-    );
+    background: linear-gradient(to top right, #f44, #ff4, #4f4, #4ff, #44f, #f4f, #f44);
 }
 .profile.node .card {
-    box-shadow: 0px 0px 1px 1px #fff;
+    box-shadow: 0 0 1px 1px #fff;
 }
 .profile.root .card {
-    box-shadow: 0px 0px 0px 2px #fff;
-    border-color: #000;
+    box-shadow: 0 0 0 2px #fff;
     cursor: default;
 }
 
@@ -138,31 +116,29 @@ body {
 }
 
 .tribe {
-    position: relative;
-    background: radial-gradient(#000 55%, #0000 70%);
+    position: relative; /* to make background work */
     width: 25%;
+    background: radial-gradient(#000 55%, #0000 70%);
     border-radius: 50%;
     margin: -100% 0% 75% 0%;
     display: block;
 }
 
-.moniker { /* TODO: figure how to autoscroll text */
-    position: relative;
-    font-family: "Arial Narrow", "Trebuchet MS", "Arial", sans-serif;
+.moniker {
     font-size: 10px;
     text-align: center;
     overflow: hidden;
 }
 
 .signatures {
-    position: relative; /* to show in front of .linelayer */
+    position: relative; /* to make z-index work */
     background: #fff8;
     font-size: 10px;
-    border-radius: 4px;
+    text-shadow: 0 0 1px #fff;
     padding: 2px;
+    border-radius: 4px;
     margin-top: 2px;
     z-index: 1;
-    text-shadow: 0 0 1px #fff;
     display: none;
 }
 #mega .signatures {
@@ -196,10 +172,15 @@ body {
 
 
 
-
-
-
-
+#search {
+    background: #000;
+    color: #fff;
+    text-align: center;
+    font-size: 20pt;
+    border: none;
+    border-radius: 4px;
+    width: 100%;
+}
 
 .button {
     background: #000;
@@ -237,136 +218,4 @@ body {
     100% {
         filter: hue-rotate(360deg) brightness(1);
     }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* within #selection */
-.trainxy {
-    width: 40px;
-}
-.left {
-    float: left;
-}
-.right {
-    float: right;
-}
-
-.buttonthing {
-    width: 32px;
-    height: 32px;
-    border-radius: 4px;
-    box-shadow: inset 0px 0px 4px #000;
-    cursor: pointer;
-    display: block;
-    margin: 4px;
-}
-.buttonthing img {
-    width: 32px;
-    height: 32px;
-    border-radius: 4px;
-}
-
-#viewOption .buttonicon {
-    width: 24px;
-    height: 24px;
-    border: 1px solid #000;
-    border-radius: 50%;
-    transform: translate(3px, 3px);
-}
-#viewOption .buttonicon:after {
-    content: "";
-    width: 20px;
-    height: 20px;
-    background: #000;
-    border-radius: 50%;
-    margin: 2px;
-    display: block;
-}
-#viewOption.selected .buttonicon:after {
-    width: 8px;
-    height: 8px;
-    margin: 8px;
-}
-
-#treeOption .buttonicon {
-    width: 12px;
-    height: 20px;
-    border-radius: 50%;
-    background: #000;
-    transform: translate(10px, 6px);
-}
-#treeOption .buttonicon:before {
-    content: "";
-    width: 20px;
-    height: 20px;
-    border: 1px solid #000;
-    border-radius: 50%;
-    background: #000;
-    margin: 0px 0px 0px -9px;
-    transform: translate(0px, -1px);
-    display: block;
-}
-#treeOption .buttonicon:after {
-    content: "";
-    width: 20px;
-    height: 20px;
-    border: 1px solid #000;
-    border-radius: 50%;
-    background: #000;
-    margin: -23px 0px 0px -1px;
-    display: block;
-}
-#treeOption.selected .buttonicon:before {
-    background: initial;
-}
-#treeOption.selected .buttonicon:after {
-    background: initial;
-}
-
-/* within toolbar */
-
-#search {
-    background: #000;
-    color: #fff;
-    text-align: center;
-    font-size: 20pt;
-    border: none;
-    border-radius: 4px;
-    width: 100%;
-}
-
-.awkntest:hover {
-    text-decoration: underline;
-    cursor: pointer;
-}
-
-@keyframes spinner {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.advent:after {
-    content: "";
-    position: relative;
-    width: 64px;
-    height: 64px;
-    border-top: 2px solid white;
-    animation: spinner 1s linear infinite;
 }
