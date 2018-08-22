@@ -7,9 +7,6 @@ body {
 
 .category {
     box-shadow: inset 0px 0px 8px #000;
-    border-radius: 4px;
-    padding: 4px;
-    margin: 2px;
 }
 #toolbar {
     background: #444;
@@ -46,22 +43,30 @@ body {
 }
 
 .evol { /* TODO: make these labels look better */
+    position: sticky;
+    position: -webkit-sticky; /* for iOS*/
+    left: 50%;
+    transform: translateX(-50%);
     background: #fff8;
     font-weight: bold;
     cursor: pointer;
     width: max-content;
     border-radius: 4px;
     padding: 0px 4px;
-    margin: auto;
 }
 
 .track {
     overflow: scroll;
     -webkit-overflow-scrolling: touch; /* for iOS */
+    padding: 4px 0px;
+}
+#selection .track {
+    flex: 1;
 }
 
 .train {
     width: max-content;
+    padding: 0px 4px;
     margin: auto;
 }
 
@@ -78,7 +83,7 @@ body {
 }
 
 .card {
-    width: 64px;
+    width: min-content;
     cursor: pointer;
     border: 1px solid #000;
     border-radius: 10%;
@@ -150,14 +155,14 @@ body {
 }
 
 .signatures {
-    position: relative;
+    position: relative; /* to show in front of .linelayer */
     background: #fff8;
     font-size: 10px;
     border-radius: 4px;
     padding: 2px;
     margin-top: 2px;
     z-index: 1;
-    text-shadow: 0 0 1px white;
+    text-shadow: 0 0 1px #fff;
     display: none;
 }
 #mega .signatures {
@@ -221,7 +226,7 @@ body {
     border-color: #fff;
 }
 
-.advent {
+.advent .card {
     animation: rainbow 1s alternate infinite;
 }
 
@@ -333,18 +338,14 @@ body {
 
 /* within toolbar */
 
-#selection .track {
-    border: solid #000;
-    border-width: 0px 2px;
-    border-radius: 16px;
-}
-
 #search {
-    font-size: 12pt;
-    border: 1px solid #000;
+    background: #000;
+    color: #fff;
+    text-align: center;
+    font-size: 20pt;
+    border: none;
     border-radius: 4px;
-    padding: 4px;
-    width: 50%;
+    width: 100%;
 }
 
 .awkntest:hover {
