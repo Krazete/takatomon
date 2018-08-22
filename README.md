@@ -1,10 +1,11 @@
 # Takatomon
 A digivolution chart viewer for Digimon Links.
 
-<img alt="hina" src="img/hina/mirage.png" align="right">
+<img alt="hina" src="img/hina/default/mirage.png" align="right">
 
 ## Data Credits
 - Bandai Namco - Digimon Links
+- Spriter's Resource - Hina Sprites
 - /u/ChasingRaccoons - Growlmon
 
 ## Idea Credits
