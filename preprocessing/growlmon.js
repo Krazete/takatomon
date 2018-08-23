@@ -94,7 +94,7 @@ function newDigimon(mon, content) {
         "evol": evol,
         "next": next,
         "tribe": tribe,
-        "released": released,
+        // "released": released,
         "skills": skills
     };
 }

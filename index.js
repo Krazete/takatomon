@@ -293,16 +293,6 @@ function initSearch() {
     });
 }
 
-function initGrowlmon() {
-    var growlmon = document.getElementById("growlmon-net");
-    var net = "https://growlmon.net/digimon/"
-    addTapListener(growlmon, function () {
-        for (var mon of selectedDigi) {
-            open(net + mon);
-        }
-    });
-}
-
 function init() {
     for (var evol of document.getElementsByClassName("evol")) {
         addTapListener(evol, function () {
@@ -319,7 +309,7 @@ function init() {
         track.addEventListener("scroll", update);
     }
     window.addEventListener("resize", update);
-    for (var child of document.getElementById("toolbar").getElementsByTagName("span")) {
+    for (var child of document.getElementById("filtration").getElementsByTagName("span")) {
         addTapListener(child, function () {
             for (var thumb of document.getElementsByClassName("thumb")) {
                 var i = parseInt(this.innerHTML);
@@ -330,7 +320,6 @@ function init() {
     initCards();
     initSearch();
     initFilters();
-    initGrowlmon();
     initOptions();
     for (var mon in advent) {
         digi[mon].profile.classList.add("advent");
