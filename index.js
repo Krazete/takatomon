@@ -27,8 +27,9 @@ function update() {
         for (var mon of selectedDigi) {
             var clone = digi[mon].profile.cloneNode(true);
             clone.className = "profile"; // remove node and root class
-            addTapListener(clone, function () {
-                deselectDigi(this.id);
+            var card = clone.getElementsByClassName("card")[0];
+            addTapListener(card, function () {
+                deselectDigi(this.parentNode.id);
             });
             selection.appendChild(clone);
         }
@@ -207,6 +208,14 @@ function initCard(mon) {
                 signatures.appendChild(signature);
             }
         profile.appendChild(signatures);
+        var growlmon = document.createElement("div");
+            growlmon.className = "growlmon";
+            var anchor = document.createElement("a");
+                anchor.href = "http://growlmon.net/digimon/" + mon;
+                anchor.target = "_blank";
+                anchor.innerHTML = "Growlmon.Net";
+            growlmon.appendChild(anchor);
+        profile.appendChild(growlmon);
     // if (digi[mon].evol == "mega") {
     //     new Tree(mon);
     //     if (digi[mon].prev.some(e => digi[e].evol != "mega")) {
