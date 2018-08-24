@@ -19,29 +19,30 @@ function dfs(mon) {
 		visited.add(mon);
 		console.log(mon);
 		for (var prevmon of prev(mon)) {
-			if (!digi[prevmon].profile.classList.contains("hidden")) { // skip hidden profiles for efficiency
+			if (!document.getElementById(prevmon).classList.contains("hidden")) { // skip hidden profiles for efficiency
 				dfs(prevmon);
 			}
 		}
 		for (var nextmon of next(mon)) {
-			if (!digi[nextmon].profile.classList.contains("hidden")) { // skip hidden profiles for efficiency
+			if (!document.getElementById(nextmon).classList.contains("hidden")) { // skip hidden profiles for efficiency
 				dfs(nextmon);
 			}
 		}
-		// var train = getTrain(digi[mon].evol);
+		// var train = getProfiles(digi[mon].evol);
 		// train.appendChild(digi[mon].profile);
 	}
 }
 for (var root in digi) {
-	if (digi[root].evol == "in-training-i" && !digi[root].profile.classList.contains("hidden")) {
+	if (digi[root].evol == "in-training-i" && !document.getElementById(root).classList.contains("hidden")) {
 		console.log(root);
 		dfs(root);
 	}
 }
 for (var mon of visited) {
 	console.log(mon);
-	// var train = getTrain(digi[mon].evol);
+	// var train = getProfiles(digi[mon].evol);
 	// train.appendChild(digi[mon].profile);
-	digi[mon].profile.parentNode.appendChild(digi[mon].profile);
+	var profile = document.getElementById(mon);
+	profile.parentNode.appendChild(profile);
 }
 update();

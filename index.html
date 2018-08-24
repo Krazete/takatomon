@@ -19,87 +19,99 @@
 <body>
 	<div id="header">
 		Header.
+		<noscript>Please enable JavaScript in your browser settings in order to use this website.</noscript>
 	</div>
-	<div class="category" id="selection">
-		<div class="track">
-			<div class="train"></div>
+	<div class="box" id="selection">
+		<div class="scroller">
+			<div class="profiles">
+				<div class="profile" id="blank">
+					<div class="card">
+						<img class="portrait" src="img/mon/empty.png" alt="empty">
+						<div class="moniker">Empty</div>
+					</div>
+				</div>
+			</div>
 		</div>
-	</div>
-	<div class="category" id="filtration">
-		<input type="text" placeholder="Search Digimon" id="search"></input>
-		<div style="display: inline-block;">
-			<span>Tribe:</span>
-			<img src="img/tribe/mirage.png" alt="filter_tribe_mirage" class="button" id="tribe-mirage">
-			<img src="img/tribe/blazing.png" alt="filter_tribe_blazing" class="button" id="tribe-blazing">
-			<img src="img/tribe/glacier.png" alt="filter_tribe_glacier" class="button" id="tribe-glacier">
-			<img src="img/tribe/electric.png" alt="filter_tribe_electric" class="button" id="tribe-electric">
-			<img src="img/tribe/earth.png" alt="filter_tribe_earth" class="button" id="tribe-earth">
-			<img src="img/tribe/bright.png" alt="filter_tribe_bright" class="button" id="tribe-bright">
-			<img src="img/tribe/abyss.png" alt="filter_tribe_abyss" class="button" id="tribe-abyss">
-		</div>
-		<div style="display: inline-block;">
-			<span>Skill:</span>
-			<img src="img/tribe/mirage.png" alt="filter_skill_mirage" class="button" id="rival-mirage">
-			<img src="img/tribe/blazing.png" alt="filter_skill_blazing" class="button" id="rival-blazing">
-			<img src="img/tribe/glacier.png" alt="filter_skill_glacier" class="button" id="rival-glacier">
-			<img src="img/tribe/electric.png" alt="filter_skill_electric" class="button" id="rival-electric">
-			<img src="img/tribe/earth.png" alt="filter_skill_earth" class="button" id="rival-earth">
-			<img src="img/tribe/bright.png" alt="filter_skill_bright" class="button" id="rival-bright">
-			<img src="img/tribe/abyss.png" alt="filter_skill_abyss" class="button" id="rival-abyss">
-		</div>
-		<div style="display: inline-block;">
-			<div class="button" id="effect-aoe">AoE</div>
-			<div class="button" id="effect-st">ST</div>
-			<div class="button" id="effect-sup">Support</div>
-		</div>
-		<div>
+		<div class="toggle-search" id="enter-search">
 			Search
 		</div>
-		<div>
+	</div>
+	<div class="box" id="filtration">
+		<input type="text" placeholder="Search Digimon" id="search"></input>
+		<div class="switchboxes">
+			<div class="switchbox">
+				<div class="switchbox-label">Filter Tribe</div>
+				<div class="switches">
+					<img src="img/tribe/mirage.png" alt="mirage" class="switch mirage" id="tribe-mirage">
+					<img src="img/tribe/blazing.png" alt="blazing" class="switch blazing" id="tribe-blazing">
+					<img src="img/tribe/glacier.png" alt="glacier" class="switch glacier" id="tribe-glacier">
+					<img src="img/tribe/electric.png" alt="electric" class="switch electric" id="tribe-electric">
+					<img src="img/tribe/earth.png" alt="earth" class="switch earth" id="tribe-earth">
+					<img src="img/tribe/bright.png" alt="bright" class="switch bright" id="tribe-bright">
+					<img src="img/tribe/abyss.png" alt="abyss" class="switch abyss" id="tribe-abyss">
+				</div>
+			</div>
+			<div class="switchbox">
+				<div class="switchbox-label">Filter Skill</div>
+				<div class="switches">
+					<img src="img/tribe/mirage.png" alt="mirage" class="switch mirage" id="rival-mirage">
+					<img src="img/tribe/blazing.png" alt="blazing" class="switch blazing" id="rival-blazing">
+					<img src="img/tribe/glacier.png" alt="glacier" class="switch glacier" id="rival-glacier">
+					<img src="img/tribe/electric.png" alt="electric" class="switch electric" id="rival-electric">
+					<img src="img/tribe/earth.png" alt="earth" class="switch earth" id="rival-earth">
+					<img src="img/tribe/bright.png" alt="bright" class="switch bright" id="rival-bright">
+					<img src="img/tribe/abyss.png" alt="abyss" class="switch abyss" id="rival-abyss">
+					<div class="switch" id="effect-aoe">AoE</div>
+					<div class="switch" id="effect-st">ST</div>
+					<div class="switch" id="effect-sup">Support</div>
+				</div>
+			</div>
+		</div>
+		<div class="toggle-search" id="exit-search">
 			Cancel
 		</div>
 	</div>
-	<div class="category" id="visualization">
-		<div style="flex: 1" class="toggle">Tree Overlap: Intersection / Union</div>
-		<div style="flex: 1" class="toggle">Order: Alphabetical / Tribe / Untangled</div>
-		<div style="flex: 1" class="toggle" id="event-ongoing">Ongoing Emphasis: On / Off</div>
-		<div style="flex: 1" class="toggle">Show Skills: All / Mega Only</div>
-		<div style="flex: 1" class="toggle">Awakening: +0 / +1 / +2 / +3 / +4</div>
+	<div class="box" id="visualization">
+		<div class="toggle">Tree Overlap: Intersection / Union</div>
+		<div class="toggle">Sorting Basis: Alphabetical / Tribe / Untangled</div>
+		<div class="toggle">Event Highlight: On / Off</div>
+		<div class="toggle">Skill Visibility: All / Mega Only</div>
+		<div class="toggle">Awakening Level: +0 / +1 / +2 / +3 / +4</div>
 	</div>
-	<div class="category" id="in-training-i">
-		<div class="track">
-			<div class="evol">In Training I</div>
-			<div class="train"></div>
+	<div class="box" id="in-training-i">
+		<div class="scroller">
+			<div class="box-label">In Training I</div>
+			<div class="profiles"></div>
 		</div>
 	</div>
-	<div class="category" id="in-training-ii">
-		<div class="track">
-			<div class="evol">In Training II</div>
-			<div class="train"></div>
+	<div class="box" id="in-training-ii">
+		<div class="scroller">
+			<div class="box-label">In Training II</div>
+			<div class="profiles"></div>
 		</div>
 	</div>
-	<div class="category" id="rookie">
-		<div class="track">
-			<div class="evol">Rookie</div>
-			<div class="train"></div>
+	<div class="box" id="rookie">
+		<div class="scroller">
+			<div class="box-label">Rookie</div>
+			<div class="profiles"></div>
 		</div>
 	</div>
-	<div class="category" id="champion">
-		<div class="track">
-			<div class="evol">Champion</div>
-			<div class="train"></div>
+	<div class="box" id="champion">
+		<div class="scroller">
+			<div class="box-label">Champion</div>
+			<div class="profiles"></div>
 		</div>
 	</div>
-	<div class="category" id="ultimate">
-		<div class="track">
-			<div class="evol">Ultimate</div>
-			<div class="train"></div>
+	<div class="box" id="ultimate">
+		<div class="scroller">
+			<div class="box-label">Ultimate</div>
+			<div class="profiles"></div>
 		</div>
 	</div>
-	<div class="category" id="mega">
-		<div class="track">
-			<div class="evol">Mega</div>
-			<div class="train"></div>
+	<div class="box" id="mega">
+		<div class="scroller">
+			<div class="box-label">Mega</div>
+			<div class="profiles"></div>
 		</div>
 	</div>
 	<div id="footer">Last updated on <span id="update">August 23, 2018</span>.</div>

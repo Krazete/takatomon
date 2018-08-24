@@ -4,6 +4,8 @@
 
 /* Name Collections */
 
+var blank;
+
 var selectedDigi = new Set();
 var treeOptionSelected = "intersection";
 var viewOptionSelected = 1;
@@ -21,15 +23,22 @@ function update() {
     if (search.value) {
         return;
     }
-    var selection = getTrain("selection");
-    selection.innerHTML = "";
+    var selection = getProfiles("selection");
+    var childs = Array.from(selection.children);
+    for (var child of childs) {
+        if (child != blank) {
+            child.remove();
+        }
+    }
     if (selectedDigi.size) {
+        blank.classList.add("hidden");
         for (var mon of selectedDigi) {
-            var clone = digi[mon].profile.cloneNode(true);
+            var clone = document.getElementById(mon).cloneNode(true);
             clone.className = "profile"; // remove node and root class
+            clone.id = mon + "-clone";
             var card = clone.getElementsByClassName("card")[0];
             addTapListener(card, function () {
-                deselectDigi(this.parentNode.id);
+                deselectDigi(this.parentNode.id.slice(0, -6));
             });
             selection.appendChild(clone);
         }
@@ -37,12 +46,13 @@ function update() {
         drawTree(gemel);
     }
     else {
+        blank.classList.remove("hidden");
         for (var mon in digi) {
-            digi[mon].profile.classList.remove("root");
-            digi[mon].profile.classList.remove("node");
-            digi[mon].profile.classList.remove("hidden");
+            document.getElementById(mon).classList.remove("root");
+            document.getElementById(mon).classList.remove("node");
+            document.getElementById(mon).classList.remove("hidden");
             if (filterIncludes(mon)) {
-                digi[mon].profile.classList.add("hidden");
+                document.getElementById(mon).classList.add("hidden");
             }
         }
         linelayer.innerHTML = "";
@@ -64,18 +74,18 @@ function drawTree(gemel) {
 function drawLeaves(gemel) {
     var tree = gemel[treeOptionSelected]();
     for (var mon in digi) {
-        digi[mon].profile.classList.remove("root");
-        digi[mon].profile.classList.remove("node");
-        digi[mon].profile.classList.remove("hidden");
+        document.getElementById(mon).classList.remove("root");
+        document.getElementById(mon).classList.remove("node");
+        document.getElementById(mon).classList.remove("hidden");
         if (gemel.roots.has(mon)) {
-            digi[mon].profile.classList.add("node");
-            digi[mon].profile.classList.add("root");
+            document.getElementById(mon).classList.add("node");
+            document.getElementById(mon).classList.add("root");
         }
         else if (tree.nodes.has(mon)) {
-            digi[mon].profile.classList.add("node");
+            document.getElementById(mon).classList.add("node");
         }
         else if (viewOptionSelected){
-            digi[mon].profile.classList.add("hidden");
+            document.getElementById(mon).classList.add("hidden");
         }
     }
 }
@@ -115,8 +125,8 @@ function drawLine(a, b, color, width) {
 }
 
 function drawEdge(edge, color, width) {
-    var a = digi[edge[0]].profile.children[0];
-    var b = digi[edge[1]].profile.children[0];
+    var a = document.getElementById(edge[0]).children[0];
+    var b = document.getElementById(edge[1]).children[0];
     var aRect = a.getBoundingClientRect();
     var bRect = b.getBoundingClientRect();
     var aMid = {
@@ -157,8 +167,8 @@ function deselectDigi(mon) {
     return selectedDigi;
 }
 
-function getTrain(id) {
-    return document.getElementById(id).getElementsByClassName("train")[0];
+function getProfiles(id) {
+    return document.getElementById(id).getElementsByClassName("profiles")[0];
 }
 
 function addTapListener(e, f) {
@@ -168,7 +178,7 @@ function addTapListener(e, f) {
 
 /* Initialization */
 
-function initCard(mon) {
+function initProfile(mon) {
     var profile = document.createElement("div");
         profile.className = "profile";
         profile.id = mon;
@@ -219,29 +229,28 @@ function initCard(mon) {
     // if (digi[mon].evol == "mega") {
     //     new Tree(mon);
     //     if (digi[mon].prev.some(e => digi[e].evol != "mega")) {
-    //         document.getElementById("mega").getElementsByClassName("train")[0].appendChild(profile);
+    //         document.getElementById("mega").getElementsByClassName("profiles")[0].appendChild(profile);
     //     }
     //     else if (digi[mon].prev.some(e => digi[e].prev.some(a => digi[a].evol != "mega" && a != mon))) {
-    //         document.getElementById("mega").getElementsByClassName("train")[1].appendChild(profile);
+    //         document.getElementById("mega").getElementsByClassName("profiles")[1].appendChild(profile);
     //     }
     //     else {
-    //         document.getElementById("mega").getElementsByClassName("train")[2].appendChild(profile);
+    //         document.getElementById("mega").getElementsByClassName("profiles")[2].appendChild(profile);
     //     }
     // }
     // else {
-    //     getTrain(digi[mon].evol).appendChild(profile);
+    //     getProfiles(digi[mon].evol).appendChild(profile);
     // }
-    getTrain(digi[mon].evol).appendChild(profile);
+    getProfiles(digi[mon].evol).appendChild(profile);
     addTapListener(card, function () {
         search.value = "";
         selectDigi(this.parentElement.id);
     });
-    digi[mon].profile = profile;
 }
 
-function initCards() {
+function initProfiles() {
     for (var mon in digi) {
-        initCard(mon);
+        initProfile(mon);
     }
 }
 
@@ -281,9 +290,9 @@ function initSearch() {
         if (search.value != "") {
             linelayer.innerHTML = "";
             for (var mon in digi) {
-                digi[mon].profile.classList.add("hidden");
-                if (digi[mon].profile.innerText.toLowerCase().includes(search.value)) {
-                    digi[mon].profile.classList.remove("hidden");
+                document.getElementById(mon).classList.add("hidden");
+                if (document.getElementById(mon).innerText.toLowerCase().includes(search.value)) {
+                    document.getElementById(mon).classList.remove("hidden");
                 }
             }
         }
@@ -294,10 +303,11 @@ function initSearch() {
 }
 
 function init() {
-    for (var evol of document.getElementsByClassName("evol")) {
+    blank = document.getElementById("blank");
+    for (var evol of document.getElementsByClassName("box-name")) {
         addTapListener(evol, function () {
             selectedDigi.clear();
-            for (var profile of getTrain(this.parentElement.id).children) {
+            for (var profile of getProfiles(this.parentElement.id).children) {
                 if (!profile.classList.contains("hidden")) {
                     selectedDigi.add(profile.id);
                 }
@@ -305,8 +315,8 @@ function init() {
             update();
         });
     }
-    for (var track of document.getElementsByClassName("track")) {
-        track.addEventListener("scroll", update);
+    for (var scroller of document.getElementsByClassName("scroller")) {
+        scroller.addEventListener("scroll", update);
     }
     window.addEventListener("resize", update);
     for (var child of document.getElementById("filtration").getElementsByTagName("span")) {
@@ -317,12 +327,12 @@ function init() {
             }
         });
     }
-    initCards();
+    initProfiles();
     initSearch();
     initFilters();
-    initOptions();
+    // initOptions();
     for (var mon in advent) {
-        digi[mon].profile.classList.add("advent");
+        document.getElementById(mon).classList.add("advent");
     }
 }
 
@@ -330,7 +340,6 @@ init();
 
 function initFilters() {
     var ids = [
-        "event-ongoing",
         "tribe-mirage", "tribe-blazing", "tribe-glacier", "tribe-electric", "tribe-earth", "tribe-bright", "tribe-abyss",
         "rival-mirage", "rival-blazing", "rival-glacier", "rival-electric", "rival-earth", "rival-bright", "rival-abyss",
         "effect-aoe", "effect-st", "effect-sup"
