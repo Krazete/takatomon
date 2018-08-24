@@ -84,7 +84,7 @@ function newDigimon(mon, content) {
     });
     if (content.getElementsByClassName("dvolveTable")[0].innerText.toLowerCase().includes("can mode change") ||
         content.getElementsByClassName("dvolveTable")[0].innerText.toLowerCase().includes("by paying gold at any time")) {
-        warning("Digimon [" + mon + "] is able to mode change."); // because growlmon doesn't want to deal with recursion
+        warning("Digimon [" + mon.name + "] is able to mode change."); // because growlmon doesn't want to deal with recursion
     }
     var tribe = mon.tribe;
     var released = content.getElementsByClassName("digidesc")[0].innerText.toLowerCase().includes("to be released") ? 0 : 1;
