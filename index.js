@@ -67,11 +67,11 @@ function filterIncludes(mon) {
 }
 
 function drawTree(gemel) {
-    drawLeaves(gemel);
+    drawNodes(gemel);
     drawEdges(gemel);
 }
 
-function drawLeaves(gemel) {
+function drawNodes(gemel) {
     var tree = gemel[treeOptionSelected]();
     for (var mon in digi) {
         document.getElementById(mon).classList.remove("root");
@@ -173,7 +173,7 @@ function getProfiles(id) {
 
 function addTapListener(e, f) {
     e.addEventListener("click", f);
-    e.addEventListener("touchstart", function () {}); // dunno why this works, but enables responsiveness without unwanted clicks
+    e.addEventListener("touchstart", function () {}); // somehow enables mobile responsiveness (no double tap)
 }
 
 /* Initialization */
@@ -187,6 +187,12 @@ function initProfile(mon) {
             var portrait = document.createElement("img");
                 portrait.className = "portrait";
                 portrait.src = "img/mon/0/" + mon + ".png";
+                if (mon == "birdramon") {
+                    var r = Math.random();
+                    if (r < 0.0001) {
+                        portrait.src = "img/mon/birdramon.png";
+                    }
+                }
                 portrait.alt = mon;
             card.appendChild(portrait);
             var tribe = document.createElement("img");
@@ -226,6 +232,7 @@ function initProfile(mon) {
                 anchor.innerHTML = "Growlmon.Net";
             growlmon.appendChild(anchor);
         profile.appendChild(growlmon);
+    getProfiles(digi[mon].evol).appendChild(profile);
     // if (digi[mon].evol == "mega") {
     //     new Tree(mon);
     //     if (digi[mon].prev.some(e => digi[e].evol != "mega")) {
@@ -241,7 +248,6 @@ function initProfile(mon) {
     // else {
     //     getProfiles(digi[mon].evol).appendChild(profile);
     // }
-    getProfiles(digi[mon].evol).appendChild(profile);
     addTapListener(card, function () {
         search.value = "";
         selectDigi(this.parentElement.id);
@@ -283,24 +289,6 @@ function initOptions() {
     treeOption.click();
 }
 
-function initSearch() {
-    var search = document.getElementById("search");
-    search.addEventListener("input", function (e) {
-        search.value = search.value.toLowerCase().replace(/\s/g, "");
-        if (search.value != "") {
-            linelayer.innerHTML = "";
-            for (var mon in digi) {
-                document.getElementById(mon).classList.add("hidden");
-                if (document.getElementById(mon).innerText.toLowerCase().includes(search.value)) {
-                    document.getElementById(mon).classList.remove("hidden");
-                }
-            }
-        }
-        else {
-            update();
-        }
-    });
-}
 
 function init() {
     blank = document.getElementById("blank");
@@ -329,7 +317,6 @@ function init() {
     }
     initProfiles();
     initSearch();
-    initFilters();
     // initOptions();
     for (var mon in advent) {
         document.getElementById(mon).classList.add("advent");
@@ -338,25 +325,89 @@ function init() {
 
 init();
 
-function initFilters() {
-    var ids = [
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// var blank;
+// var linelayer;
+
+var filter = {
+    "query": new Set(),
+    "tribe": new Set(),
+    "rival": new Set(),
+    "effect": new Set()
+};
+
+function initSearch() {
+    var selection = document.getElementById("selection");
+    var filtration = document.getElementById("filtration");
+    var enterSearchButton = document.getElementById("enter-search");
+    var exitSearchButton = document.getElementById("exit-search");
+    var search = document.getElementById("search");
+    var switchIds = [
         "tribe-mirage", "tribe-blazing", "tribe-glacier", "tribe-electric", "tribe-earth", "tribe-bright", "tribe-abyss",
         "rival-mirage", "rival-blazing", "rival-glacier", "rival-electric", "rival-earth", "rival-bright", "rival-abyss",
         "effect-aoe", "effect-st", "effect-sup"
     ];
-    for (var id of ids) {
-        var button = document.getElementById(id);
-        addTapListener(button, function () {
-            var idPart = this.id.split("-");
-            if (this.classList.contains("selected")) {
-                filter[idPart[0]].delete(idPart[1]);
-                this.classList.remove("selected");
-            }
-            else {
-                filter[idPart[0]].add(idPart[1]);
-                this.classList.add("selected");
-            }
-            update();
-        });
+
+    function enterSearch() {
+        selection.classList.add("hidden");
+        filtration.classList.remove("hidden");
+        search.focus();
+    }
+
+    function exitSearch() {
+        selection.classList.remove("hidden");
+        filtration.classList.add("hidden");
+        search.value = "";
+        for (var switchId of switchIds) {
+            var switchButton = document.getElementById(switchId);
+            switchButton.classList.remove("selected");
+        }
+        filter.query.clear();
+        filter.tribe.clear();
+        filter.rival.clear();
+        filter.effect.clear();
+    }
+
+    function parseQuery() {
+        var lower = this.value.toLowerCase();
+        var parsed = lower.split(/[^a-z]+/);
+        filter.query = new Set(parsed);
+        filter.query.delete("");
+    }
+
+    function toggleSwitch() {
+        var splitId = this.id.split("-");
+        var key = splitId[0];
+        var value = splitId[1];
+        if (this.classList.contains("selected")) {
+            this.classList.remove("selected");
+            filter[key].delete(value);
+        }
+        else {
+            this.classList.add("selected");
+            filter[key].add(value);
+        }
+    }
+
+    addTapListener(blank, enterSearch);
+    addTapListener(enterSearchButton, enterSearch);
+    addTapListener(exitSearchButton, exitSearch);
+    search.addEventListener("input", parseQuery);
+    for (var switchId of switchIds) {
+        var switchButton = document.getElementById(switchId);
+        addTapListener(switchButton, toggleSwitch);
     }
 }

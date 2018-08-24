@@ -2,12 +2,7 @@ body {
     background: #000;
     font-family: "Trebuchet MS", "Helvetica", "Arial", sans-serif;
     margin: 0;
-}
-
-#header, #footer {
-    color: #666;
-    font-size: 14px;
-    text-align: center;
+    overflow-x: hidden;
 }
 
 .box {
@@ -15,18 +10,12 @@ body {
 }
 #selection {
     background: #fff;
-    padding: 4px;
 }
 #filtration {
     background: #222;
-    color: #aaa;
-    padding: 4px;
 }
 #visualization {
     background: #222;
-    color: #aaa;
-    padding: 4px;
-    display: flex;
 }
 #in-training-i {
     background: radial-gradient(#7ef, #4ac);
@@ -190,17 +179,11 @@ body {
     pointer-events: none;
 }
 
-
-
-
-
-
-
-
-
-
-
-
+#header, #footer {
+    color: #666;
+    font-size: 14px;
+    text-align: center;
+}
 
 #search {
     width: 100%;
@@ -208,12 +191,12 @@ body {
     text-align: center;
     padding: 4px 0;
     border: none;
-    border-radius: 8px;
 }
 
 .switchboxes {
+    color: #aaa;
     text-align: center;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .switchbox {
@@ -241,11 +224,10 @@ body {
 }
 
 .toggle-search {
-    background: #aaa;
+    background: linear-gradient(to right, #aaa2, #aaa, #aaa2);
     color: #222;
     text-align: center;
     padding: 4px;
-    border-radius: 8px;
     cursor: pointer;
 }
 .toggle-search:hover {
@@ -290,16 +272,52 @@ body {
     filter: drop-shadow(0 0 2px #f29);
 }
 
+.radioboxes {
+    color: #aaa;
+    display: flex;
+}
 
-
-
-
-
-
-.toggle {
-    font-size: 12px;
+.radiobox {
+    text-align: center;
+    padding: 2px;
     flex: 1;
 }
+
+.radiobox-label {
+    width: max-content;
+    line-height: 10px;
+    background: #222;
+    font-size: 10px;
+    padding: 0 4px;
+    border-radius: 5px;
+    margin: -5px auto -3px auto;
+    pointer-events: none;
+}
+
+.radios {
+    padding: 8px;
+    border: 1px solid #aaa;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.radios:hover {
+    color: #666;
+    border-color: #666;
+}
+
+.radio {
+    height: 12px;
+    line-height: 12px;
+    font-size: 12px;
+    overflow: hidden;
+}
+
+
+
+
+
+
+
 
 .advent .card {
     animation: rainbow 1s alternate infinite;

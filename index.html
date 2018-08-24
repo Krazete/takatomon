@@ -18,8 +18,10 @@
 </head>
 <body>
 	<div id="header">
-		Header.
-		<noscript>Please enable JavaScript in your browser settings in order to use this website.</noscript>
+		<div class="scroller">
+			Header.
+			<noscript>Please enable JavaScript in your browser settings in order to use this website.</noscript>
+		</div>
 	</div>
 	<div class="box" id="selection">
 		<div class="scroller">
@@ -36,9 +38,9 @@
 			Search
 		</div>
 	</div>
-	<div class="box" id="filtration">
+	<div class="box hidden" id="filtration">
 		<input type="text" placeholder="Search Digimon" id="search"></input>
-		<div class="switchboxes">
+		<div class="switchboxes scroller">
 			<div class="switchbox">
 				<div class="switchbox-label">Filter Tribe</div>
 				<div class="switches">
@@ -72,11 +74,47 @@
 		</div>
 	</div>
 	<div class="box" id="visualization">
-		<div class="toggle">Tree Overlap: Intersection / Union</div>
-		<div class="toggle">Sorting Basis: Alphabetical / Tribe / Untangled</div>
-		<div class="toggle">Event Highlight: On / Off</div>
-		<div class="toggle">Skill Visibility: All / Mega Only</div>
-		<div class="toggle">Awakening Level: +0 / +1 / +2 / +3 / +4</div>
+		<div class="radioboxes scroller">
+			<div class="radiobox">
+				<div class="radios">
+					<div class="radio">Intersect<wbr>ion</div>
+					<div class="radio hidden">Union</div>
+				</div>
+				<div class="radiobox-label">Tree Mode</div>
+			</div>
+			<div class="radiobox">
+				<div class="radios">
+					<div class="radio">Alphabet<wbr>ical</div>
+					<div class="radio hidden">Tribe</div>
+					<div class="radio hidden">Untangled</div>
+				</div>
+				<div class="radiobox-label">Sort Basis</div>
+			</div>
+			<div class="radiobox">
+				<div class="radios">
+					<div class="radio">Medium</div>
+					<div class="radio hidden">Big</div>
+					<div class="radio hidden">Small</div>
+				</div>
+				<div class="radiobox-label">Card Size</div>
+			</div>
+			<div class="radiobox">
+				<div class="radios">
+					<div class="radio">All</div>
+					<div class="radio hidden">Mega Only</div>
+				</div>
+				<div class="radiobox-label">Skills</div>
+			</div>
+			<div class="radiobox">
+				<div class="radios">
+					<div class="radio">+0</div>
+					<div class="radio hidden">+1 / +2</div>
+					<div class="radio hidden">+3</div>
+					<div class="radio hidden">+4</div>
+				</div>
+				<div class="radiobox-label">Awakening</div>
+			</div>
+		</div>
 	</div>
 	<div class="box" id="in-training-i">
 		<div class="scroller">
@@ -114,7 +152,11 @@
 			<div class="profiles"></div>
 		</div>
 	</div>
-	<div id="footer">Last updated on <span id="update">August 23, 2018</span>.</div>
+	<div id="footer">
+		<div class="scroller">
+			Last updated on <span id="update">August 23, 2018</span>.
+		</div>
+	</div>
 	<svg id="linelayer"></svg>
 	<script src="digi.js"></script>
 	<script src="tree.js"></script>
