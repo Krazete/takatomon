@@ -25,7 +25,7 @@
 	</div>
 	<div class="box" id="selection">
 		<div class="scroller">
-			<div class="profiles">
+			<div class="profile-group">
 				<div class="profile" id="blank">
 					<div class="card">
 						<img class="portrait" src="img/mon/empty.png" alt="empty">
@@ -43,7 +43,7 @@
 		<div class="switchboxes scroller">
 			<div class="switchbox">
 				<div class="switchbox-label">Filter Tribe</div>
-				<div class="switches">
+				<div class="switch-group">
 					<img src="img/tribe/mirage.png" alt="mirage" class="switch mirage" id="tribe-mirage">
 					<img src="img/tribe/blazing.png" alt="blazing" class="switch blazing" id="tribe-blazing">
 					<img src="img/tribe/glacier.png" alt="glacier" class="switch glacier" id="tribe-glacier">
@@ -55,7 +55,7 @@
 			</div>
 			<div class="switchbox">
 				<div class="switchbox-label">Filter Skill</div>
-				<div class="switches">
+				<div class="switch-group">
 					<img src="img/tribe/mirage.png" alt="mirage" class="switch mirage" id="rival-mirage">
 					<img src="img/tribe/blazing.png" alt="blazing" class="switch blazing" id="rival-blazing">
 					<img src="img/tribe/glacier.png" alt="glacier" class="switch glacier" id="rival-glacier">
@@ -74,82 +74,83 @@
 		</div>
 	</div>
 	<div class="box" id="visualization">
-		<div class="radioboxes scroller">
-			<div class="radiobox">
-				<div class="radios">
-					<div class="radio">Intersect<wbr>ion</div>
-					<div class="radio hidden">Union</div>
+		<div class="slideboxes scroller">
+			<div class="slidebox">
+				<div class="slide-group" id="tree">
+					<div class="slide">Intersect<wbr>ion</div>
+					<div class="slide hidden">Union</div>
 				</div>
-				<div class="radiobox-label">Tree Mode</div>
+				<div class="slidebox-label">Tree Mode</div>
 			</div>
-			<div class="radiobox">
-				<div class="radios">
-					<div class="radio">Alphabet<wbr>ical</div>
-					<div class="radio hidden">Tribe</div>
-					<div class="radio hidden">Untangled</div>
+			<div class="slidebox">
+				<div class="slide-group" id="sort">
+					<div class="slide">Alphabet<wbr>ical</div>
+					<div class="slide hidden">Tribe</div>
+					<div class="slide hidden">Untangled (Beta)</div>
 				</div>
-				<div class="radiobox-label">Sort Basis</div>
+				<div class="slidebox-label">Sort Basis</div>
 			</div>
-			<div class="radiobox">
-				<div class="radios">
-					<div class="radio">Medium</div>
-					<div class="radio hidden">Big</div>
-					<div class="radio hidden">Small</div>
+			<div class="slidebox">
+				<div class="slide-group" id="size">
+					<div class="slide">Medium</div>
+					<div class="slide hidden">Large</div>
+					<div class="slide hidden">Small</div>
 				</div>
-				<div class="radiobox-label">Card Size</div>
+				<div class="slidebox-label">Card Size</div>
 			</div>
-			<div class="radiobox">
-				<div class="radios">
-					<div class="radio">All</div>
-					<div class="radio hidden">Mega Only</div>
+			<div class="slidebox">
+				<div class="slide-group" id="awkn">
+					<div class="slide">+0</div>
+					<div class="slide hidden">+1/+2</div>
+					<div class="slide hidden">+3</div>
+					<div class="slide hidden">+4</div>
+					<div class="slide hidden">+4/V2</div>
 				</div>
-				<div class="radiobox-label">Skills</div>
+				<div class="slidebox-label">Awakening</div>
 			</div>
-			<div class="radiobox">
-				<div class="radios">
-					<div class="radio">+0</div>
-					<div class="radio hidden">+1 / +2</div>
-					<div class="radio hidden">+3</div>
-					<div class="radio hidden">+4</div>
+			<div class="slidebox">
+				<div class="slide-group" id="skill">
+					<div class="slide">Mega Only</div>
+					<div class="slide hidden">All</div>
 				</div>
-				<div class="radiobox-label">Awakening</div>
+				<div class="slidebox-label">Skills</div>
 			</div>
 		</div>
 	</div>
 	<div class="box" id="in-training-i">
 		<div class="scroller">
 			<div class="box-label">In Training I</div>
-			<div class="profiles"></div>
+			<div class="profile-group"></div>
 		</div>
 	</div>
 	<div class="box" id="in-training-ii">
 		<div class="scroller">
 			<div class="box-label">In Training II</div>
-			<div class="profiles"></div>
+			<div class="profile-group"></div>
 		</div>
 	</div>
 	<div class="box" id="rookie">
 		<div class="scroller">
 			<div class="box-label">Rookie</div>
-			<div class="profiles"></div>
+			<div class="profile-group"></div>
 		</div>
 	</div>
 	<div class="box" id="champion">
 		<div class="scroller">
 			<div class="box-label">Champion</div>
-			<div class="profiles"></div>
+			<div class="profile-group"></div>
 		</div>
 	</div>
 	<div class="box" id="ultimate">
 		<div class="scroller">
 			<div class="box-label">Ultimate</div>
-			<div class="profiles"></div>
+			<div class="profile-group"></div>
 		</div>
 	</div>
 	<div class="box" id="mega">
 		<div class="scroller">
 			<div class="box-label">Mega</div>
-			<div class="profiles"></div>
+			<div class="profile-group"></div>
 		</div>
 	</div>
 	<div id="footer">

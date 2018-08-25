@@ -56,7 +56,7 @@ body {
     -webkit-overflow-scrolling: touch; /* for iOS */
 }
 
-.profiles {
+.profile-group {
     width: max-content;
     padding: 0 4px;
     margin: auto;
@@ -68,6 +68,12 @@ body {
     margin: 2px 1px;
     display: inline-block;
 }
+.profile.small {
+    font-size: 8px;
+}
+.profile.large {
+    font-size: 12px;
+}
 
 .card {
     width: 64px;
@@ -76,8 +82,11 @@ body {
     border-radius: 10%;
     cursor: pointer;
 }
-.card:hover { /* TODO: make this exclusive to desktop */
-    border-color: #fff;
+.small .card {
+    width: 48px;
+}
+.large .card {
+    width: 80px;
 }
 #in-training-i .card {
     background: #7ee;
@@ -105,6 +114,9 @@ body {
     cursor: default;
     pointer-events: none;
 }
+.card:hover { /* TODO: make this exclusive to desktop */
+    border-color: #fff;
+}
 
 .portrait {
     width: 64px;
@@ -113,6 +125,16 @@ body {
     background-size: 64px;
     border-radius: 10%;
     display: block;
+}
+.small .portrait {
+    width: 48px;
+    height: 48px;
+    background-size: 48px;
+}
+.large .portrait {
+    width: 80px;
+    height: 80px;
+    background-size: 80px;
 }
 
 .tribe {
@@ -129,7 +151,7 @@ body {
     overflow: hidden;
 }
 
-.signatures {
+.signature-group {
     position: relative; /* to make z-index work */
     background: #fff8;
     text-shadow: 0 0 1px #fff;
@@ -139,7 +161,7 @@ body {
     z-index: 1;
     display: none;
 }
-#mega .signatures {
+#mega .signature-group {
     display: block;
 }
 
@@ -215,7 +237,7 @@ body {
     margin: auto;
 }
 
-.switches {
+.switch-group {
     width: max-content;
     padding: 3px 6px;
     border: 1px solid #aaa;
@@ -272,18 +294,18 @@ body {
     filter: drop-shadow(0 0 2px #f29);
 }
 
-.radioboxes {
+.slideboxes {
     color: #aaa;
     display: flex;
 }
 
-.radiobox {
+.slidebox {
     text-align: center;
     padding: 2px;
     flex: 1;
 }
 
-.radiobox-label {
+.slidebox-label {
     width: max-content;
     line-height: 10px;
     background: #222;
@@ -294,19 +316,20 @@ body {
     pointer-events: none;
 }
 
-.radios {
+.slide-group {
     padding: 8px;
     border: 1px solid #aaa;
     border-radius: 8px;
     cursor: pointer;
+    user-select: none;
 }
-.radios:hover {
-    color: #666;
-    border-color: #666;
+.slide-group:hover {
+    color: #ddd;
+    border-color: #ddd;
 }
 
-.radio {
-    height: 12px;
+.slide {
+    height: 13px; /* for letter g */
     line-height: 12px;
     font-size: 12px;
     overflow: hidden;

@@ -23,7 +23,7 @@ function update() {
     if (search.value) {
         return;
     }
-    var selection = getProfiles("selection");
+    var selection = getProfileGroup("selection");
     var childs = Array.from(selection.children);
     for (var child of childs) {
         if (child != blank) {
@@ -34,7 +34,8 @@ function update() {
         blank.classList.add("hidden");
         for (var mon of selectedDigi) {
             var clone = document.getElementById(mon).cloneNode(true);
-            clone.className = "profile"; // remove node and root class
+            clone.classList.remove("root");
+            clone.classList.remove("node");
             clone.id = mon + "-clone";
             var card = clone.getElementsByClassName("card")[0];
             addTapListener(card, function () {
@@ -72,7 +73,9 @@ function drawTree(gemel) {
 }
 
 function drawNodes(gemel) {
-    var tree = gemel[treeOptionSelected]();
+    var tempRenameThisLaterOrSomething = ["intersection", "union"];
+    var chosenOptionAndAlsoRenameThisLater = tempRenameThisLaterOrSomething[setting.tree];
+    var tree = gemel[chosenOptionAndAlsoRenameThisLater]();
     for (var mon in digi) {
         document.getElementById(mon).classList.remove("root");
         document.getElementById(mon).classList.remove("node");
@@ -142,12 +145,20 @@ function drawEdge(edge, color, width) {
 }
 
 function drawEdges(gemel) {
-    var tree = gemel[treeOptionSelected]();
+    var tempRenameThisLaterOrSomething = ["intersection", "union"];
+    var chosenOptionAndAlsoRenameThisLater = tempRenameThisLaterOrSomething[setting.tree];
+    var tree = gemel[chosenOptionAndAlsoRenameThisLater]();
     linelayer.innerHTML = ""; // refresh linelayer
     tree.forEachEdge(function (edge) {
         drawEdge(edge, "#000", 4);
     });
-    tree.forEachEdge(function (edge) {
+    var intre = gemel.intersection();
+    tree.forEachEdge(function (edge, JSONedge) {
+        if (!intre.JSONedges.has(JSONedge)) {
+            drawEdge(edge, "#888", 2);
+        }
+    });
+    intre.forEachEdge(function (edge) {
         drawEdge(edge, "#fff", 2);
     });
     linelayer.innerHTML += ""; // force-update linelayer
@@ -167,8 +178,8 @@ function deselectDigi(mon) {
     return selectedDigi;
 }
 
-function getProfiles(id) {
-    return document.getElementById(id).getElementsByClassName("profiles")[0];
+function getProfileGroup(id) {
+    return document.getElementById(id).getElementsByClassName("profile-group")[0];
 }
 
 function addTapListener(e, f) {
@@ -193,7 +204,7 @@ function initProfile(mon) {
                         portrait.src = "img/mon/birdramon.png";
                     }
                 }
-                portrait.alt = mon;
+                portrait.alt = mon + "+0";
             card.appendChild(portrait);
             var tribe = document.createElement("img");
                 tribe.className = "tribe";
@@ -205,8 +216,8 @@ function initProfile(mon) {
                 moniker.innerHTML = digi[mon].name.replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2");
             card.appendChild(moniker);
         profile.appendChild(card);
-        var signatures = document.createElement("div");
-            signatures.className = "signatures";
+        var signatureGroup = document.createElement("div");
+            signatureGroup.className = "signature-group";
             for (var skill of digi[mon].skills) {
                 var signature = document.createElement("div");
                     var rival = document.createElement("img");
@@ -221,9 +232,9 @@ function initProfile(mon) {
                         tier.className = "tier";
                         tier.innerHTML = skill[2] ? ("[" + skill[2] + "]") : "";
                     signature.appendChild(tier);
-                signatures.appendChild(signature);
+                signatureGroup.appendChild(signature);
             }
-        profile.appendChild(signatures);
+        profile.appendChild(signatureGroup);
         var growlmon = document.createElement("div");
             growlmon.className = "growlmon";
             var anchor = document.createElement("a");
@@ -232,21 +243,21 @@ function initProfile(mon) {
                 anchor.innerHTML = "Growlmon.Net";
             growlmon.appendChild(anchor);
         profile.appendChild(growlmon);
-    getProfiles(digi[mon].evol).appendChild(profile);
+    getProfileGroup(digi[mon].evol).appendChild(profile);
     // if (digi[mon].evol == "mega") {
     //     new Tree(mon);
     //     if (digi[mon].prev.some(e => digi[e].evol != "mega")) {
-    //         document.getElementById("mega").getElementsByClassName("profiles")[0].appendChild(profile);
+    //         document.getElementById("mega").getElementsByClassName("profile-group")[0].appendChild(profile);
     //     }
     //     else if (digi[mon].prev.some(e => digi[e].prev.some(a => digi[a].evol != "mega" && a != mon))) {
-    //         document.getElementById("mega").getElementsByClassName("profiles")[1].appendChild(profile);
+    //         document.getElementById("mega").getElementsByClassName("profile-group")[1].appendChild(profile);
     //     }
     //     else {
-    //         document.getElementById("mega").getElementsByClassName("profiles")[2].appendChild(profile);
+    //         document.getElementById("mega").getElementsByClassName("profile-group")[2].appendChild(profile);
     //     }
     // }
     // else {
-    //     getProfiles(digi[mon].evol).appendChild(profile);
+    //     getProfileGroup(digi[mon].evol).appendChild(profile);
     // }
     addTapListener(card, function () {
         search.value = "";
@@ -255,47 +266,18 @@ function initProfile(mon) {
 }
 
 function initProfiles() {
+    // skip sorting step, growlmon.js already alphebetized digi.js
     for (var mon in digi) {
         initProfile(mon);
     }
 }
-
-function initOptions() {
-    var viewOption = document.getElementById("viewOption");
-    var treeOption = document.getElementById("treeOption");
-    addTapListener(viewOption, function () {
-        if (this.classList.contains("selected")) {
-            this.classList.remove("selected");
-            viewOptionSelected = 0;
-        }
-        else {
-            this.classList.add("selected");
-            viewOptionSelected = 1;
-        }
-        update();
-    });
-    addTapListener(treeOption, function () {
-        if (this.classList.contains("selected")) {
-            this.classList.remove("selected");
-            treeOptionSelected = "union";
-        }
-        else {
-            this.classList.add("selected");
-            treeOptionSelected = "intersection";
-        }
-        update();
-    });
-    viewOption.click();
-    treeOption.click();
-}
-
 
 function init() {
     blank = document.getElementById("blank");
     for (var evol of document.getElementsByClassName("box-name")) {
         addTapListener(evol, function () {
             selectedDigi.clear();
-            for (var profile of getProfiles(this.parentElement.id).children) {
+            for (var profile of getProfileGroup(this.parentElement.id).children) {
                 if (!profile.classList.contains("hidden")) {
                     selectedDigi.add(profile.id);
                 }
@@ -316,8 +298,8 @@ function init() {
         });
     }
     initProfiles();
-    initSearch();
-    // initOptions();
+    initFiltration();
+    initVisualization();
     for (var mon in advent) {
         document.getElementById(mon).classList.add("advent");
     }
@@ -337,7 +319,25 @@ init();
 
 
 
+function next(mon) {
+	return digi[mon].next;
+}
+function prev(mon) {
+	if (typeof(digi[mon].prev) == "undefined") { // memoization
+		var prevmons = [];
+		for (prevmon in digi) {
+			if (next(prevmon).includes(mon)) {
+				prevmons.push(prevmon);
+			}
+		}
+		digi[mon].prev = prevmons;
+	}
+	return digi[mon].prev;
+}
 
+function updateLines() {
+    update();
+}
 
 // var blank;
 // var linelayer;
@@ -349,31 +349,26 @@ var filter = {
     "effect": new Set()
 };
 
-function initSearch() {
+function initFiltration() {
     var selection = document.getElementById("selection");
     var filtration = document.getElementById("filtration");
-    var enterSearchButton = document.getElementById("enter-search");
-    var exitSearchButton = document.getElementById("exit-search");
+    var enterSearch = document.getElementById("enter-search");
+    var exitSearch = document.getElementById("exit-search");
     var search = document.getElementById("search");
-    var switchIds = [
-        "tribe-mirage", "tribe-blazing", "tribe-glacier", "tribe-electric", "tribe-earth", "tribe-bright", "tribe-abyss",
-        "rival-mirage", "rival-blazing", "rival-glacier", "rival-electric", "rival-earth", "rival-bright", "rival-abyss",
-        "effect-aoe", "effect-st", "effect-sup"
-    ];
+    var switches = filtration.getElementsByClassName("switch");
 
-    function enterSearch() {
+    function enterSearchMode() {
         selection.classList.add("hidden");
         filtration.classList.remove("hidden");
         search.focus();
     }
 
-    function exitSearch() {
+    function exitSearchMode() {
         selection.classList.remove("hidden");
         filtration.classList.add("hidden");
         search.value = "";
-        for (var switchId of switchIds) {
-            var switchButton = document.getElementById(switchId);
-            switchButton.classList.remove("selected");
+        for (var s of switches) {
+            s.classList.remove("selected");
         }
         filter.query.clear();
         filter.tribe.clear();
@@ -386,9 +381,10 @@ function initSearch() {
         var parsed = lower.split(/[^a-z]+/);
         filter.query = new Set(parsed);
         filter.query.delete("");
+        update();
     }
 
-    function toggleSwitch() {
+    function flipSwitch() {
         var splitId = this.id.split("-");
         var key = splitId[0];
         var value = splitId[1];
@@ -400,14 +396,143 @@ function initSearch() {
             this.classList.add("selected");
             filter[key].add(value);
         }
+        update();
     }
 
-    addTapListener(blank, enterSearch);
-    addTapListener(enterSearchButton, enterSearch);
-    addTapListener(exitSearchButton, exitSearch);
+    addTapListener(blank, enterSearchMode);
+    addTapListener(enterSearch, enterSearchMode);
+    addTapListener(exitSearch, exitSearchMode);
     search.addEventListener("input", parseQuery);
-    for (var switchId of switchIds) {
-        var switchButton = document.getElementById(switchId);
-        addTapListener(switchButton, toggleSwitch);
+    for (var s of switches) {
+        addTapListener(s, flipSwitch);
+    }
+}
+
+var setting = {
+    "tree": 0,
+    "sort": 0,
+    "size": 0,
+    "skill": 0,
+    "awkn": 0
+};
+
+function byAlphabet(a, b) {
+    return a < b ? -1 : a > b ? 1 : 0;
+}
+
+function byTribe(a, b) {
+    var tribes = ["mirage", "blazing", "glacier", "electric", "earth", "bright", "abyss"];
+    var tribeComparison = tribes.indexOf(digi[a].tribe) - tribes.indexOf(digi[b].tribe);
+    return tribeComparison ? tribeComparison : byAlphabet(a, b);
+}
+
+function untangledDigi() {
+    var visited = new Set();
+    function dfs(mon, d) {
+        if (!visited.has(mon)) {
+            visited.add(mon);
+            if (d <= 0) {
+                for (var prevmon of prev(mon)) {
+                    if (!document.getElementById(prevmon).classList.contains("hidden")) {
+                        dfs(prevmon, -1);
+                    }
+                }
+            }
+            if (d >= 0) {
+                for (var nextmon of next(mon)) {
+                    if (!document.getElementById(nextmon).classList.contains("hidden")) {
+                        dfs(nextmon, 1);
+                    }
+                }
+            }
+        }
+    }
+    for (var mon of selectedDigi) {
+        dfs(mon, 0);
+    }
+    for (var mon in digi) {
+        visited.add(mon);
+    }
+    return Array.from(visited);
+}
+
+function initVisualization() {
+    var visualization = document.getElementById("visualization");
+    var slideGroups = visualization.getElementsByClassName("slide-group");
+    var settingFunction = {
+        "tree": update,
+        "sort": function () {
+            var keys = Object.keys(digi);
+            if (setting.sort == 0) {
+                keys.sort(byAlphabet);
+            }
+            else if (setting.sort == 1) {
+                keys.sort(byTribe);
+            }
+            else if (setting.sort == 2) {
+                keys = untangledDigi();
+            }
+            for (var mon of keys) {
+                var profileGroup = getProfileGroup(digi[mon].evol);
+                var profile = document.getElementById(mon);
+                profileGroup.appendChild(profile);
+            }
+            updateLines();
+        },
+        "size": function () {
+            var profiles = document.getElementsByClassName("profile");
+            var size = ["", "large", "small"][setting.size];
+            for (var profile of profiles) {
+                profile.classList.remove("large");
+                profile.classList.remove("small");
+                if (setting.size) {
+                    profile.classList.add(size);
+                }
+            }
+            updateLines();
+        },
+        "awkn": function () {
+            var portraits = document.getElementsByClassName("portrait");
+            var awkn = [0, 1, 3, 4, 5][setting.awkn];
+            for (var portrait of portraits) {
+                var mon = portrait.parentNode.parentNode.id;
+                if (awkn != 5 || mon != "blank" && !mon.endsWith("-clone") && digi[mon].v2) {
+                    portrait.src = portrait.src.replace(/mon\/[01345]/, "mon/" + awkn);
+                    portrait.alt = portrait.alt.replace(/\+[01345]/, "+" + awkn);
+                }
+            }
+        },
+        "skill": function () {
+            var signatureGroups = document.getElementsByClassName("signature-group");
+            for (var signatureGroup of signatureGroups) {
+                if (setting.skill) {
+                    signatureGroup.style.display = "block";
+                }
+                else {
+                    signatureGroup.removeAttribute("style");
+                }
+            }
+            updateLines();
+        }
+    };
+
+    function advanceSlide() {
+        var slides = this.getElementsByClassName("slide");
+        var i = 0;
+        for (var slide of slides) {
+            i++;
+            if (!slide.classList.contains("hidden")) {
+                slide.classList.add("hidden");
+                break;
+            }
+        }
+        i %= slides.length;
+        slides[i].classList.remove("hidden");
+        setting[this.id] = i;
+        settingFunction[this.id]();
+    }
+
+    for (var slideGroup of slideGroups) {
+        addTapListener(slideGroup, advanceSlide);
     }
 }
