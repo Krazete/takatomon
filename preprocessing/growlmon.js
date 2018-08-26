@@ -89,13 +89,15 @@ function newDigimon(mon, content) {
     var tribe = mon.tribe;
     var released = content.getElementsByClassName("digidesc")[0].innerText.toLowerCase().includes("to be released") ? 0 : 1;
     var skills = skillset(mon, content, released);
+    var v2 = content.getElementsByClassName("stattable")[0].innerText.toLowerCase().includes("version upgrade") ? 1 : 0;
     return {
         "name": name,
         "evol": evol,
         "next": next,
         "tribe": tribe,
         // "released": released,
-        "skills": skills
+        "skills": skills,
+        "v2": v2
     };
 }
 

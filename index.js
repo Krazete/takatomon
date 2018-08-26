@@ -346,7 +346,8 @@ var filter = {
     "query": new Set(),
     "tribe": new Set(),
     "rival": new Set(),
-    "effect": new Set()
+    "effect": new Set(),
+    "special": new Set()
 };
 
 function initFiltration() {
@@ -374,6 +375,7 @@ function initFiltration() {
         filter.tribe.clear();
         filter.rival.clear();
         filter.effect.clear();
+        filter.special.clear();
     }
 
     function parseQuery() {

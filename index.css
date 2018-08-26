@@ -222,7 +222,7 @@ body {
 }
 
 .switchbox {
-    width: 33%;
+    width: 25%;
     min-width: max-content;
     display: inline-block;
 }
