@@ -5,19 +5,19 @@
 /* Name Collections */
 
 var blank;
+var linelayer;
 
 var selectedDigi = new Set();
-var treeOptionSelected = "intersection";
-var viewOptionSelected = 1;
-var filter = {
-    "filter": new Set(),
-    "tribe": new Set(),
-    "rival": new Set(),
-    "effect": new Set(),
-    "event": new Set()
-};
+var gemel;
+var gemelAnd;
 
 /* Tree Visualization */
+
+function updateProfiles() {
+}
+
+function updateLines() {
+}
 
 function update() {
     if (search.value) {
@@ -43,7 +43,8 @@ function update() {
             });
             selection.appendChild(clone);
         }
-        var gemel = new Gemel(selectedDigi); // TODO: don't call this every single time, store it somewhere globally
+        gemel = new Gemel(selectedDigi);
+        gemelAnd = gemel.intersection();
         drawTree(gemel);
     }
     else {
@@ -73,21 +74,24 @@ function drawTree(gemel) {
 }
 
 function drawNodes(gemel) {
-    var tempRenameThisLaterOrSomething = ["intersection", "union"];
-    var chosenOptionAndAlsoRenameThisLater = tempRenameThisLaterOrSomething[setting.tree];
-    var tree = gemel[chosenOptionAndAlsoRenameThisLater]();
+    if (setting.tree) {
+        var tree = gemel;
+    }
+    else {
+        var tree = gemelAnd;
+    }
     for (var mon in digi) {
         document.getElementById(mon).classList.remove("root");
         document.getElementById(mon).classList.remove("node");
         document.getElementById(mon).classList.remove("hidden");
-        if (gemel.roots.has(mon)) {
+        if (tree.roots.has(mon)) {
             document.getElementById(mon).classList.add("node");
             document.getElementById(mon).classList.add("root");
         }
         else if (tree.nodes.has(mon)) {
             document.getElementById(mon).classList.add("node");
         }
-        else if (viewOptionSelected){
+        else {
             document.getElementById(mon).classList.add("hidden");
         }
     }
@@ -145,20 +149,23 @@ function drawEdge(edge, color, width) {
 }
 
 function drawEdges(gemel) {
-    var tempRenameThisLaterOrSomething = ["intersection", "union"];
-    var chosenOptionAndAlsoRenameThisLater = tempRenameThisLaterOrSomething[setting.tree];
-    var tree = gemel[chosenOptionAndAlsoRenameThisLater]();
     linelayer.innerHTML = ""; // refresh linelayer
-    tree.forEachEdge(function (edge) {
-        drawEdge(edge, "#000", 4);
-    });
-    var intre = gemel.intersection();
-    tree.forEachEdge(function (edge, JSONedge) {
-        if (!intre.JSONedges.has(JSONedge)) {
-            drawEdge(edge, "#888", 2);
-        }
-    });
-    intre.forEachEdge(function (edge) {
+    if (setting.tree) {
+        gemel.forEachEdge(function (edge) {
+            drawEdge(edge, "#000", 4);
+        });
+        gemel.forEachEdge(function (edge, JSONedge) {
+            if (!gemelAnd.JSONedges.has(JSONedge)) {
+                drawEdge(edge, "#888", 2);
+            }
+        });
+    }
+    else {
+        gemelAnd.forEachEdge(function (edge) {
+            drawEdge(edge, "#000", 4);
+        });
+    }
+    gemelAnd.forEachEdge(function (edge) {
         drawEdge(edge, "#fff", 2);
     });
     linelayer.innerHTML += ""; // force-update linelayer
@@ -274,6 +281,7 @@ function initProfiles() {
 
 function init() {
     blank = document.getElementById("blank");
+    linelayer = document.getElementById("linelayer");
     for (var evol of document.getElementsByClassName("box-name")) {
         addTapListener(evol, function () {
             selectedDigi.clear();

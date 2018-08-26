@@ -1,35 +1,43 @@
 "use strict";
 /* this script relies on digi.js */
 
-function Tree(root) {
-    this.root = root;
+function next(mon) {
+    return digi[mon].next;
+}
+
+function prev(mon) {
+    if (typeof digi[mon].prev == "undefined") { // memoization
+        digi[mon].prev = [];
+        for (var prevmon in digi) {
+            if (next(prevmon).includes(mon)) {
+                digi[mon].prev.push(prevmon);
+            }
+        }
+    }
+    return digi[mon].prev;
+}
+
+function Gemel(roots) { // gemels are unions of trees
+    if (typeof roots == "string") { // single-root gemels are just trees
+        if (typeof digi[roots].tree == "undefined") { // memoization
+            roots = [roots];
+        }
+        else {
+            return digi[roots].tree;
+        }
+    }
+    this.roots = new Set(roots);
     this.nodes = new Set();
-    this.JSONedges = new Set(); // identical arrays aren't equal, so stringify them
-    if (typeof root != "undefined") {
+    this.JSONedges = new Set(); // stringify edges because [] != [] but "" == ""
+    if (typeof roots == "object") {
         // pointers for initialization
         var nodes = this.nodes;
         var JSONedges = this.JSONedges;
         // initialization
-        nodes.add(root);
-        function next(mon) {
-            return digi[mon].next;
-        }
-        function prev(mon) {
-            if (typeof(digi[mon].prev) == "undefined") { // memoization
-                var prevmons = [];
-                for (var prevmon in digi) {
-                    if (next(prevmon).includes(mon)) {
-                        prevmons.push(prevmon);
-                    }
-                }
-                digi[mon].prev = prevmons;
-            }
-            return digi[mon].prev;
-        }
         function init(mon, direction) {
+            nodes.add(mon);
             if (direction < 1) {
                 for (var prevmon of prev(mon)) {
-                    nodes.add(prevmon);
                     var edge = [prevmon, mon];
                     var JSONedge = JSON.stringify(edge);
                     if (!JSONedges.has(JSONedge)) {
@@ -40,7 +48,6 @@ function Tree(root) {
             }
             if (direction > -1) {
                 for (var nextmon of next(mon)) {
-                    nodes.add(nextmon);
                     var edge = [mon, nextmon];
                     var JSONedge = JSON.stringify(edge);
                     if (!JSONedges.has(JSONedge)) {
@@ -50,56 +57,55 @@ function Tree(root) {
                 }
             }
         }
-        init(root, 0);
+        for (var root of roots) {
+            init(root, 0);
+        }
+    }
+    if (this.roots.size == 1) { // memoization
+        for (var root of this.roots) {
+            digi[root].tree = this;
+        }
     }
 }
-Tree.prototype.forEachEdge = function (f) {
+Gemel.prototype.forEachEdge = function (f) {
     for (var JSONedge of this.JSONedges) {
         var edge = JSON.parse(JSONedge);
         f(edge, JSONedge);
     }
 };
-Tree.prototype.sortedLeaves = function () {
-    return true; // TODO: this
-};
-
-function Gemel(roots) {
-    this.roots = new Set(roots);
-    this.trees = new Set();
-    for (var root of roots) {
-        if (typeof(digi[root].tree) == "undefined") { // memoization
-            digi[root].tree = new Tree(root);
-        };
-        this.trees.add(digi[root].tree);
-    }
+Gemel.prototype.clone = function () {
+    var clone = new Gemel();
+    clone.roots = new Set(this.roots);
+    clone.nodes = new Set(this.nodes);
+    clone.JSONedges = new Set(this.JSONedges);
+    return clone;
 }
-Gemel.prototype.union = function () {
-    var unionTree = new Tree();
-    for (var tree of this.trees) {
-        tree.forEachEdge(function (edge, JSONedge) {
-            unionTree.nodes.add(edge[0]);
-            unionTree.nodes.add(edge[1]);
-            unionTree.JSONedges.add(JSONedge);
-        });
-    }
-    return unionTree;
-};
-Gemel.prototype.intersection = function () {
-    var intersectionTree = new Tree();
-    intersectionTree.nodes = new Set(Object.keys(digi));
-    for (var tree of this.trees) {
-        for (var node of intersectionTree.nodes) {
-            if (!tree.nodes.has(node) && !this.roots.has(node)) {
-                intersectionTree.nodes.delete(node);
-            }
+Gemel.prototype.intersect = function (that) {
+    for (var root of this.roots) {
+        if (!that.roots.has(root)) {
+            this.roots.delete(root);
         }
     }
-    for (var tree of this.trees) {
-        tree.forEachEdge(function (edge, JSONedge) {
-            if (intersectionTree.nodes.has(edge[0]) && intersectionTree.nodes.has(edge[1])) {
-                intersectionTree.JSONedges.add(JSONedge);
-            }
-        });
+    for (var node of this.nodes) {
+        if (!that.nodes.has(node)) {
+            this.nodes.delete(node);
+        }
     }
-    return intersectionTree;
+    for (var JSONedge of this.JSONedges) {
+        if (!that.JSONedges.has(JSONedge)) {
+            this.JSONedges.delete(JSONedge);
+        }
+    }
+};
+Gemel.prototype.intersection = function () {
+    var clone = this.clone();
+    for (var root of this.roots) {
+        var tree = new Gemel(root);
+        clone.intersect(tree);
+    }
+    for (var root of this.roots) {
+        clone.roots.add(root);
+        clone.nodes.add(root);
+    }
+    return clone;
 };
