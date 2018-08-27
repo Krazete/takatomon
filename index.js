@@ -1,41 +1,36 @@
-/* NOTE: read "digi" as "nodeset" and "mon" as "node" */
+/* this script relies on digi.js and tree.js */
 
-/* DATA */
-
-/* Name Collections */
+/* HTML Elements */
 
 var blank;
 var linelayer;
 
+/* Data Storage */
+
 var selectedDigi = new Set();
 var gemel;
-var gemelAnd;
+var gemelCore;
 
-/* Tree Visualization */
-
-function updateProfiles() {
-}
-
-function updateLines() {
-}
+/* Gemel Visualization */
 
 function update() {
-    if (search.value) {
-        return;
-    }
+    gemel = new Gemel(selectedDigi);
+    gemelCore = gemel.intersection();
+    updateClones();
+    updateProfiles();
+    updateLines();
+}
+
+function updateClones() {
     var selection = getProfileGroup("selection");
-    var childs = Array.from(selection.children);
-    for (var child of childs) {
-        if (child != blank) {
-            child.remove();
-        }
-    }
+    selection.innerHTML = "";
     if (selectedDigi.size) {
-        blank.classList.add("hidden");
         for (var mon of selectedDigi) {
-            var clone = document.getElementById(mon).cloneNode(true);
+            var profile = document.getElementById(mon);
+            var clone = profile.cloneNode(true);
             clone.classList.remove("root");
             clone.classList.remove("node");
+            clone.classList.remove("hidden");
             clone.id = mon + "-clone";
             var card = clone.getElementsByClassName("card")[0];
             addTapListener(card, function () {
@@ -43,58 +38,84 @@ function update() {
             });
             selection.appendChild(clone);
         }
-        gemel = new Gemel(selectedDigi);
-        gemelAnd = gemel.intersection();
-        drawTree(gemel);
     }
     else {
-        blank.classList.remove("hidden");
-        for (var mon in digi) {
-            document.getElementById(mon).classList.remove("root");
-            document.getElementById(mon).classList.remove("node");
-            document.getElementById(mon).classList.remove("hidden");
-            if (filterIncludes(mon)) {
-                document.getElementById(mon).classList.add("hidden");
-            }
-        }
-        linelayer.innerHTML = "";
+        selection.appendChild(blank);
     }
 }
 
-function filterIncludes(mon) {
-    var tribeIncludes = filter.tribe.size && !filter.tribe.has(digi[mon].tribe);
-    var rivalIncludes = filter.rival.size && !digi[mon].skills.some(skill => filter.rival.has(skill[0]));
-    var effectIncludes = filter.effect.size && !digi[mon].skills.some(skill => filter.effect.has(["sup", "st", "aoe"][skill[1]]));
-    return tribeIncludes || rivalIncludes || effectIncludes;
-}
-
-function drawTree(gemel) {
-    drawNodes(gemel);
-    drawEdges(gemel);
-}
-
-function drawNodes(gemel) {
-    if (setting.tree) {
-        var tree = gemel;
+function updateProfiles() {
+    if (setting.sort == 2) {
+        // untangle digimon
+        // TODO: this
     }
-    else {
-        var tree = gemelAnd;
-    }
+    var tree = setting.tree ? gemel : gemelCore;
     for (var mon in digi) {
         document.getElementById(mon).classList.remove("root");
         document.getElementById(mon).classList.remove("node");
         document.getElementById(mon).classList.remove("hidden");
-        if (tree.roots.has(mon)) {
-            document.getElementById(mon).classList.add("node");
-            document.getElementById(mon).classList.add("root");
-        }
-        else if (tree.nodes.has(mon)) {
-            document.getElementById(mon).classList.add("node");
-        }
-        else {
-            document.getElementById(mon).classList.add("hidden");
+        if (selectedDigi.size) {
+            if (tree.roots.has(mon)) {
+                document.getElementById(mon).classList.add("root");
+            }
+            else if (tree.nodes.has(mon)) {
+                document.getElementById(mon).classList.add("node");
+            }
+            else {
+                document.getElementById(mon).classList.add("hidden");
+            }
         }
     }
+}
+
+function updateLines() { // cannot update individually because of line border
+    linelayer.innerHTML = ""; // refresh linelayer
+    if (setting.tree) {
+        gemel.forEachEdge(function (edge, JSONedge) {
+            if (!gemelCore.JSONedges.has(JSONedge)) {
+                drawEdge(edge, "#000", 4);
+            }
+        });
+        gemel.forEachEdge(function (edge, JSONedge) {
+            if (!gemelCore.JSONedges.has(JSONedge)) {
+                drawEdge(edge, "#aaa", 2);
+            }
+        });
+    }
+    gemelCore.forEachEdge(function (edge, JSONedge) {
+        drawEdge(edge, "#000", 4);
+    });
+    gemelCore.forEachEdge(function (edge, JSONedge) {
+        drawEdge(edge, "#fff", 2);
+    });
+    linelayer.innerHTML += ""; // force-update linelayer
+}
+
+function drawEdge(edge, color, width) {
+    var a = getPoint(edge[0], "bottom");
+    var b = getPoint(edge[1], "top");
+    drawLine(a, b, color, width);
+    // below is side-trimming, likely redundant (browser probably covers it)
+    // var tooLeft = a.x < window.scrollX && b.x < window.scrollX;
+    // var tooRight = a.x > (window.scrollX + window.innerWidth) && b.x > (window.scrollX > window).innerWidth;
+    // if (!tooLeft && !tooRight) {
+    //     drawLine(a, b, color, width);
+    // }
+}
+
+function getPoint(mon, side) {
+    var profile = document.getElementById(mon);
+    var card = profile.getElementsByClassName("card")[0];
+    var rect = card.getBoundingClientRect();
+    var dy = {
+        "top": 1,
+        "bottom": -1
+    };
+    var point = {
+        "x": window.scrollX + (rect.left + rect.right) / 2,
+        "y": window.scrollY + rect[side] + dy[side]
+    };
+    return point;
 }
 
 function drawLine(a, b, color, width) {
@@ -127,48 +148,7 @@ function drawLine(a, b, color, width) {
     path.setAttribute("stroke", color);
     path.setAttribute("stroke-width", width);
     path.setAttribute("fill", "none");
-    var linelayer = document.getElementById("linelayer");
     linelayer.appendChild(path);
-}
-
-function drawEdge(edge, color, width) {
-    var a = document.getElementById(edge[0]).children[0];
-    var b = document.getElementById(edge[1]).children[0];
-    var aRect = a.getBoundingClientRect();
-    var bRect = b.getBoundingClientRect();
-    var aMid = {
-        "x": window.scrollX + (aRect.left + aRect.right) / 2,
-        "y": window.scrollY + aRect.bottom - 1
-    };
-    var bMid = {
-        "x": window.scrollX + (bRect.left + bRect.right) / 2,
-        "y": window.scrollY + bRect.top + 1
-    };
-    var linelayer = document.getElementById("linelayer");
-    drawLine(aMid, bMid, color, width);
-}
-
-function drawEdges(gemel) {
-    linelayer.innerHTML = ""; // refresh linelayer
-    if (setting.tree) {
-        gemel.forEachEdge(function (edge) {
-            drawEdge(edge, "#000", 4);
-        });
-        gemel.forEachEdge(function (edge, JSONedge) {
-            if (!gemelAnd.JSONedges.has(JSONedge)) {
-                drawEdge(edge, "#888", 2);
-            }
-        });
-    }
-    else {
-        gemelAnd.forEachEdge(function (edge) {
-            drawEdge(edge, "#000", 4);
-        });
-    }
-    gemelAnd.forEachEdge(function (edge) {
-        drawEdge(edge, "#fff", 2);
-    });
-    linelayer.innerHTML += ""; // force-update linelayer
 }
 
 /* HTML */
@@ -176,17 +156,17 @@ function drawEdges(gemel) {
 function selectDigi(mon) {
     selectedDigi.add(mon);
     update();
-    return selectedDigi;
 }
 
 function deselectDigi(mon) {
     selectedDigi.delete(mon);
     update();
-    return selectedDigi;
 }
 
 function getProfileGroup(id) {
-    return document.getElementById(id).getElementsByClassName("profile-group")[0];
+    var box = document.getElementById(id);
+    var profileGroup = box.getElementsByClassName("profile-group")[0];
+    return profileGroup;
 }
 
 function addTapListener(e, f) {
@@ -252,15 +232,17 @@ function initProfile(mon) {
         profile.appendChild(growlmon);
     getProfileGroup(digi[mon].evol).appendChild(profile);
     // if (digi[mon].evol == "mega") {
+    //     var mega = document.getElementById("mega");
+    //     var profileGroups = mega.getElementsByClassName("profile-group");
     //     new Tree(mon);
     //     if (digi[mon].prev.some(e => digi[e].evol != "mega")) {
-    //         document.getElementById("mega").getElementsByClassName("profile-group")[0].appendChild(profile);
+    //         profileGroups[0].appendChild(profile);
     //     }
     //     else if (digi[mon].prev.some(e => digi[e].prev.some(a => digi[a].evol != "mega" && a != mon))) {
-    //         document.getElementById("mega").getElementsByClassName("profile-group")[1].appendChild(profile);
+    //         profileGroups[1].appendChild(profile);
     //     }
     //     else {
-    //         document.getElementById("mega").getElementsByClassName("profile-group")[2].appendChild(profile);
+    //         profileGroups[2].appendChild(profile);
     //     }
     // }
     // else {
@@ -327,26 +309,6 @@ init();
 
 
 
-function next(mon) {
-	return digi[mon].next;
-}
-function prev(mon) {
-	if (typeof(digi[mon].prev) == "undefined") { // memoization
-		var prevmons = [];
-		for (prevmon in digi) {
-			if (next(prevmon).includes(mon)) {
-				prevmons.push(prevmon);
-			}
-		}
-		digi[mon].prev = prevmons;
-	}
-	return digi[mon].prev;
-}
-
-function updateLines() {
-    update();
-}
-
 // var blank;
 // var linelayer;
 
@@ -370,6 +332,7 @@ function initFiltration() {
         selection.classList.add("hidden");
         filtration.classList.remove("hidden");
         search.focus();
+        update();
     }
 
     function exitSearchMode() {
@@ -384,6 +347,7 @@ function initFiltration() {
         filter.rival.clear();
         filter.effect.clear();
         filter.special.clear();
+        update();
     }
 
     function parseQuery() {
@@ -471,7 +435,7 @@ function initVisualization() {
     var slideGroups = visualization.getElementsByClassName("slide-group");
     var settingFunction = {
         "tree": update,
-        "sort": function () {
+        "sort": function () { // TODO: always sort by "is a gemel node" first
             var keys = Object.keys(digi);
             if (setting.sort == 0) {
                 keys.sort(byAlphabet);

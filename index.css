@@ -329,7 +329,7 @@ body {
 }
 
 .slide {
-    height: 13px; /* for letter g */
+    height: 13px; /* for letter with tails */
     line-height: 12px;
     font-size: 12px;
     overflow: hidden;
