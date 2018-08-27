@@ -3,7 +3,7 @@
 
 imdir = '/Users/Krazete/Desktop/takatomon/preprocessing/img/';
 reimdir = '/Users/Krazete/Desktop/takatomon/img/';
-subdir = 'awkn/0';
+subdir = 'mon';
 
 colors = 64;
 dith = 'nodither';
@@ -24,7 +24,7 @@ for n = 1:N
         end
         rename = [reimdir, subdir, '/', file.name];
         imwrite(reim, remap, rename);
-        % add transparency for subdirs 'mon' and 'hina/*'
+        % add transparency for subdirs 'hina/*' and files 'mon/birdramon.png'
 %         imwrite(reim, remap, rename, 'Transparency', 0);
     end
 end
