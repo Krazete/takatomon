@@ -153,6 +153,7 @@ body {
 
 .signature-group {
     position: relative; /* to make z-index work */
+    width: 64px;
     background: #fff8;
     text-shadow: 0 0 1px #fff;
     padding: 2px;
@@ -161,12 +162,18 @@ body {
     z-index: 1;
     display: none;
 }
+.small .signature-group {
+    width: 48px;
+}
+.large .signature-group {
+    width: 80px;
+}
 #mega .signature-group {
     display: block;
 }
 
 .rival {
-    width: 12px;
+    width: 20%;
     vertical-align: bottom;
     filter: brightness(0);
 }
