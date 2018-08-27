@@ -1,5 +1,5 @@
 % useful only for bichrome images
-% run in root/img/tribe
+% run in a copy of preprocessing/img/tribe
 
 % change to and rerun for each image base name
 tribe = 'mirage';
