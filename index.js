@@ -1,17 +1,36 @@
 /* this script relies on digi.js and tree.js */
 
-/* HTML Elements */
+/* Globals */
 
 var blank;
 var linelayer;
 
-/* Data Storage */
-
 var selectedDigi = new Set();
 var gemel;
 var gemelCore;
+var setting = {
+    "search": 0, // because scroll and resize event listeners call updateLines
+    "tree": 0,
+    "sort": 0,
+    "size": 0,
+    "skill": 0,
+    "awkn": 0
+};
 
-/* Gemel Visualization */
+/* Helpers */
+
+function getProfileGroup(id) {
+    var box = document.getElementById(id);
+    var profileGroup = box.getElementsByClassName("profile-group")[0];
+    return profileGroup;
+}
+
+function addTapListener(e, f) {
+    e.addEventListener("click", f);
+    e.addEventListener("touchstart", function () {}); // somehow enables mobile responsiveness (no double tap)
+}
+
+/* Tree Visualization */
 
 function update() {
     gemel = new Gemel(selectedDigi);
@@ -36,7 +55,7 @@ function updateClones() {
             clone.id = mon + "-clone";
             var card = clone.getElementsByClassName("card")[0];
             addTapListener(card, function () {
-                deselectDigi(this.parentNode.id.slice(0, -6));
+                deselectCard(this.parentNode.id.slice(0, -6));
             });
             selection.appendChild(clone);
         }
@@ -44,6 +63,11 @@ function updateClones() {
     else {
         selection.appendChild(blank);
     }
+}
+
+function deselectCard(mon) {
+    selectedDigi.delete(mon);
+    update();
 }
 
 function updateProfiles() {
@@ -73,7 +97,7 @@ function updateProfiles() {
 
 function updateLines() { // cannot update individually because of line border
     linelayer.innerHTML = ""; // refresh linelayer
-    if (!setting.search) {
+    if (!setting.search) { // hide lines in search mode
         if (setting.tree) {
             gemel.forEachEdge(function (edge, JSONedge) {
                 if (!gemelCore.JSONedges.has(JSONedge)) {
@@ -156,230 +180,134 @@ function drawLine(a, b, color, width) {
     linelayer.appendChild(path);
 }
 
-/* HTML */
-
-function selectDigi(mon) {
-    selectedDigi.add(mon);
-    document.getElementById("exit-search").click(); // TODO: not this
-}
-
-function deselectDigi(mon) {
-    selectedDigi.delete(mon);
-    update();
-}
-
-function getProfileGroup(id) {
-    var box = document.getElementById(id);
-    var profileGroup = box.getElementsByClassName("profile-group")[0];
-    return profileGroup;
-}
-
-function addTapListener(e, f) {
-    e.addEventListener("click", f);
-    e.addEventListener("touchstart", function () {}); // somehow enables mobile responsiveness (no double tap)
-}
-
 /* Initialization */
-
-function initProfile(mon) {
-    var profile = document.createElement("div");
-        profile.className = "profile";
-        profile.id = mon;
-        var card = document.createElement("div");
-            card.className = "card";
-            var portrait = document.createElement("img");
-                portrait.className = "portrait";
-                portrait.src = "img/mon/0/" + mon + ".png";
-                if (mon == "birdramon") {
-                    var r = Math.random();
-                    if (r < 0.0001) {
-                        portrait.src = "img/mon/birdramon.png";
-                    }
-                }
-                portrait.alt = mon + "+0";
-            card.appendChild(portrait);
-            var tribe = document.createElement("img");
-                tribe.className = "tribe";
-                tribe.src = "img/tribe/" + digi[mon].tribe + ".png";
-                tribe.alt = digi[mon].tribe;
-            card.appendChild(tribe);
-            var moniker = document.createElement("div");
-                moniker.className = "moniker";
-                moniker.innerHTML = digi[mon].name.replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2");
-            card.appendChild(moniker);
-        profile.appendChild(card);
-        var signatureGroup = document.createElement("div");
-            signatureGroup.className = "signature-group";
-            for (var skill of digi[mon].skills) {
-                var signature = document.createElement("div");
-                    var rival = document.createElement("img");
-                        rival.className = "rival";
-                        rival.src = "img/tribe/" + skill[0] + ".png";
-                        rival.alt = skill[0];
-                    signature.appendChild(rival);
-                    var effect = document.createElement("span");
-                        effect.innerHTML = ["Support", "ST", "AoE"][skill[1]];
-                    signature.appendChild(effect);
-                    var tier = document.createElement("span");
-                        tier.className = "tier";
-                        tier.innerHTML = skill[2] ? ("[" + skill[2] + "]") : "";
-                    signature.appendChild(tier);
-                signatureGroup.appendChild(signature);
-            }
-        profile.appendChild(signatureGroup);
-        var growlmon = document.createElement("div");
-            growlmon.className = "growlmon";
-            var anchor = document.createElement("a");
-                anchor.href = "http://growlmon.net/digimon/" + mon;
-                anchor.target = "_blank";
-                anchor.innerHTML = "Growlmon.Net";
-            growlmon.appendChild(anchor);
-        profile.appendChild(growlmon);
-    getProfileGroup(digi[mon].evol).appendChild(profile);
-    // if (digi[mon].evol == "mega") {
-    //     var mega = document.getElementById("mega");
-    //     var profileGroups = mega.getElementsByClassName("profile-group");
-    //     new Tree(mon);
-    //     if (digi[mon].prev.some(e => digi[e].evol != "mega")) {
-    //         profileGroups[0].appendChild(profile);
-    //     }
-    //     else if (digi[mon].prev.some(e => digi[e].prev.some(a => digi[a].evol != "mega" && a != mon))) {
-    //         profileGroups[1].appendChild(profile);
-    //     }
-    //     else {
-    //         profileGroups[2].appendChild(profile);
-    //     }
-    // }
-    // else {
-    //     getProfileGroup(digi[mon].evol).appendChild(profile);
-    // }
-    addTapListener(card, function () {
-        selectDigi(this.parentNode.id);
-    });
-    card.addEventListener("mouseover", function () {
-        if (!setting.search && selectedDigi.size) {
-            var tree = new Gemel(this.parentNode.id);
-            for (var node of tree.nodes) {
-                document.getElementById(node).classList.add("preview");
-            }
-            var gem = setting.tree ? gemel : gemelCore;
-            tree.forEachEdge(function (edge, JSONedge) {
-                if (gem.nodes.has(edge[0]) && gem.nodes.has(edge[1])) {
-                    drawEdge(edge, "#000", 4);
-                }
-            });
-            linelayer.innerHTML += "";
-        }
-    });
-    card.addEventListener("mouseout", function () {
-        if (!setting.search) {
-            updateProfiles();
-            updateLines();
-        }
-    });
-}
-
-function initProfiles() {
-    // skip sorting step, growlmon.js already alphebetized digi.js
-    for (var mon in digi) {
-        initProfile(mon);
-    }
-}
 
 function init() {
     blank = document.getElementById("blank");
     linelayer = document.getElementById("linelayer");
-    for (var evol of document.getElementsByClassName("box-name")) {
-        addTapListener(evol, function () {
-            selectedDigi.clear();
-            for (var profile of getProfileGroup(this.parentNode.id).children) {
-                if (!profile.classList.contains("hidden")) {
-                    selectedDigi.add(profile.id);
-                }
-            }
-            update();
-        });
-    }
-    for (var scroller of document.getElementsByClassName("scroller")) {
-        scroller.addEventListener("scroll", updateLines);
-    }
-    window.addEventListener("resize", updateLines);
-    for (var child of document.getElementById("filtration").getElementsByTagName("span")) {
-        addTapListener(child, function () {
-            for (var thumb of document.getElementsByClassName("thumb")) {
-                var i = parseInt(this.innerHTML);
-                thumb.src = thumb.src.replace(/mon\/\d+/, "mon/" + (i == 2 ? 1 : i));
-            }
-        });
-    }
     initProfiles();
+    initBoxLabels();
     initFiltration();
     initVisualization();
-    for (var mon in advent) {
-        document.getElementById(mon).classList.add("advent");
+    initLineListeners();
+}
+
+function initBoxLabels() {
+    var boxLabels = document.getElementsByClassName("box-label");
+
+    function selectBox() {
+        var box = this.parentNode.parentNode;
+        var profiles = box.getElementsByClassName("profile");
+        selectedDigi.clear();
+        for (var profile of profiles) {
+            if (!profile.classList.contains("hidden")) {
+                selectedDigi.add(profile.id);
+            }
+        }
+        if (setting.search) {
+            document.getElementById("exit-search").click(); // TODO: change this hacky crap
+        }
+        update();
+    }
+
+    for (var boxLabel of boxLabels) {
+        addTapListener(boxLabel, selectBox);
     }
 }
 
-init();
+function initProfiles() {
+    function newProfile(mon) {
+        var profile = document.createElement("div");
+            profile.className = "profile";
+            profile.id = mon;
+            var card = document.createElement("div");
+                card.className = "card";
+                var portrait = document.createElement("img");
+                    portrait.className = "portrait";
+                    portrait.src = "img/mon/0/" + mon + ".png";
+                    if (mon == "birdramon") {
+                        var r = Math.random();
+                        if (r < 0.0001) {
+                            portrait.src = "img/mon/birdramon.png";
+                        }
+                    }
+                    portrait.alt = mon + "+0";
+                card.appendChild(portrait);
+                var tribe = document.createElement("img");
+                    tribe.className = "tribe";
+                    tribe.src = "img/tribe/" + digi[mon].tribe + ".png";
+                    tribe.alt = digi[mon].tribe;
+                card.appendChild(tribe);
+                var moniker = document.createElement("div");
+                    moniker.className = "moniker";
+                    moniker.innerHTML = digi[mon].name.replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2");
+                card.appendChild(moniker);
+            profile.appendChild(card);
+            var signatureGroup = document.createElement("div");
+                signatureGroup.className = "signature-group";
+                for (var skill of digi[mon].skills) {
+                    var signature = document.createElement("div");
+                        var rival = document.createElement("img");
+                            rival.className = "rival";
+                            rival.src = "img/tribe/" + skill[0] + ".png";
+                            rival.alt = skill[0];
+                        signature.appendChild(rival);
+                        var effect = document.createElement("span");
+                            effect.innerHTML = ["Support", "ST", "AoE"][skill[1]];
+                        signature.appendChild(effect);
+                        var tier = document.createElement("span");
+                            tier.className = "tier";
+                            tier.innerHTML = skill[2] ? ("[" + skill[2] + "]") : "";
+                        signature.appendChild(tier);
+                    signatureGroup.appendChild(signature);
+                }
+            profile.appendChild(signatureGroup);
+            var growlmon = document.createElement("div");
+                growlmon.className = "growlmon";
+                var anchor = document.createElement("a");
+                    anchor.href = "http://growlmon.net/digimon/" + mon;
+                    anchor.target = "_blank";
+                    anchor.innerHTML = "Growlmon.Net";
+                growlmon.appendChild(anchor);
+            profile.appendChild(growlmon);
+        return profile;
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-// var blank;
-// var linelayer;
-
-var filter = {
-    "query": new Set(),
-    "tribe": new Set(),
-    "rival": new Set(),
-    "effect": new Set(),
-    "special": new Set()
-};
-
-function okFilter(mon) {
-    var okQuery = !filter.query.size || Array.from(filter.query).every(function (term) {
-        return mon.includes(term);
-        // below allows tier search, excluded for confusingness
-        // var okName = mon.includes(term);
-        // var okTier = term.match(/[\[*\]]/) && digi[mon].skills.some(function (skill) {
-        //     if (typeof skill[2] != "undefined") {
-        //         var tier = "[" + skill[2].toLowerCase() + "]";
-        //         return tier.includes(term);
-        //     }
-        //     return false;
-        // });
-        // return okName || okTier;
-    });
-    var okTribe = !filter.tribe.size || filter.tribe.has(digi[mon].tribe);
-    var okSkill = digi[mon].skills.some(function (skill) {
-        var okRival = !filter.rival.size || filter.rival.has(skill[0]);
-        var effect = ["support", "st", "aoe"][skill[1]];
-        var okEffect = !filter.effect.size || filter.effect.has(effect);
-        return okRival && okEffect;
-    });
-    var okTree = !filter.special.has("tree") || [gemelCore, gemel][setting.tree].nodes.has(mon);
-    var okDNA2 = !filter.special.has("dna") || digi[mon].skills.length > 1;
-    var okV2 = !filter.special.has("v2") || digi[mon].v2;
-    var okEvent = !filter.special.has("event") || mon in advent; // TODO: change this after changing advent.js and such
-    var okSpecial = okTree && okDNA2 && okV2 && okEvent;
-    return okQuery && okTribe && okSkill && okSpecial;
-}
-
-function updateSearch() {
-    for (var mon in digi) {
-        document.getElementById(mon).classList.remove("hidden");
-        if (!okFilter(mon)) {
-            document.getElementById(mon).classList.add("hidden");
+    function selectCard() {
+        selectedDigi.add(this.parentNode.id);
+        if (setting.search) {
+            document.getElementById("exit-search").click(); // TODO: change this hacky crap
         }
+        else {
+            update();
+        }
+    }
+
+    for (var mon in digi) { // skip sorting step, growlmon.js alphabetizes digi.js in preprocessing
+        var profile = newProfile(mon);
+        var card = profile.getElementsByClassName("card")[0];
+        if (mon in advent) {
+            card.classList.add("advent"); // TODO: change this after changing advent.js and such
+        }
+        addTapListener(card, selectCard);
+        getProfileGroup(digi[mon].evol).appendChild(profile);
+        // below is for a triple-stacked mega row, which was abandoned
+        // if (digi[mon].evol == "mega") {
+        //     var mega = document.getElementById("mega");
+        //     var profileGroups = mega.getElementsByClassName("profile-group");
+        //     if (prev(mon).some(prevmon => digi[prevmon].evol != "mega")) {
+        //         profileGroups[0].appendChild(profile);
+        //     }
+        //     else if (prev(mon).some(prevmon => prev(prevmon).some(prevprevmon => digi[prevprevmon].evol != "mega" && prevprevmon != mon))) {
+        //         profileGroups[1].appendChild(profile);
+        //     }
+        //     else {
+        //         profileGroups[2].appendChild(profile);
+        //     }
+        // }
+        // else {
+        //     getProfileGroup(digi[mon].evol).appendChild(profile);
+        // }
     }
 }
 
@@ -390,13 +318,20 @@ function initFiltration() {
     var exitSearch = document.getElementById("exit-search");
     var search = document.getElementById("search");
     var switches = filtration.getElementsByClassName("switch");
+    var filter = {
+        "query": new Set(),
+        "tribe": new Set(),
+        "rival": new Set(),
+        "effect": new Set(),
+        "special": new Set()
+    };
 
     function enterSearchMode() {
         selection.classList.add("hidden");
         filtration.classList.remove("hidden");
         search.focus();
-        linelayer.innerHTML = "";
         setting.search = 1;
+        updateLines();
         updateSearch();
     }
 
@@ -440,6 +375,44 @@ function initFiltration() {
         updateSearch();
     }
 
+    function okFilter(mon) {
+        var okQuery = !filter.query.size || Array.from(filter.query).every(function (term) {
+            return mon.includes(term);
+            // below allows tier search, excluded for confusingness
+            // var okName = mon.includes(term);
+            // var okTier = term.match(/[\[*\]]/) && digi[mon].skills.some(function (skill) {
+            //     if (typeof skill[2] != "undefined") {
+            //         var tier = "[" + skill[2].toLowerCase() + "]";
+            //         return tier.includes(term);
+            //     }
+            //     return false;
+            // });
+            // return okName || okTier;
+        });
+        var okTribe = !filter.tribe.size || filter.tribe.has(digi[mon].tribe);
+        var okSkill = digi[mon].skills.some(function (skill) {
+            var okRival = !filter.rival.size || filter.rival.has(skill[0]);
+            var effect = ["support", "st", "aoe"][skill[1]];
+            var okEffect = !filter.effect.size || filter.effect.has(effect);
+            return okRival && okEffect;
+        });
+        var okTree = !filter.special.has("tree") || [gemelCore, gemel][setting.tree].nodes.has(mon);
+        var okDNA2 = !filter.special.has("dna") || digi[mon].skills.length > 1;
+        var okV2 = !filter.special.has("v2") || digi[mon].v2;
+        var okEvent = !filter.special.has("event") || mon in advent; // TODO: change this after changing advent.js and such
+        var okSpecial = okTree && okDNA2 && okV2 && okEvent;
+        return okQuery && okTribe && okSkill && okSpecial;
+    }
+
+    function updateSearch() {
+        for (var mon in digi) {
+            document.getElementById(mon).classList.remove("hidden");
+            if (!okFilter(mon)) {
+                document.getElementById(mon).classList.add("hidden");
+            }
+        }
+    }
+
     addTapListener(blank, enterSearchMode);
     addTapListener(enterSearch, enterSearchMode);
     addTapListener(exitSearch, exitSearchMode);
@@ -458,24 +431,6 @@ function initFiltration() {
 
 
 
-var setting = {
-    "search": 0,
-    "tree": 0,
-    "sort": 0,
-    "size": 0,
-    "skill": 0,
-    "awkn": 0
-};
-
-function byAlphabet(a, b) {
-    return a < b ? -1 : a > b ? 1 : 0;
-}
-
-function byTribe(a, b) {
-    var tribes = ["mirage", "blazing", "glacier", "electric", "earth", "bright", "abyss"];
-    var tribeComparison = tribes.indexOf(digi[a].tribe) - tribes.indexOf(digi[b].tribe);
-    return tribeComparison ? tribeComparison : byAlphabet(a, b);
-}
 
 function untangledDigi() {
     var visited = new Set();
@@ -512,7 +467,7 @@ function initVisualization() {
     var slideGroups = visualization.getElementsByClassName("slide-group");
     var settingFunction = {
         "tree": update,
-        "sort": function () { // TODO: always sort by "is a gemel node" first
+        "sort": function () {
             var keys = Object.keys(digi);
             if (setting.sort == 0) {
                 keys.sort(byAlphabet);
@@ -553,6 +508,20 @@ function initVisualization() {
                 }
             }
         },
+        "preview": function () {
+            for (var mon in digi) {
+                var profile = document.getElementById(mon);
+                var card = profile.getElementsByClassName("card")[0];
+                if (setting.preview) {
+                    card.addEventListener("mouseover", previewDigi);
+                    card.addEventListener("mouseout", deviewDigi);
+                }
+                else {
+                    card.removeEventListener("mouseover", previewDigi);
+                    card.removeEventListener("mouseout", deviewDigi);
+                }
+            }
+        },
         "skill": function () {
             var signatureGroups = document.getElementsByClassName("signature-group");
             for (var signatureGroup of signatureGroups) {
@@ -566,6 +535,39 @@ function initVisualization() {
             updateLines();
         }
     };
+
+    function byAlphabet(a, b) {
+        return a < b ? -1 : a > b ? 1 : 0;
+    }
+
+    function byTribe(a, b) {
+        var tribes = ["mirage", "blazing", "glacier", "electric", "earth", "bright", "abyss"];
+        var tribeComparison = tribes.indexOf(digi[a].tribe) - tribes.indexOf(digi[b].tribe);
+        return tribeComparison ? tribeComparison : byAlphabet(a, b);
+    }
+
+    function previewDigi() {
+        if (!setting.search && selectedDigi.size) { // disable during search mode
+            var tree = new Gemel(this.parentNode.id);
+            for (var node of tree.nodes) {
+                document.getElementById(node).classList.add("preview");
+            }
+            var gem = setting.tree ? gemel : gemelCore;
+            tree.forEachEdge(function (edge, JSONedge) {
+                if (gem.nodes.has(edge[0]) && gem.nodes.has(edge[1])) {
+                    drawEdge(edge, "#000", 4);
+                }
+            });
+            linelayer.innerHTML += "";
+        }
+    }
+
+    function deviewDigi() {
+        if (!setting.search) { // disable during search mode
+            updateProfiles();
+            updateLines();
+        }
+    }
 
     function advanceSlide() {
         var slides = this.getElementsByClassName("slide");
@@ -587,3 +589,13 @@ function initVisualization() {
         addTapListener(slideGroup, advanceSlide);
     }
 }
+
+function initLineListeners() {
+    var scrollers = document.getElementsByClassName("scroller");
+    for (var scroller of scrollers) {
+        scroller.addEventListener("scroll", updateLines);
+    }
+    window.addEventListener("resize", updateLines);
+}
+
+init();
