@@ -11,8 +11,6 @@ var selectedDigi = new Set();
 var gemel;
 var gemelCore;
 
-var searchMode = false;
-
 /* Gemel Visualization */
 
 function update() {
@@ -46,42 +44,10 @@ function updateClones() {
     }
 }
 
-function okFilter(mon) {
-    var okQuery = !filter.query.size || Array.from(filter.query).every(function (term) {
-        return mon.includes(term);
-        // below allows tier search, excluded for confusingness
-        // var okName = mon.includes(term);
-        // var okTier = term.match(/[\[*\]]/) && digi[mon].skills.some(function (skill) {
-        //     if (typeof skill[2] != "undefined") {
-        //         var tier = "[" + skill[2].toLowerCase() + "]";
-        //         return tier.includes(term);
-        //     }
-        //     return false;
-        // });
-        // return okName || okTier;
-    });
-    var okTribe = !filter.tribe.size || filter.tribe.has(digi[mon].tribe);
-    var okSkill = digi[mon].skills.some(function (skill) {
-        var okRival = !filter.rival.size || filter.rival.has(skill[0]);
-        var effect = ["support", "st", "aoe"][skill[1]];
-        var okEffect = !filter.effect.size || filter.effect.has(effect);
-        return okRival && okEffect;
-    });
-    var okTree = !filter.special.has("tree") || [gemelCore, gemel][setting.tree].nodes.has(mon);
-    var okDNA2 = !filter.special.has("dna") || digi[mon].skills.length > 1;
-    var okV2 = !filter.special.has("v2") || digi[mon].v2;
-    var okEvent = !filter.special.has("event") || mon in advent; // TODO: change this after changing advent.js and such
-    var okSpecial = okTree && okDNA2 && okV2 && okEvent;
-    return okQuery && okTribe && okSkill && okSpecial;
-}
-
 function updateProfiles() {
-    if (setting.sort == 2) {
-        // untangle digimon
-        // TODO: this
-    }
+    var keys = setting.sort == 2 ? untangledDigi() : Object.keys(digi);
     var tree = setting.tree ? gemel : gemelCore;
-    for (var mon in digi) {
+    for (var mon of keys) {
         document.getElementById(mon).classList.remove("root");
         document.getElementById(mon).classList.remove("node");
         document.getElementById(mon).classList.remove("hidden");
@@ -92,39 +58,34 @@ function updateProfiles() {
             else if (tree.nodes.has(mon)) {
                 document.getElementById(mon).classList.add("node");
             }
-            else if (!searchMode) {
+            else {
                 document.getElementById(mon).classList.add("hidden");
             }
-        }
-        if (!okFilter(mon)) { // TODO: add "in search mode" condition
-            document.getElementById(mon).classList.add("hidden");
         }
     }
 }
 
 function updateLines() { // cannot update individually because of line border
     linelayer.innerHTML = ""; // refresh linelayer
-    if (!searchMode) {
-        if (setting.tree) {
-            gemel.forEachEdge(function (edge, JSONedge) {
-                if (!gemelCore.JSONedges.has(JSONedge)) {
-                    drawEdge(edge, "#000", 4);
-                }
-            });
-            gemel.forEachEdge(function (edge, JSONedge) {
-                if (!gemelCore.JSONedges.has(JSONedge)) {
-                    drawEdge(edge, "#aaa", 2);
-                }
-            });
-        }
-        gemelCore.forEachEdge(function (edge, JSONedge) {
-            drawEdge(edge, "#000", 4);
+    if (setting.tree) {
+        gemel.forEachEdge(function (edge, JSONedge) {
+            if (!gemelCore.JSONedges.has(JSONedge)) {
+                drawEdge(edge, "#000", 4);
+            }
         });
-        gemelCore.forEachEdge(function (edge, JSONedge) {
-            drawEdge(edge, "#fff", 2);
+        gemel.forEachEdge(function (edge, JSONedge) {
+            if (!gemelCore.JSONedges.has(JSONedge)) {
+                drawEdge(edge, "#aaa", 2);
+            }
         });
-        linelayer.innerHTML += ""; // force-update linelayer
     }
+    gemelCore.forEachEdge(function (edge, JSONedge) {
+        drawEdge(edge, "#000", 4);
+    });
+    gemelCore.forEachEdge(function (edge, JSONedge) {
+        drawEdge(edge, "#fff", 2);
+    });
+    linelayer.innerHTML += ""; // force-update linelayer
 }
 
 function drawEdge(edge, color, width) {
@@ -191,12 +152,7 @@ function drawLine(a, b, color, width) {
 
 function selectDigi(mon) {
     selectedDigi.add(mon);
-    if (searchMode) {
-        document.getElementById("exit-search").click(); // TODO: not this
-    }
-    else {
-        update();
-    }
+    document.getElementById("exit-search").click(); // TODO: not this
 }
 
 function deselectDigi(mon) {
@@ -290,7 +246,6 @@ function initProfile(mon) {
     //     getProfileGroup(digi[mon].evol).appendChild(profile);
     // }
     addTapListener(card, function () {
-        search.value = "";
         selectDigi(this.parentElement.id);
     });
 }
@@ -317,9 +272,9 @@ function init() {
         });
     }
     for (var scroller of document.getElementsByClassName("scroller")) {
-        scroller.addEventListener("scroll", update);
+        scroller.addEventListener("scroll", updateLines);
     }
-    window.addEventListener("resize", update);
+    window.addEventListener("resize", updateLines);
     for (var child of document.getElementById("filtration").getElementsByTagName("span")) {
         addTapListener(child, function () {
             for (var thumb of document.getElementsByClassName("thumb")) {
@@ -361,6 +316,44 @@ var filter = {
     "special": new Set()
 };
 
+function okFilter(mon) {
+    var okQuery = !filter.query.size || Array.from(filter.query).every(function (term) {
+        return mon.includes(term);
+        // below allows tier search, excluded for confusingness
+        // var okName = mon.includes(term);
+        // var okTier = term.match(/[\[*\]]/) && digi[mon].skills.some(function (skill) {
+        //     if (typeof skill[2] != "undefined") {
+        //         var tier = "[" + skill[2].toLowerCase() + "]";
+        //         return tier.includes(term);
+        //     }
+        //     return false;
+        // });
+        // return okName || okTier;
+    });
+    var okTribe = !filter.tribe.size || filter.tribe.has(digi[mon].tribe);
+    var okSkill = digi[mon].skills.some(function (skill) {
+        var okRival = !filter.rival.size || filter.rival.has(skill[0]);
+        var effect = ["support", "st", "aoe"][skill[1]];
+        var okEffect = !filter.effect.size || filter.effect.has(effect);
+        return okRival && okEffect;
+    });
+    var okTree = !filter.special.has("tree") || [gemelCore, gemel][setting.tree].nodes.has(mon);
+    var okDNA2 = !filter.special.has("dna") || digi[mon].skills.length > 1;
+    var okV2 = !filter.special.has("v2") || digi[mon].v2;
+    var okEvent = !filter.special.has("event") || mon in advent; // TODO: change this after changing advent.js and such
+    var okSpecial = okTree && okDNA2 && okV2 && okEvent;
+    return okQuery && okTribe && okSkill && okSpecial;
+}
+
+function updateSearch() {
+    for (var mon in digi) {
+        document.getElementById(mon).classList.remove("hidden");
+        if (!okFilter(mon)) {
+            document.getElementById(mon).classList.add("hidden");
+        }
+    }
+}
+
 function initFiltration() {
     var selection = document.getElementById("selection");
     var filtration = document.getElementById("filtration");
@@ -373,8 +366,8 @@ function initFiltration() {
         selection.classList.add("hidden");
         filtration.classList.remove("hidden");
         search.focus();
-        searchMode = true;
-        update();
+        linelayer.innerHTML = "";
+        updateSearch();
     }
 
     function exitSearchMode() {
@@ -389,7 +382,6 @@ function initFiltration() {
         filter.rival.clear();
         filter.effect.clear();
         filter.special.clear();
-        searchMode = false;
         update();
     }
 
@@ -399,7 +391,7 @@ function initFiltration() {
         // var parsed = lower.split(/[^a-z\[*\]]+/); // for tier search, excluded for confusingness
         filter.query = new Set(parsed);
         filter.query.delete("");
-        update();
+        updateSearch();
     }
 
     function flipSwitch() {
@@ -414,7 +406,7 @@ function initFiltration() {
             this.classList.add("selected");
             filter[key].add(value);
         }
-        update();
+        updateSearch();
     }
 
     addTapListener(blank, enterSearchMode);
@@ -425,6 +417,15 @@ function initFiltration() {
         addTapListener(s, flipSwitch);
     }
 }
+
+
+
+
+
+
+
+
+
 
 var setting = {
     "tree": 0,
