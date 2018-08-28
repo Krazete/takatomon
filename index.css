@@ -1,6 +1,7 @@
 body {
     background: #000;
     font-family: "Trebuchet MS", "Helvetica", "Arial", sans-serif;
+    font-size: 14px;
     margin: 0;
     overflow-x: hidden;
 }
@@ -37,14 +38,12 @@ body {
         linear-gradient(to top right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
 }
 
-.box-label { /* TODO: make these labels look better */
+.box-label {
     position: -webkit-sticky; /* for iOS*/
     position: sticky;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 4px;
     width: max-content;
     background: #fff8;
-    font-weight: bold;
     padding: 0 4px;
     border-radius: 4px;
     cursor: pointer;
@@ -118,7 +117,7 @@ body {
 }
 .profile.preview .card {
     position: relative; /* to make z-index work */
-    background: #000 !important; /* since ids are more specific than classes */
+    background: #000 !important; /* since classes are less specific than ids */
     color: #fff;
     z-index: 1;
 }
@@ -218,7 +217,6 @@ body {
 
 #header, #footer {
     color: #666;
-    font-size: 14px;
     text-align: center;
 }
 
