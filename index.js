@@ -16,7 +16,7 @@ var gemelCore;
 function update() {
     gemel = new Gemel(selectedDigi);
     gemelCore = gemel.intersection();
-    updateClones();
+    updateClones(); // TODO: maybe put updateLines as a clone portrait onload callback
     updateProfiles();
     updateLines();
 }
@@ -29,8 +29,10 @@ function updateClones() {
             var profile = document.getElementById(mon);
             var clone = profile.cloneNode(true);
             clone.classList.remove("root");
+            clone.classList.remove("core-node");
             clone.classList.remove("node");
             clone.classList.remove("hidden");
+            clone.classList.remove("preview");
             clone.id = mon + "-clone";
             var card = clone.getElementsByClassName("card")[0];
             addTapListener(card, function () {
@@ -46,16 +48,20 @@ function updateClones() {
 
 function updateProfiles() {
     var keys = setting.sort == 2 ? untangledDigi() : Object.keys(digi);
-    var tree = setting.tree ? gemel : gemelCore;
     for (var mon of keys) {
         document.getElementById(mon).classList.remove("root");
+        document.getElementById(mon).classList.remove("core-node");
         document.getElementById(mon).classList.remove("node");
         document.getElementById(mon).classList.remove("hidden");
+        document.getElementById(mon).classList.remove("preview");
         if (selectedDigi.size) {
-            if (tree.roots.has(mon)) {
+            if (gemel.roots.has(mon)) {
                 document.getElementById(mon).classList.add("root");
             }
-            else if (tree.nodes.has(mon)) {
+            else if (gemelCore.nodes.has(mon)) {
+                document.getElementById(mon).classList.add("core-node");
+            }
+            else if (setting.tree && gemel.nodes.has(mon)) {
                 document.getElementById(mon).classList.add("node");
             }
             else {
@@ -67,25 +73,27 @@ function updateProfiles() {
 
 function updateLines() { // cannot update individually because of line border
     linelayer.innerHTML = ""; // refresh linelayer
-    if (setting.tree) {
-        gemel.forEachEdge(function (edge, JSONedge) {
-            if (!gemelCore.JSONedges.has(JSONedge)) {
-                drawEdge(edge, "#000", 4);
-            }
+    if (!setting.search) {
+        if (setting.tree) {
+            gemel.forEachEdge(function (edge, JSONedge) {
+                if (!gemelCore.JSONedges.has(JSONedge)) {
+                    drawEdge(edge, "#000", 4);
+                }
+            });
+            gemel.forEachEdge(function (edge, JSONedge) {
+                if (!gemelCore.JSONedges.has(JSONedge)) {
+                    drawEdge(edge, "#aaa", 2);
+                }
+            });
+        }
+        gemelCore.forEachEdge(function (edge, JSONedge) {
+            drawEdge(edge, "#000", 4);
         });
-        gemel.forEachEdge(function (edge, JSONedge) {
-            if (!gemelCore.JSONedges.has(JSONedge)) {
-                drawEdge(edge, "#aaa", 2);
-            }
+        gemelCore.forEachEdge(function (edge, JSONedge) {
+            drawEdge(edge, "#fff", 2);
         });
+        linelayer.innerHTML += ""; // force-update linelayer
     }
-    gemelCore.forEachEdge(function (edge, JSONedge) {
-        drawEdge(edge, "#000", 4);
-    });
-    gemelCore.forEachEdge(function (edge, JSONedge) {
-        drawEdge(edge, "#fff", 2);
-    });
-    linelayer.innerHTML += ""; // force-update linelayer
 }
 
 function drawEdge(edge, color, width) {
@@ -246,7 +254,28 @@ function initProfile(mon) {
     //     getProfileGroup(digi[mon].evol).appendChild(profile);
     // }
     addTapListener(card, function () {
-        selectDigi(this.parentElement.id);
+        selectDigi(this.parentNode.id);
+    });
+    card.addEventListener("mouseover", function () {
+        if (!setting.search && selectedDigi.size) {
+            var tree = new Gemel(this.parentNode.id);
+            for (var node of tree.nodes) {
+                document.getElementById(node).classList.add("preview");
+            }
+            var gem = setting.tree ? gemel : gemelCore;
+            tree.forEachEdge(function (edge, JSONedge) {
+                if (gem.nodes.has(edge[0]) && gem.nodes.has(edge[1])) {
+                    drawEdge(edge, "#000", 4);
+                }
+            });
+            linelayer.innerHTML += "";
+        }
+    });
+    card.addEventListener("mouseout", function () {
+        if (!setting.search) {
+            updateProfiles();
+            updateLines();
+        }
     });
 }
 
@@ -263,7 +292,7 @@ function init() {
     for (var evol of document.getElementsByClassName("box-name")) {
         addTapListener(evol, function () {
             selectedDigi.clear();
-            for (var profile of getProfileGroup(this.parentElement.id).children) {
+            for (var profile of getProfileGroup(this.parentNode.id).children) {
                 if (!profile.classList.contains("hidden")) {
                     selectedDigi.add(profile.id);
                 }
@@ -367,6 +396,7 @@ function initFiltration() {
         filtration.classList.remove("hidden");
         search.focus();
         linelayer.innerHTML = "";
+        setting.search = 1;
         updateSearch();
     }
 
@@ -382,6 +412,7 @@ function initFiltration() {
         filter.rival.clear();
         filter.effect.clear();
         filter.special.clear();
+        setting.search = 0;
         update();
     }
 
@@ -428,6 +459,7 @@ function initFiltration() {
 
 
 var setting = {
+    "search": 0,
     "tree": 0,
     "sort": 0,
     "size": 0,

@@ -106,13 +106,21 @@ body {
 #mega .card {
     background: linear-gradient(to top right, #f44, #ff4, #4f4, #4ff, #44f, #f4f, #f44);
 }
-.profile.node .card {
-    box-shadow: 0 0 1px 1px #fff;
-}
 .profile.root .card {
     box-shadow: 0 0 0 2px #fff;
     cursor: default;
-    pointer-events: none;
+}
+.profile.core-node .card {
+    box-shadow: 0 0 0 1px #fff;
+}
+.profile.node .card {
+    box-shadow: 0 0 1px 1px #fff;
+}
+.profile.preview .card {
+    position: relative; /* to make z-index work */
+    background: #000 !important; /* since ids are more specific than classes */
+    color: #fff;
+    z-index: 1;
 }
 .card:hover { /* TODO: make this exclusive to desktop */
     border-color: #fff;

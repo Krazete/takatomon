@@ -107,5 +107,10 @@ Gemel.prototype.intersection = function () {
         clone.roots.add(root);
         clone.nodes.add(root);
     }
+    this.forEachEdge(function (edge, JSONedge) {
+        if (clone.nodes.has(edge[0]) && clone.nodes.has(edge[1])) {
+            clone.JSONedges.add(JSONedge);
+        }
+    });
     return clone;
 };
