@@ -238,30 +238,8 @@ function init() {
     initFiltration();
     initVisualization();
     initLineListeners();
+    initCookies();
     update();
-}
-
-function initBoxLabels() {
-    var boxLabels = document.getElementsByClassName("box-label");
-
-    function selectBox() {
-        var box = this.parentNode.parentNode;
-        var profiles = box.getElementsByClassName("profile");
-        selectedDigi.clear();
-        for (var profile of profiles) {
-            if (!profile.classList.contains("hidden")) {
-                selectedDigi.add(profile.id);
-            }
-        }
-        if (setting.search) {
-            cancelSearch();
-        }
-        update();
-    }
-
-    for (var boxLabel of boxLabels) {
-        addTapListener(boxLabel, selectBox);
-    }
 }
 
 function initProfiles() {
@@ -357,6 +335,29 @@ function initProfiles() {
         // else {
         //     getProfileGroup(digi[mon].evol).appendChild(profile);
         // }
+    }
+}
+
+function initBoxLabels() {
+    var boxLabels = document.getElementsByClassName("box-label");
+
+    function selectBox() {
+        var box = this.parentNode.parentNode;
+        var profiles = box.getElementsByClassName("profile");
+        selectedDigi.clear();
+        for (var profile of profiles) {
+            if (!profile.classList.contains("hidden")) {
+                selectedDigi.add(profile.id);
+            }
+        }
+        if (setting.search) {
+            cancelSearch();
+        }
+        update();
+    }
+
+    for (var boxLabel of boxLabels) {
+        addTapListener(boxLabel, selectBox);
     }
 }
 
@@ -602,4 +603,7 @@ function initLineListeners() {
     window.addEventListener("resize", updateLines);
 }
 
-init();
+function initCookies() {
+}
+
+window.addEventListener("DOMContentLoaded", init);
