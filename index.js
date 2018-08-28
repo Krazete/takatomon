@@ -314,7 +314,7 @@ function initProfiles() {
         var profile = newProfile(mon);
         var card = profile.getElementsByClassName("card")[0];
         if (mon in advent) {
-            card.classList.add("advent"); // TODO: change this after changing advent.js and such
+            profile.classList.add("advent"); // TODO: change this after changing advent.js and such
         }
         addTapListener(card, selectCard);
         getProfileGroup(digi[mon].evol).appendChild(profile);
@@ -455,8 +455,8 @@ function initFiltration() {
         var okTree = !filter.special.has("tree") || [gemelCore, gemel][setting.tree].nodes.has(mon);
         var okDNA2 = !filter.special.has("dna") || digi[mon].skills.length > 1;
         var okV2 = !filter.special.has("v2") || digi[mon].v2;
-        var okEvent = !filter.special.has("event") || mon in advent; // TODO: change this after changing advent.js and such
-        var okSpecial = okTree && okDNA2 && okV2 && okEvent;
+        var okAdvent = !filter.special.has("advent") || mon in advent; // TODO: change this after changing advent.js and such
+        var okSpecial = okTree && okDNA2 && okV2 && okAdvent;
         return okQuery && okTribe && okSkill && okSpecial;
     }
 
@@ -610,8 +610,11 @@ function initLineListeners() {
     window.addEventListener("resize", updateLines);
 }
 
-function initCookies() {
-    // TODO: this
+function initCookies() { // TODO: this
+    var slideBoxes = document.getElementsByClassName("slidebox");
+    for (var slideBox of slideBoxes) {
+        console.log(slideBox);
+    }
 }
 
 window.addEventListener("DOMContentLoaded", init);

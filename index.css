@@ -81,6 +81,9 @@ body {
     border-radius: 10%;
     cursor: pointer;
 }
+.card:hover { /* TODO: make this exclusive to desktop */
+    border-color: #fff;
+}
 .small .card {
     width: 48px;
 }
@@ -105,24 +108,34 @@ body {
 #mega .card {
     background: linear-gradient(to top right, #f44, #ff4, #4f4, #4ff, #44f, #f4f, #f44);
 }
-.profile.root .card {
+.root .card {
     box-shadow: 0 0 0 2px #fff;
+    border-color: #000;
     cursor: default;
 }
-.profile.core-node .card {
+.core-node .card {
     box-shadow: 0 0 0 1px #fff;
 }
-.profile.node .card {
+.node .card {
     box-shadow: 0 0 1px 1px #fff;
 }
-.profile.preview .card {
+.preview .card {
     position: relative; /* to make z-index work */
     background: #000 !important; /* since classes are less specific than ids */
     color: #fff;
     z-index: 1;
 }
-.card:hover { /* TODO: make this exclusive to desktop */
-    border-color: #fff;
+.advent .card {
+    animation: rainbow 1s alternate infinite;
+}
+
+@keyframes rainbow {
+    0% {
+        filter: hue-rotate(0deg) brightness(1.25);
+    }
+    100% {
+        filter: hue-rotate(360deg) brightness(1);
+    }
 }
 
 .portrait {
@@ -190,13 +203,14 @@ body {
 }
 
 .growlmon {
-    position: relative; /* to show in front of .linelayer */
+    position: relative; /* to make z-index work */
     background: #f888;
-    border-radius: 4px;
+    text-align: center;
+    text-shadow: 0 0 1px #f88;
     padding: 2px;
+    border-radius: 4px;
     margin-top: 2px;
     z-index: 1;
-    text-shadow: 0 0 1px #f88;
     display: none;
 }
 .growlmon a {
@@ -265,7 +279,7 @@ body {
     padding: 4px;
     cursor: pointer;
 }
-.toggle-search:hover {
+.toggle-search:hover { /* TODO: make this exclusive to desktop */
     background: #888;
     color: #000;
 }
@@ -336,36 +350,16 @@ body {
     cursor: pointer;
     user-select: none;
 }
-.slide-group:hover {
+.slide-group:hover { /* TODO: make this exclusive to desktop */
     color: #ddd;
     border-color: #ddd;
 }
 
 .slide {
-    height: 13px; /* for letter with tails */
+    height: 13px; /* for letters with tails */
     line-height: 12px;
     font-size: 12px;
     overflow: hidden;
-}
-
-
-
-
-
-
-
-
-.advent .card {
-    animation: rainbow 1s alternate infinite;
-}
-
-@keyframes rainbow {
-    0% {
-        filter: hue-rotate(0deg) brightness(1.25);
-    }
-    100% {
-        filter: hue-rotate(360deg) brightness(1);
-    }
 }
 
 .hidden {
