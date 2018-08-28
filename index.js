@@ -38,7 +38,12 @@ function update() {
     gemelCore = gemel.intersection();
     updateClones(); // TODO: maybe put updateLines as a clone portrait onload callback
     updateProfiles();
-    updateLines();
+    if (setting.sort == 2) {
+        untangleProfiles();
+    }
+    else {
+        updateLines();
+    }
 }
 
 function updateClones() {
@@ -72,8 +77,7 @@ function deselectCard(mon) {
 }
 
 function updateProfiles() {
-    var keys = setting.sort == 2 ? untangledDigi() : Object.keys(digi);
-    for (var mon of keys) {
+    for (var mon in digi) {
         document.getElementById(mon).classList.remove("root");
         document.getElementById(mon).classList.remove("core-node");
         document.getElementById(mon).classList.remove("node");
@@ -94,6 +98,49 @@ function updateProfiles() {
             }
         }
     }
+}
+
+function untangleProfiles() {
+    var visited = new Set();
+
+    function dfs(mon, d) {
+        if (!visited.has(mon)) {
+            visited.add(mon);
+            if (d <= 0) {
+                for (var prevmon of prev(mon)) {
+                    var profile = document.getElementById(prevmon);
+                    if (!profile.classList.contains("hidden")) {
+                        dfs(prevmon, -1);
+                    }
+                }
+            }
+            if (d >= 0) {
+                for (var nextmon of next(mon)) {
+                    var profile = document.getElementById(nextmon);
+                    if (!profile.classList.contains("hidden")) {
+                        dfs(nextmon, 1);
+                    }
+                }
+            }
+        }
+    }
+
+    for (var mon of selectedDigi) {
+        dfs(mon, 0);
+    }
+    for (var mon in digi) {
+        visited.add(mon);
+    }
+    sortProfiles(visited);
+}
+
+function sortProfiles(sortedDigi) {
+    for (var mon of sortedDigi) {
+        var profileGroup = getProfileGroup(digi[mon].evol);
+        var profile = document.getElementById(mon);
+        profileGroup.appendChild(profile);
+    }
+    updateLines();
 }
 
 function updateLines() { // cannot update individually because of line border
@@ -425,68 +472,21 @@ function initFiltration() {
     cancelSearch = exitSearchMode;
 }
 
-
-
-
-
-
-
-
-
-
-
-function untangledDigi() {
-    var visited = new Set();
-    function dfs(mon, d) {
-        if (!visited.has(mon)) {
-            visited.add(mon);
-            if (d <= 0) {
-                for (var prevmon of prev(mon)) {
-                    if (!document.getElementById(prevmon).classList.contains("hidden")) {
-                        dfs(prevmon, -1);
-                    }
-                }
-            }
-            if (d >= 0) {
-                for (var nextmon of next(mon)) {
-                    if (!document.getElementById(nextmon).classList.contains("hidden")) {
-                        dfs(nextmon, 1);
-                    }
-                }
-            }
-        }
-    }
-    for (var mon of selectedDigi) {
-        dfs(mon, 0);
-    }
-    for (var mon in digi) {
-        visited.add(mon);
-    }
-    return Array.from(visited);
-}
-
 function initVisualization() {
     var visualization = document.getElementById("visualization");
     var slideGroups = visualization.getElementsByClassName("slide-group");
     var settingFunction = {
         "tree": update,
         "sort": function () {
-            var keys = Object.keys(digi);
-            if (setting.sort == 0) {
-                keys.sort(byAlphabet);
+            if (setting.sort == 2) {
+                untangleProfiles();
             }
-            else if (setting.sort == 1) {
-                keys.sort(byTribe);
+            else {
+                var basis = setting.sort ? byTribe : byAlphabet;
+                var keys = Object.keys(digi);
+                keys.sort(basis);
+                sortProfiles(keys);
             }
-            else if (setting.sort == 2) {
-                keys = untangledDigi();
-            }
-            for (var mon of keys) {
-                var profileGroup = getProfileGroup(digi[mon].evol);
-                var profile = document.getElementById(mon);
-                profileGroup.appendChild(profile);
-            }
-            updateLines();
         },
         "size": function () {
             var profiles = document.getElementsByClassName("profile");
@@ -516,12 +516,12 @@ function initVisualization() {
                 var profile = document.getElementById(mon);
                 var card = profile.getElementsByClassName("card")[0];
                 if (setting.preview) {
-                    card.addEventListener("mouseover", previewDigi);
-                    card.addEventListener("mouseout", deviewDigi);
+                    card.addEventListener("mouseover", previewGemel);
+                    card.addEventListener("mouseout", deviewGemel);
                 }
                 else {
-                    card.removeEventListener("mouseover", previewDigi);
-                    card.removeEventListener("mouseout", deviewDigi);
+                    card.removeEventListener("mouseover", previewGemel);
+                    card.removeEventListener("mouseout", deviewGemel);
                 }
             }
         },
@@ -549,7 +549,7 @@ function initVisualization() {
         return tribeComparison ? tribeComparison : byAlphabet(a, b);
     }
 
-    function previewDigi() {
+    function previewGemel() {
         if (!setting.search) { // disable during search mode
             var tree = new Gemel(this.parentNode.id);
             for (var node of tree.nodes) {
@@ -566,7 +566,7 @@ function initVisualization() {
         }
     }
 
-    function deviewDigi() {
+    function deviewGemel() {
         if (!setting.search) { // disable during search mode
             updateProfiles();
             updateLines();
