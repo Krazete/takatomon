@@ -16,6 +16,7 @@ var setting = {
     "skill": 0,
     "awkn": 0
 };
+var cancelSearch;
 
 /* Helpers */
 
@@ -190,6 +191,7 @@ function init() {
     initFiltration();
     initVisualization();
     initLineListeners();
+    update();
 }
 
 function initBoxLabels() {
@@ -205,7 +207,7 @@ function initBoxLabels() {
             }
         }
         if (setting.search) {
-            document.getElementById("exit-search").click(); // TODO: change this hacky crap
+            cancelSearch();
         }
         update();
     }
@@ -276,7 +278,7 @@ function initProfiles() {
     function selectCard() {
         selectedDigi.add(this.parentNode.id);
         if (setting.search) {
-            document.getElementById("exit-search").click(); // TODO: change this hacky crap
+            cancelSearch();
         }
         else {
             update();
@@ -420,6 +422,7 @@ function initFiltration() {
     for (var s of switches) {
         addTapListener(s, flipSwitch);
     }
+    cancelSearch = exitSearchMode;
 }
 
 
@@ -547,14 +550,15 @@ function initVisualization() {
     }
 
     function previewDigi() {
-        if (!setting.search && selectedDigi.size) { // disable during search mode
+        if (!setting.search) { // disable during search mode
             var tree = new Gemel(this.parentNode.id);
             for (var node of tree.nodes) {
                 document.getElementById(node).classList.add("preview");
             }
-            var gem = setting.tree ? gemel : gemelCore;
             tree.forEachEdge(function (edge, JSONedge) {
-                if (gem.nodes.has(edge[0]) && gem.nodes.has(edge[1])) {
+                var profile0 = document.getElementById(edge[0]);
+                var profile1 = document.getElementById(edge[1]);
+                if (!profile0.classList.contains("hidden") && !profile1.classList.contains("hidden")) {
                     drawEdge(edge, "#000", 4);
                 }
             });
