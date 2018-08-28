@@ -5,7 +5,7 @@ imdir = '/Users/Krazete/Desktop/takatomon/preprocessing/img/';
 reimdir = '/Users/Krazete/Desktop/takatomon/img/';
 subdir = 'mon';
 
-colors = 64;
+colors = 64; % 8 for mon/none.png
 dith = 'nodither';
 
 mkdir([reimdir, subdir]);
