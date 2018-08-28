@@ -410,6 +410,12 @@ function initFiltration() {
         updateSearch();
     }
 
+    function enterBlur(e) {
+        if (e.keyCode == 13 || e.key == "Enter" || e.code == "Enter") {
+            search.blur();
+        }
+    }
+
     function flipSwitch() {
         var splitId = this.id.split("-");
         var key = splitId[0];
@@ -467,6 +473,7 @@ function initFiltration() {
     addTapListener(enterSearch, enterSearchMode);
     addTapListener(exitSearch, exitSearchMode);
     search.addEventListener("input", parseQuery);
+    search.addEventListener("keydown", enterBlur);
     for (var s of switches) {
         addTapListener(s, flipSwitch);
     }
@@ -604,6 +611,7 @@ function initLineListeners() {
 }
 
 function initCookies() {
+    // TODO: this
 }
 
 window.addEventListener("DOMContentLoaded", init);
