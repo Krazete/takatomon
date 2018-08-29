@@ -6,11 +6,18 @@ var blank;
 var linelayer;
 
 var selectedDigi = new Set();
-var gemel;
-var gemelCore;
+var gemel = new Gemel();
+var gemelCore = gemel.intersection();
 
 var searchMode;
 var cancelSearch;
+var filter = { // global because initSetting needs filter.special
+    "query": new Set(),
+    "tribe": new Set(),
+    "rival": new Set(),
+    "effect": new Set(),
+    "special": new Set()
+};
 var setting = {
     "tree": 0,
     "sort": 0,
@@ -109,17 +116,17 @@ function updateProfiles() {
     }
 }
 
-function untangleProfiles() {
+function untangleProfiles() { // TODO: improve this algorithm
     var visited = new Set();
 
-    function dfs(mon, d) {
-        if (!visited.has(mon)) {
+    function dfs(mon, d, repeat) {
+        if (!visited.has(mon) || repeat) {
             visited.add(mon);
             if (d <= 0) {
                 for (var prevmon of prev(mon)) {
                     var profile = document.getElementById(prevmon);
                     if (!profile.classList.contains("hidden")) {
-                        dfs(prevmon, -1);
+                        dfs(prevmon, -1, false);
                     }
                 }
             }
@@ -127,7 +134,7 @@ function untangleProfiles() {
                 for (var nextmon of next(mon)) {
                     var profile = document.getElementById(nextmon);
                     if (!profile.classList.contains("hidden")) {
-                        dfs(nextmon, 1);
+                        dfs(nextmon, 1, false);
                     }
                 }
             }
@@ -135,7 +142,7 @@ function untangleProfiles() {
     }
 
     for (var mon of selectedDigi) {
-        dfs(mon, 0);
+        dfs(mon, 0, true);
     }
     for (var mon in digi) {
         visited.add(mon);
@@ -362,7 +369,9 @@ function initBoxLabels() {
         if (searchMode) {
             cancelSearch();
         }
-        update();
+        else {
+            update();
+        }
     }
 
     for (var boxLabel of boxLabels) {
@@ -377,13 +386,6 @@ function initFiltration() {
     var exitSearch = document.getElementById("exit-search");
     var search = document.getElementById("search");
     var switches = filtration.getElementsByClassName("switch");
-    var filter = {
-        "query": new Set(),
-        "tribe": new Set(),
-        "rival": new Set(),
-        "effect": new Set(),
-        "special": new Set()
-    };
 
     function enterSearchMode() {
         selection.classList.add("hidden");
@@ -440,44 +442,6 @@ function initFiltration() {
         updateSearch();
     }
 
-    function okFilter(mon) {
-        var okQuery = !filter.query.size || Array.from(filter.query).every(function (term) {
-            return mon.includes(term);
-            // below allows tier search, excluded for confusingness
-            // var okName = mon.includes(term);
-            // var okTier = term.match(/[\[*\]]/) && digi[mon].skills.some(function (skill) {
-            //     if (typeof skill[2] != "undefined") {
-            //         var tier = "[" + skill[2].toLowerCase() + "]";
-            //         return tier.includes(term);
-            //     }
-            //     return false;
-            // });
-            // return okName || okTier;
-        });
-        var okTribe = !filter.tribe.size || filter.tribe.has(digi[mon].tribe);
-        var okSkill = digi[mon].skills.some(function (skill) {
-            var okRival = !filter.rival.size || filter.rival.has(skill[0]);
-            var effect = ["support", "st", "aoe"][skill[1]];
-            var okEffect = !filter.effect.size || filter.effect.has(effect);
-            return okRival && okEffect;
-        });
-        var okTree = !filter.special.has("tree") || [gemelCore, gemel][setting.tree].nodes.has(mon);
-        var okDNA2 = !filter.special.has("dna") || digi[mon].skills.length > 1;
-        var okV2 = !filter.special.has("v2") || digi[mon].v2;
-        var okAdvent = !filter.special.has("advent") || isAdvent(mon);
-        var okSpecial = okTree && okDNA2 && okV2 && okAdvent;
-        return okQuery && okTribe && okSkill && okSpecial;
-    }
-
-    function updateSearch() {
-        for (var mon in digi) {
-            document.getElementById(mon).classList.remove("hidden");
-            if (!okFilter(mon)) {
-                document.getElementById(mon).classList.add("hidden");
-            }
-        }
-    }
-
     addTapListener(blank, enterSearchMode);
     addTapListener(enterSearch, enterSearchMode);
     addTapListener(exitSearch, exitSearchMode);
@@ -489,11 +453,54 @@ function initFiltration() {
     cancelSearch = exitSearchMode;
 }
 
+function okFilter(mon) {
+    var okQuery = !filter.query.size || Array.from(filter.query).every(function (term) {
+        return mon.includes(term);
+        // below allows tier search, excluded for confusingness
+        // var okName = mon.includes(term);
+        // var okTier = term.match(/[\[*\]]/) && digi[mon].skills.some(function (skill) {
+        //     if (typeof skill[2] != "undefined") {
+        //         var tier = "[" + skill[2].toLowerCase() + "]";
+        //         return tier.includes(term);
+        //     }
+        //     return false;
+        // });
+        // return okName || okTier;
+    });
+    var okTribe = !filter.tribe.size || filter.tribe.has(digi[mon].tribe);
+    var okSkill = digi[mon].skills.some(function (skill) {
+        var okRival = !filter.rival.size || filter.rival.has(skill[0]);
+        var effect = ["support", "st", "aoe"][skill[1]];
+        var okEffect = !filter.effect.size || filter.effect.has(effect);
+        return okRival && okEffect;
+    });
+    var okTree = !filter.special.has("tree") || [gemelCore, gemel][setting.tree].nodes.has(mon);
+    var okDNA2 = !filter.special.has("dna") || digi[mon].skills.length > 1;
+    var okV2 = !filter.special.has("v2") || digi[mon].v2;
+    var okAdvent = !filter.special.has("advent") || isAdvent(mon);
+    var okSpecial = okTree && okDNA2 && okV2 && okAdvent;
+    return okQuery && okTribe && okSkill && okSpecial;
+}
+
+function updateSearch() {
+    for (var mon in digi) {
+        document.getElementById(mon).classList.remove("hidden");
+        if (!okFilter(mon)) {
+            document.getElementById(mon).classList.add("hidden");
+        }
+    }
+}
+
 function initVisualization() {
     var visualization = document.getElementById("visualization");
     var slideGroups = visualization.getElementsByClassName("slide-group");
     var settingFunction = {
-        "tree": update,
+        "tree": function () {
+            update();
+            if (searchMode) {
+                updateSearch();
+            }
+        },
         "sort": function () {
             if (setting.sort == 2) {
                 untangleProfiles();
@@ -620,7 +627,7 @@ function initLineListeners() {
 }
 
 function initCookies() { // TODO: this
-    var fakeSettings = {
+    var mockCookies = {
         "tree": 1,
         "sort": 2,
         "preview": 1,
@@ -628,9 +635,9 @@ function initCookies() { // TODO: this
         "awkn": 4,
         "skill": 0
     };
-    for (var id in fakeSettings) {
+    for (var id in mockCookies) {
         var slideBox = document.getElementById(id);
-        for (var i = 0; i < fakeSettings[id]; i++) {
+        for (var i = 0; i < mockCookies[id]; i++) {
             slideBox.click();
         }
     }
