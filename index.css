@@ -127,7 +127,7 @@ body {
     color: #fff;
     z-index: 1;
 }
-.advent .card {
+.advent .card { /* TODO: change this flashy garbage, it's too cpu-heavy */
     animation: rainbow 1s alternate infinite;
 }
 

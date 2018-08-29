@@ -11,7 +11,7 @@ var gemelCore = gemel.intersection();
 
 var searchMode;
 var cancelSearch;
-var filters = { // global because initSettings needs filters.special
+var filters = { // global because initProfile and initSettings needs filters.special
     "query": new Set(),
     "tribe": new Set(),
     "rival": new Set(),
@@ -40,7 +40,28 @@ function getProfileGroup(id) {
     return profileGroup;
 }
 
-function isAdvent(mon) {
+/* Advent Timer */
+
+function updateAdvent(profile, fa, fb) {
+    var mon = profile.id;
+    var request = true;
+    if (isCurrentAdvent(mon)) {
+        request &= fa(profile);
+    }
+    else {
+        request &= fb(profile);
+        if (!isFutureAdvent(mon)) {
+            request = false;
+        }
+    }
+    if (request) { // TODO: maybe just set request to false, timeouts are too cpu-heavy
+        requestAnimationFrame(function () {
+            updateAdvent(profile, fa, fb);
+        });
+    }
+}
+
+function isCurrentAdvent(mon) {
     if (mon in advent) {
         var now = Date.now();
         if (advent[mon][0] <= now && now <= advent[mon][1]) {
@@ -50,12 +71,82 @@ function isAdvent(mon) {
     return false;
 }
 
+function isFutureAdvent(mon) {
+    if (mon in advent) {
+        var now = Date.now();
+        if (now < advent[mon][0]) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/* Filtration Updater */
+
+function updateSearch() {
+    for (var mon in digi) {
+        var profile = document.getElementById(mon);
+        profile.classList.remove("hidden");
+        if (!okFilters(mon)) {
+            profile.classList.add("hidden");
+        }
+        if (mon in advent) {
+            updateAdvent(profile, filterInAdvent, filterOutAdvent);
+        }
+    }
+}
+
+function okFilters(mon) {
+    var okQuery = !filters.query.size || Array.from(filters.query).every(function (term) {
+        return mon.includes(term);
+        // below allows tier search, excluded for confusingness
+        // var okName = mon.includes(term);
+        // var okTier = term.match(/[\[*\]]/) && digi[mon].skills.some(function (skill) {
+        //     if (typeof skill[2] != "undefined") {
+        //         var tier = "[" + skill[2].toLowerCase() + "]";
+        //         return tier.includes(term);
+        //     }
+        //     return false;
+        // });
+        // return okName || okTier;
+    });
+    var okTribe = !filters.tribe.size || filters.tribe.has(digi[mon].tribe);
+    var okSkill = digi[mon].skills.some(function (skill) {
+        var okRival = !filters.rival.size || filters.rival.has(skill[0]);
+        var effect = ["support", "st", "aoe"][skill[1]];
+        var okEffect = !filters.effect.size || filters.effect.has(effect);
+        return okRival && okEffect;
+    });
+    var okTree = !filters.special.has("tree") || [gemelCore, gemel][settings.tree].nodes.has(mon);
+    var okDNA2 = !filters.special.has("dna") || digi[mon].skills.length > 1;
+    var okV2 = !filters.special.has("v2") || digi[mon].v2;
+    var okAdvent = !filters.special.has("advent") || isCurrentAdvent(mon);
+    var okSpecial = okTree && okDNA2 && okV2 && okAdvent;
+    return okQuery && okTribe && okSkill && okSpecial;
+}
+
+function filterInAdvent(profile) {
+    if (filters.special.has("advent")) {
+        profile.classList.remove("hidden");
+        return true;
+    }
+    return false;
+}
+
+function filterOutAdvent(profile) {
+    if (filters.special.has("advent")) {
+        profile.classList.add("hidden");
+        return true;
+    }
+    return false;
+}
+
 /* Tree Visualization */
 
 function update() {
     gemel = new Gemel(selectedDigi);
     gemelCore = gemel.intersection();
-    updateClones(); // TODO: maybe put updateLines as a clone portrait onload callback
+    updateClones(); // wanted to call updateLines on portrait load, but that creates new problems
     updateProfiles();
     if (settings.sort == 2) {
         untangleProfiles();
@@ -325,11 +416,21 @@ function initProfiles() {
         }
     }
 
+    function addRainbow(profile) {
+        profile.classList.add("advent");
+        return true;
+    }
+
+    function removeRainbow(profile) {
+        profile.classList.remove("advent");
+        return true;
+    }
+
     for (var mon in digi) { // skip sorting step, growlmon.js alphabetizes digi.js in preprocessing
         var profile = newProfile(mon);
         var card = profile.getElementsByClassName("card")[0];
-        if (isAdvent(mon)) {
-            profile.classList.add("advent"); // TODO: add a timer to expire advents
+        if (mon in advent) {
+            updateAdvent(profile, addRainbow, removeRainbow);
         }
         addTapListener(card, selectCard);
         getProfileGroup(digi[mon].evol).appendChild(profile);
@@ -450,44 +551,6 @@ function initFiltration() {
         addTapListener(s, flipSwitch);
     }
     cancelSearch = exitSearchMode;
-}
-
-function okFilters(mon) {
-    var okQuery = !filters.query.size || Array.from(filters.query).every(function (term) {
-        return mon.includes(term);
-        // below allows tier search, excluded for confusingness
-        // var okName = mon.includes(term);
-        // var okTier = term.match(/[\[*\]]/) && digi[mon].skills.some(function (skill) {
-        //     if (typeof skill[2] != "undefined") {
-        //         var tier = "[" + skill[2].toLowerCase() + "]";
-        //         return tier.includes(term);
-        //     }
-        //     return false;
-        // });
-        // return okName || okTier;
-    });
-    var okTribe = !filters.tribe.size || filters.tribe.has(digi[mon].tribe);
-    var okSkill = digi[mon].skills.some(function (skill) {
-        var okRival = !filters.rival.size || filters.rival.has(skill[0]);
-        var effect = ["support", "st", "aoe"][skill[1]];
-        var okEffect = !filters.effect.size || filters.effect.has(effect);
-        return okRival && okEffect;
-    });
-    var okTree = !filters.special.has("tree") || [gemelCore, gemel][settings.tree].nodes.has(mon);
-    var okDNA2 = !filters.special.has("dna") || digi[mon].skills.length > 1;
-    var okV2 = !filters.special.has("v2") || digi[mon].v2;
-    var okAdvent = !filters.special.has("advent") || isAdvent(mon);
-    var okSpecial = okTree && okDNA2 && okV2 && okAdvent;
-    return okQuery && okTribe && okSkill && okSpecial;
-}
-
-function updateSearch() {
-    for (var mon in digi) {
-        document.getElementById(mon).classList.remove("hidden");
-        if (!okFilters(mon)) {
-            document.getElementById(mon).classList.add("hidden");
-        }
-    }
 }
 
 function initVisualization() {
