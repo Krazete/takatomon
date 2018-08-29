@@ -1,4 +1,4 @@
-/* this script relies on digi.js and tree.js */
+/* this script relies on digi.js, tree.js, and advent.js */
 
 /* Globals */
 
@@ -8,17 +8,24 @@ var linelayer;
 var selectedDigi = new Set();
 var gemel;
 var gemelCore;
+
+var searchMode;
+var cancelSearch;
 var setting = {
-    "search": 0, // because scroll and resize event listeners call updateLines
     "tree": 0,
     "sort": 0,
+    "preview": 0,
     "size": 0,
-    "skill": 0,
-    "awkn": 0
+    "awkn": 0,
+    "skill": 0
 };
-var cancelSearch;
 
 /* Helpers */
+
+function addTapListener(e, f) {
+    e.addEventListener("click", f);
+    e.addEventListener("touchstart", function () {}); // somehow enables mobile responsiveness (no double tap)
+}
 
 function getProfileGroup(id) {
     var box = document.getElementById(id);
@@ -26,9 +33,14 @@ function getProfileGroup(id) {
     return profileGroup;
 }
 
-function addTapListener(e, f) {
-    e.addEventListener("click", f);
-    e.addEventListener("touchstart", function () {}); // somehow enables mobile responsiveness (no double tap)
+function isAdvent(mon) {
+    if (mon in advent) {
+        var now = Date.now(); // TODO: check if this is the best method to use
+        if (advent[mon][0] <= now && now <= advent[mon][1]) {
+            return true;
+        }
+    }
+    return false;
 }
 
 /* Tree Visualization */
@@ -50,6 +62,10 @@ function updateClones() {
     var selection = getProfileGroup("selection");
     selection.innerHTML = "";
     if (selectedDigi.size) {
+        function deselectClone() {
+            selectedDigi.delete(this.parentNode.id.slice(0, -6));
+            update();
+        }
         for (var mon of selectedDigi) {
             var profile = document.getElementById(mon);
             var clone = profile.cloneNode(true);
@@ -60,20 +76,13 @@ function updateClones() {
             clone.classList.remove("preview");
             clone.id = mon + "-clone";
             var card = clone.getElementsByClassName("card")[0];
-            addTapListener(card, function () {
-                deselectCard(this.parentNode.id.slice(0, -6));
-            });
+            addTapListener(card, deselectClone);
             selection.appendChild(clone);
         }
     }
     else {
         selection.appendChild(blank);
     }
-}
-
-function deselectCard(mon) {
-    selectedDigi.delete(mon);
-    update();
 }
 
 function updateProfiles() {
@@ -143,9 +152,9 @@ function sortProfiles(sortedDigi) {
     updateLines();
 }
 
-function updateLines() { // cannot update individually because of line border
+function updateLines() { // cannot update individually because of line borders
     linelayer.innerHTML = ""; // refresh linelayer
-    if (!setting.search) { // hide lines in search mode
+    if (!searchMode) {
         if (setting.tree) {
             gemel.forEachEdge(function (edge, JSONedge) {
                 if (!gemelCore.JSONedges.has(JSONedge)) {
@@ -302,7 +311,7 @@ function initProfiles() {
 
     function selectCard() {
         selectedDigi.add(this.parentNode.id);
-        if (setting.search) {
+        if (searchMode) {
             cancelSearch();
         }
         else {
@@ -313,8 +322,8 @@ function initProfiles() {
     for (var mon in digi) { // skip sorting step, growlmon.js alphabetizes digi.js in preprocessing
         var profile = newProfile(mon);
         var card = profile.getElementsByClassName("card")[0];
-        if (mon in advent) {
-            profile.classList.add("advent"); // TODO: change this after changing advent.js and such
+        if (isAdvent(mon)) {
+            profile.classList.add("advent"); // TODO: add a timer to expire advents
         }
         addTapListener(card, selectCard);
         getProfileGroup(digi[mon].evol).appendChild(profile);
@@ -350,7 +359,7 @@ function initBoxLabels() {
                 selectedDigi.add(profile.id);
             }
         }
-        if (setting.search) {
+        if (searchMode) {
             cancelSearch();
         }
         update();
@@ -380,7 +389,7 @@ function initFiltration() {
         selection.classList.add("hidden");
         filtration.classList.remove("hidden");
         search.focus();
-        setting.search = 1;
+        searchMode = 1;
         updateLines();
         updateSearch();
     }
@@ -397,7 +406,7 @@ function initFiltration() {
         filter.rival.clear();
         filter.effect.clear();
         filter.special.clear();
-        setting.search = 0;
+        searchMode = 0;
         update();
     }
 
@@ -455,7 +464,7 @@ function initFiltration() {
         var okTree = !filter.special.has("tree") || [gemelCore, gemel][setting.tree].nodes.has(mon);
         var okDNA2 = !filter.special.has("dna") || digi[mon].skills.length > 1;
         var okV2 = !filter.special.has("v2") || digi[mon].v2;
-        var okAdvent = !filter.special.has("advent") || mon in advent; // TODO: change this after changing advent.js and such
+        var okAdvent = !filter.special.has("advent") || isAdvent(mon);
         var okSpecial = okTree && okDNA2 && okV2 && okAdvent;
         return okQuery && okTribe && okSkill && okSpecial;
     }
@@ -558,7 +567,7 @@ function initVisualization() {
     }
 
     function previewGemel() {
-        if (!setting.search) { // disable during search mode
+        if (!searchMode) {
             var tree = new Gemel(this.parentNode.id);
             for (var node of tree.nodes) {
                 document.getElementById(node).classList.add("preview");
@@ -575,7 +584,7 @@ function initVisualization() {
     }
 
     function deviewGemel() {
-        if (!setting.search) { // disable during search mode
+        if (!searchMode) {
             updateProfiles();
             updateLines();
         }
@@ -611,9 +620,19 @@ function initLineListeners() {
 }
 
 function initCookies() { // TODO: this
-    var slideBoxes = document.getElementsByClassName("slidebox");
-    for (var slideBox of slideBoxes) {
-        console.log(slideBox);
+    var fakeSettings = {
+        "tree": 1,
+        "sort": 2,
+        "preview": 1,
+        "size": 2,
+        "awkn": 4,
+        "skill": 0
+    };
+    for (var id in fakeSettings) {
+        var slideBox = document.getElementById(id);
+        for (var i = 0; i < fakeSettings[id]; i++) {
+            slideBox.click();
+        }
     }
 }
 
