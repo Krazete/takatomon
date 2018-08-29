@@ -11,14 +11,14 @@ var gemelCore = gemel.intersection();
 
 var searchMode;
 var cancelSearch;
-var filter = { // global because initSetting needs filter.special
+var filters = { // global because initSettings needs filters.special
     "query": new Set(),
     "tribe": new Set(),
     "rival": new Set(),
     "effect": new Set(),
     "special": new Set()
 };
-var setting = {
+var settings = {
     "tree": 0,
     "sort": 0,
     "preview": 0,
@@ -42,7 +42,7 @@ function getProfileGroup(id) {
 
 function isAdvent(mon) {
     if (mon in advent) {
-        var now = Date.now(); // TODO: check if this is the best method to use
+        var now = Date.now();
         if (advent[mon][0] <= now && now <= advent[mon][1]) {
             return true;
         }
@@ -57,7 +57,7 @@ function update() {
     gemelCore = gemel.intersection();
     updateClones(); // TODO: maybe put updateLines as a clone portrait onload callback
     updateProfiles();
-    if (setting.sort == 2) {
+    if (settings.sort == 2) {
         untangleProfiles();
     }
     else {
@@ -106,7 +106,7 @@ function updateProfiles() {
             else if (gemelCore.nodes.has(mon)) {
                 document.getElementById(mon).classList.add("core-node");
             }
-            else if (setting.tree && gemel.nodes.has(mon)) {
+            else if (settings.tree && gemel.nodes.has(mon)) {
                 document.getElementById(mon).classList.add("node");
             }
             else {
@@ -162,7 +162,7 @@ function sortProfiles(sortedDigi) {
 function updateLines() { // cannot update individually because of line borders
     linelayer.innerHTML = ""; // refresh linelayer
     if (!searchMode) {
-        if (setting.tree) {
+        if (settings.tree) {
             gemel.forEachEdge(function (edge, JSONedge) {
                 if (!gemelCore.JSONedges.has(JSONedge)) {
                     drawEdge(edge, "#000", 4);
@@ -225,8 +225,8 @@ function drawLine(a, b, color, width) {
     }
     else {
         var sign = b.x - a.x >= 0 ? 1 : -1;
-        var dx = sign * [32, 40, 24][setting.size];
-        var dy = [10, 12, 8][setting.size];
+        var dx = sign * [32, 40, 24][settings.size];
+        var dy = [10, 12, 8][settings.size];
         path.setAttribute("d",
             "M" + a.x + "," + a.y +
             "C" + a.x + "," + (a.y + dy) +
@@ -254,8 +254,7 @@ function init() {
     initFiltration();
     initVisualization();
     initLineListeners();
-    initCookies();
-    update();
+    initLocalStorage(); // called last in case localStorage is bugged
 }
 
 function initProfiles() {
@@ -403,11 +402,11 @@ function initFiltration() {
         for (var s of switches) {
             s.classList.remove("selected");
         }
-        filter.query.clear();
-        filter.tribe.clear();
-        filter.rival.clear();
-        filter.effect.clear();
-        filter.special.clear();
+        filters.query.clear();
+        filters.tribe.clear();
+        filters.rival.clear();
+        filters.effect.clear();
+        filters.special.clear();
         searchMode = 0;
         update();
     }
@@ -416,8 +415,8 @@ function initFiltration() {
         var lower = this.value.toLowerCase();
         var parsed = lower.split(/[^a-z]+/);
         // var parsed = lower.split(/[^a-z\[*\]]+/); // for tier search, excluded for confusingness
-        filter.query = new Set(parsed);
-        filter.query.delete("");
+        filters.query = new Set(parsed);
+        filters.query.delete("");
         updateSearch();
     }
 
@@ -433,11 +432,11 @@ function initFiltration() {
         var value = splitId[1];
         if (this.classList.contains("selected")) {
             this.classList.remove("selected");
-            filter[key].delete(value);
+            filters[key].delete(value);
         }
         else {
             this.classList.add("selected");
-            filter[key].add(value);
+            filters[key].add(value);
         }
         updateSearch();
     }
@@ -453,8 +452,8 @@ function initFiltration() {
     cancelSearch = exitSearchMode;
 }
 
-function okFilter(mon) {
-    var okQuery = !filter.query.size || Array.from(filter.query).every(function (term) {
+function okFilters(mon) {
+    var okQuery = !filters.query.size || Array.from(filters.query).every(function (term) {
         return mon.includes(term);
         // below allows tier search, excluded for confusingness
         // var okName = mon.includes(term);
@@ -467,17 +466,17 @@ function okFilter(mon) {
         // });
         // return okName || okTier;
     });
-    var okTribe = !filter.tribe.size || filter.tribe.has(digi[mon].tribe);
+    var okTribe = !filters.tribe.size || filters.tribe.has(digi[mon].tribe);
     var okSkill = digi[mon].skills.some(function (skill) {
-        var okRival = !filter.rival.size || filter.rival.has(skill[0]);
+        var okRival = !filters.rival.size || filters.rival.has(skill[0]);
         var effect = ["support", "st", "aoe"][skill[1]];
-        var okEffect = !filter.effect.size || filter.effect.has(effect);
+        var okEffect = !filters.effect.size || filters.effect.has(effect);
         return okRival && okEffect;
     });
-    var okTree = !filter.special.has("tree") || [gemelCore, gemel][setting.tree].nodes.has(mon);
-    var okDNA2 = !filter.special.has("dna") || digi[mon].skills.length > 1;
-    var okV2 = !filter.special.has("v2") || digi[mon].v2;
-    var okAdvent = !filter.special.has("advent") || isAdvent(mon);
+    var okTree = !filters.special.has("tree") || [gemelCore, gemel][settings.tree].nodes.has(mon);
+    var okDNA2 = !filters.special.has("dna") || digi[mon].skills.length > 1;
+    var okV2 = !filters.special.has("v2") || digi[mon].v2;
+    var okAdvent = !filters.special.has("advent") || isAdvent(mon);
     var okSpecial = okTree && okDNA2 && okV2 && okAdvent;
     return okQuery && okTribe && okSkill && okSpecial;
 }
@@ -485,7 +484,7 @@ function okFilter(mon) {
 function updateSearch() {
     for (var mon in digi) {
         document.getElementById(mon).classList.remove("hidden");
-        if (!okFilter(mon)) {
+        if (!okFilters(mon)) {
             document.getElementById(mon).classList.add("hidden");
         }
     }
@@ -494,7 +493,7 @@ function updateSearch() {
 function initVisualization() {
     var visualization = document.getElementById("visualization");
     var slideGroups = visualization.getElementsByClassName("slide-group");
-    var settingFunction = {
+    var settingsFunction = {
         "tree": function () {
             update();
             if (searchMode) {
@@ -502,11 +501,11 @@ function initVisualization() {
             }
         },
         "sort": function () {
-            if (setting.sort == 2) {
+            if (settings.sort == 2) {
                 untangleProfiles();
             }
             else {
-                var basis = setting.sort ? byTribe : byAlphabet;
+                var basis = settings.sort ? byTribe : byAlphabet;
                 var keys = Object.keys(digi);
                 keys.sort(basis);
                 sortProfiles(keys);
@@ -514,11 +513,11 @@ function initVisualization() {
         },
         "size": function () {
             var profiles = document.getElementsByClassName("profile");
-            var size = ["", "large", "small"][setting.size];
+            var size = ["", "large", "small"][settings.size];
             for (var profile of profiles) {
                 profile.classList.remove("large");
                 profile.classList.remove("small");
-                if (setting.size) {
+                if (settings.size) {
                     profile.classList.add(size);
                 }
             }
@@ -526,7 +525,7 @@ function initVisualization() {
         },
         "awkn": function () {
             var portraits = document.getElementsByClassName("portrait");
-            var awkn = [0, 1, 3, 4, 5][setting.awkn];
+            var awkn = [0, 1, 3, 4, 5][settings.awkn];
             for (var portrait of portraits) {
                 var mon = portrait.parentNode.parentNode.id;
                 if (awkn != 5 || mon != "blank" && !mon.endsWith("-clone") && digi[mon].v2) {
@@ -539,7 +538,7 @@ function initVisualization() {
             for (var mon in digi) {
                 var profile = document.getElementById(mon);
                 var card = profile.getElementsByClassName("card")[0];
-                if (setting.preview) {
+                if (settings.preview) {
                     card.addEventListener("mouseover", previewGemel);
                     card.addEventListener("mouseout", deviewGemel);
                 }
@@ -552,7 +551,7 @@ function initVisualization() {
         "skill": function () {
             var signatureGroups = document.getElementsByClassName("signature-group");
             for (var signatureGroup of signatureGroups) {
-                if (setting.skill) {
+                if (settings.skill) {
                     signatureGroup.style.display = "block";
                 }
                 else {
@@ -609,8 +608,8 @@ function initVisualization() {
         }
         i %= slides.length;
         slides[i].classList.remove("hidden");
-        setting[this.id] = i;
-        settingFunction[this.id]();
+        settings[this.id] = i;
+        settingsFunction[this.id]();
     }
 
     for (var slideGroup of slideGroups) {
@@ -626,21 +625,35 @@ function initLineListeners() {
     window.addEventListener("resize", updateLines);
 }
 
-function initCookies() { // TODO: this
-    var mockCookies = {
-        "tree": 1,
-        "sort": 2,
-        "preview": 1,
-        "size": 2,
-        "awkn": 4,
-        "skill": 0
-    };
-    for (var id in mockCookies) {
+function initLocalStorage() {
+    function loadSettings() {
+        return {
+            "tree": window.localStorage.getItem("tree"),
+            "sort": window.localStorage.getItem("sort"),
+            "preview": window.localStorage.getItem("preview"),
+            "size": window.localStorage.getItem("size"),
+            "awkn": window.localStorage.getItem("awkn"),
+            "skill": window.localStorage.getItem("skill")
+        };
+    }
+
+    function saveSettings() {
+        window.localStorage.setItem("tree", settings.tree);
+        window.localStorage.setItem("sort", settings.sort);
+        window.localStorage.setItem("preview", settings.preview);
+        window.localStorage.setItem("size", settings.size);
+        window.localStorage.setItem("awkn", settings.awkn);
+        window.localStorage.setItem("skill", settings.skill);
+    }
+
+    var storedSettings = loadSettings();
+    for (var id in window.localStorage) {
         var slideBox = document.getElementById(id);
-        for (var i = 0; i < mockCookies[id]; i++) {
+        for (var i = 0; i < storedSettings[id]; i++) {
             slideBox.click();
         }
     }
+    window.addEventListener("beforeunload", saveSettings);
 }
 
 window.addEventListener("DOMContentLoaded", init);

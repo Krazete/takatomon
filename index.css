@@ -81,8 +81,10 @@ body {
     border-radius: 10%;
     cursor: pointer;
 }
-.card:hover { /* TODO: make this exclusive to desktop */
-    border-color: #fff;
+@media (hover: hover) {
+    .card:hover {
+        border-color: #fff;
+    }
 }
 .small .card {
     width: 48px;
@@ -234,6 +236,16 @@ body {
     text-align: center;
 }
 
+.foot {
+    margin: 0 12px;
+    cursor: pointer;
+}
+@media (hover: hover) {
+    .foot:hover {
+        color: #888;
+    }
+}
+
 #search {
     width: 100%;
     font-size: 20px;
@@ -279,9 +291,11 @@ body {
     padding: 4px;
     cursor: pointer;
 }
-.toggle-search:hover { /* TODO: make this exclusive to desktop */
-    background: #888;
-    color: #000;
+@media (hover: hover) {
+    .toggle-search:hover {
+        background: #888;
+        color: #000;
+    }
 }
 
 .switch {
@@ -296,29 +310,55 @@ body {
     filter: grayscale(1) brightness(5) opacity(0.5);
     cursor: pointer;
 }
-.switch:hover, .switch.selected { /* TODO: make .switch:hover exclusive to desktop */
+.switch.selected {
     filter: drop-shadow(0 0 2px #fff);
 }
-.switch.mirage:hover, .switch.mirage.selected {
+.switch.mirage.selected {
     filter: drop-shadow(0 0 2px #eee);
 }
-.switch.blazing:hover, .switch.blazing.selected {
+.switch.blazing.selected {
     filter: drop-shadow(0 0 2px #f00);
 }
-.switch.glacier:hover, .switch.glacier.selected {
+.switch.glacier.selected {
     filter: drop-shadow(0 0 2px #0af);
 }
-.switch.electric:hover, .switch.electric.selected {
+.switch.electric.selected {
     filter: drop-shadow(0 0 2px #ff0);
 }
-.switch.earth:hover, .switch.earth.selected {
+.switch.earth.selected {
     filter: drop-shadow(0 0 2px #4b4);
 }
-.switch.bright:hover, .switch.bright.selected {
+.switch.bright.selected {
     filter: drop-shadow(0 0 2px #fd0);
 }
-.switch.abyss:hover, .switch.abyss.selected {
+.switch.abyss.selected {
     filter: drop-shadow(0 0 2px #f29);
+}
+@media (hover: hover) {
+    .switch:hover {
+        filter: drop-shadow(0 0 2px #fff);
+    }
+    .switch.mirage:hover {
+        filter: drop-shadow(0 0 2px #eee);
+    }
+    .switch.blazing:hover {
+        filter: drop-shadow(0 0 2px #f00);
+    }
+    .switch.glacier:hover {
+        filter: drop-shadow(0 0 2px #0af);
+    }
+    .switch.electric:hover {
+        filter: drop-shadow(0 0 2px #ff0);
+    }
+    .switch.earth:hover {
+        filter: drop-shadow(0 0 2px #4b4);
+    }
+    .switch.bright:hover {
+        filter: drop-shadow(0 0 2px #fd0);
+    }
+    .switch.abyss:hover {
+        filter: drop-shadow(0 0 2px #f29);
+    }
 }
 
 .slideboxes {
@@ -350,9 +390,11 @@ body {
     cursor: pointer;
     user-select: none;
 }
-.slide-group:hover { /* TODO: make this exclusive to desktop */
-    color: #ddd;
-    border-color: #ddd;
+@media (hover: hover) {
+    .slide-group:hover {
+        color: #ddd;
+        border-color: #ddd;
+    }
 }
 
 .slide {
