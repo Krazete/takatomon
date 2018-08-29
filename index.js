@@ -225,8 +225,8 @@ function drawLine(a, b, color, width) {
     }
     else {
         var sign = b.x - a.x >= 0 ? 1 : -1;
-        var dx = sign * 32;
-        var dy = 16;
+        var dx = sign * [32, 40, 24][setting.size];
+        var dy = [10, 12, 8][setting.size];
         path.setAttribute("d",
             "M" + a.x + "," + a.y +
             "C" + a.x + "," + (a.y + dy) +
