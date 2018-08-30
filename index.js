@@ -4,6 +4,7 @@
 
 var blank;
 var linelayer;
+var linecontext;
 
 var selectedDigi = new Set();
 var gemel = new Gemel();
@@ -200,8 +201,10 @@ function sortProfiles(sortedDigi) {
 }
 
 function updateLines() { // cannot update individually because of line borders
-    linelayer.innerHTML = ""; // refresh linelayer
     if (!searchMode) {
+        linelayer.width = 2 * window.innerWidth;
+        linelayer.height = 2 * document.body.getBoundingClientRect().height; // body is taller than window
+        linecontext.scale(2, 2);
         if (settings.tree) {
             gemel.forEachEdge(function (edge, JSONedge) {
                 if (!gemelCore.JSONedges.has(JSONedge)) {
@@ -220,7 +223,6 @@ function updateLines() { // cannot update individually because of line borders
         gemelCore.forEachEdge(function (edge, JSONedge) {
             drawEdge(edge, "#fff", 2);
         });
-        linelayer.innerHTML += ""; // force-update linelayer
     }
 }
 
@@ -253,35 +255,37 @@ function getPoint(mon, side) {
 
 function drawLine(a, b, color, width) {
     var path = document.createElement("path");
+    linecontext.beginPath();
+    linecontext.moveTo(a.x, a.y);
     if (a.y < b.y) {
-        path.setAttribute("d",
-            "M" + a.x + "," + a.y +
-            "S" + a.x + "," + (0.75 * a.y + 0.25 * b.y) +
-            " " + (0.5 * a.x + 0.5 * b.x) + "," + (0.5 * a.y + 0.5 * b.y) +
-            "M" + b.x + "," + b.y +
-            "S" + b.x + "," + (0.25 * a.y + 0.75 * b.y) +
-            " " + (0.5 * a.x + 0.5 * b.x) + "," + (0.5 * a.y + 0.5 * b.y)
+        linecontext.quadraticCurveTo(
+            a.x, (0.75 * a.y + 0.25 * b.y),
+            0.5 * a.x + 0.5 * b.x, 0.5 * a.y + 0.5 * b.y
+        );
+        linecontext.quadraticCurveTo(
+            b.x, (0.25 * a.y + 0.75 * b.y),
+            b.x, b.y
         );
     }
     else {
         var sign = b.x - a.x >= 0 ? 1 : -1;
         var dx = sign * [32, 40, 24][settings.size];
         var dy = [10, 12, 8][settings.size];
-        path.setAttribute("d",
-            "M" + a.x + "," + a.y +
-            "C" + a.x + "," + (a.y + dy) +
-            " " + (a.x + dx) + "," + (a.y + dy) +
-            " " + (0.5 * a.x + 0.5 * b.x) + "," + (0.5 * a.y + 0.5 * b.y) +
-            "M" + b.x + "," + b.y +
-            "C" + b.x + "," + (b.y - dy) +
-            " " + (b.x - dx) + "," + (b.y - dy) +
-            " " + (0.5 * a.x + 0.5 * b.x) + "," + (0.5 * a.y + 0.5 * b.y)
+        linecontext.bezierCurveTo(
+            a.x, a.y + dy,
+            a.x + dx, a.y + dy,
+            0.5 * a.x + 0.5 * b.x, 0.5 * a.y + 0.5 * b.y
+        );
+        linecontext.bezierCurveTo(
+            b.x - dx, b.y - dy,
+            b.x, b.y - dy,
+            b.x, b.y
         );
     }
-    path.setAttribute("stroke", color);
-    path.setAttribute("stroke-width", width);
-    path.setAttribute("fill", "none");
-    linelayer.appendChild(path);
+    linecontext.strokeStyle = color;
+    linecontext.lineWidth = width;
+    linecontext.stroke();
+    linecontext.closePath();
 }
 
 /* Initialization */
@@ -289,6 +293,7 @@ function drawLine(a, b, color, width) {
 function init() {
     blank = document.getElementById("blank");
     linelayer = document.getElementById("linelayer");
+    linecontext = linelayer.getContext("2d");
     initProfiles();
     initBoxLabels();
     initFiltration();
@@ -585,7 +590,6 @@ function initVisualization() {
                     drawEdge(edge, "#000", 4);
                 }
             });
-            linelayer.innerHTML += "";
         }
     }
 
