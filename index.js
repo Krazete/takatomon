@@ -230,12 +230,6 @@ function drawEdge(edge, color, width) {
     var a = getPoint(edge[0], "bottom");
     var b = getPoint(edge[1], "top");
     drawLine(a, b, color, width);
-    // below is side-trimming, likely redundant (browser probably covers it)
-    // var tooLeft = a.x < window.scrollX && b.x < window.scrollX;
-    // var tooRight = a.x > (window.scrollX + window.innerWidth) && b.x > (window.scrollX > window).innerWidth;
-    // if (!tooLeft && !tooRight) {
-    //     drawLine(a, b, color, width);
-    // }
 }
 
 function getPoint(mon, side) {

@@ -12,5 +12,5 @@ var advent = {
     "justimon":      [new Date("09-24-2018 02:00:00 PDT"), new Date("10-08-2018 01:59:59 PDT")],
     "minervamon":    [new Date("09-24-2018 02:00:00 PDT"), new Date("10-08-2018 01:59:59 PDT")],
     "ebemon":        [new Date("10-01-2018 02:00:00 PDT"), new Date("10-15-2018 01:59:59 PDT")],
-    "titamon":       [new Date("10-01-2018 02:00:00 PDT"), new Date("10-15-2018 01:59:59 PDT")],
+    "titamon":       [new Date("10-01-2018 02:00:00 PDT"), new Date("10-15-2018 01:59:59 PDT")]
 };

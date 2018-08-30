@@ -131,20 +131,19 @@ body {
 }
 .advent .card:after {
     content: "!";
-    position: relative;
     position: absolute;
     top: -2px;
     right: -2px;
     width: 16px;
     height: 16px;
     line-height: 16px;
-    background: #f00;
-    color: #ff0;
+    background: #f80;
+    color: #fff;
     font-size: 16px;
     font-weight: bold;
     text-align: center;
-    border: 1px solid #ff0;
-    border-radius: 33%;
+    border: 1px solid #fff;
+    border-radius: 50%;
     display: block;
 }
 .small.advent .card:after {

@@ -125,7 +125,8 @@ function getDigimonInfo() {
                 console.log("Digimon [" + mon.name + "] has been successfully registered.");
             }
             else {
-                error("Digimon [" + mon.name + "] could not be registered.")
+                error("Digimon [" + mon.name + "] could not be registered.");
+                digi[mon.name] = {"ERROR": true, "next": []};
             }
             monsRegistered.push(mon.name);
             if (mons.length == monsRegistered.length) {
@@ -148,7 +149,7 @@ function getDigimonInfo() {
         };
         xhr.send();
     });
-} // add lavorvomon-spd-atk and put output into root folder
+} // add lavorvomon-spd-atk, fix examon skill, and put output into root folder
 
 /* Digimon Thumbnails */
 function getDigimonImages(n) { // n = 2 returns nothing; +1 images == +2 images
