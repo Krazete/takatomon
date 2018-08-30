@@ -2,6 +2,8 @@
 
 /* Globals */
 
+var lastUpdate = new Date("08-30-2018 00:00:00 GMT+0800");
+
 var blank;
 var linelayer;
 var linecontext;
@@ -295,6 +297,7 @@ function init() {
     initFiltration();
     initVisualization();
     initLineListeners();
+    initFooter();
     updateAdvent();
     initLocalStorage(); // called last in case localStorage is bugged
 }
@@ -623,6 +626,207 @@ function initLineListeners() {
         scroller.addEventListener("scroll", updateLines);
     }
     window.addEventListener("resize", updateLines);
+}
+
+function initFooter() {
+    var about = document.getElementById("about");
+    var qa = document.getElementById("qa");
+    var calculate = document.getElementById("calculate");
+    var close = document.getElementById("close");
+    var timestamp = document.getElementById("timestamp");
+    var closeFoot = document.getElementById("foot-close");
+    var aboutFoot = document.getElementById("foot-about");
+    var qaFoot = document.getElementById("foot-qa");
+    var calculateFoot = document.getElementById("foot-calculate");
+
+    function initTimestamp() {
+        var months = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+        var month = months[lastUpdate.getMonth()];
+        var date = lastUpdate.getDate();
+        var year = lastUpdate.getFullYear();
+        timestamp.innerHTML = month + " " + date + ", " + year;
+    }
+
+    function isRelated(mon0, mon1) {
+        var monTree0 = new Gemel(mon0);
+        var monTree1 = new Gemel(mon1);
+        return monTree0.nodes.has(mon1) || monTree1.nodes.has(mon0);
+    }
+
+    function costPlugins() {
+        var plugins = [
+            {
+                "champion": [8, 3, 0, 0],
+                "ultimate": [24, 20, 7, 6],
+                "mega": [0, 0, 20, 17]
+            },
+            {
+                "champion": [12, 5, 0, 0],
+                "ultimate": [36, 30, 11, 9],
+                "mega": [0, 0, 30, 26]
+            },
+            {
+                "champion": [16, 6, 0, 0],
+                "ultimate": [48, 40, 14, 12],
+                "mega": [0, 0, 40, 34]
+            },
+            {
+                "champion": [24, 9, 0, 0],
+                "ultimate": [72, 60, 21, 18],
+                "mega": [0, 0, 60, 51]
+            },
+            {
+                "champion": [24, 9, 0, 0],
+                "ultimate": [72, 60, 21, 18],
+                "mega": [0, 0, 60, 51]
+            },
+            {
+                "mega": [0, 0, 100, 85]
+            }
+        ];
+
+        var gem = [gemelCore, gemel][settings.tree];
+        var evols = ["in-training-i", "in-training-ii", "rookie", "champion", "ultimate", "mega"];
+        var youngestIndex = 5;
+        var oldestIndex = 0;
+        var youngestMon = "";
+        var oldestMon = "";
+        var oldestMega = "";
+
+        for (var root of gem.roots) {
+            var evol = digi[root].evol;
+            var evolIndex = evols.indexOf(evol);
+            if (evolIndex < youngestIndex) {
+                youngestIndex = evolIndex;
+                youngestMon = root;
+            }
+            if (evolIndex > oldestIndex) {
+                oldestIndex = evolIndex;
+                oldestMon = root;
+            }
+            if (evol == "mega") {
+                if (oldestMega == "") {
+                    oldestMega = root;
+                }
+                else if (oldestMega != root) {
+                    var oldestMegaTree = new Gemel(oldestMega);
+                    if (oldestMegaTree.nodes.has(root)) {
+                        var rootTree = new Gemel(root);
+                        if (rootTree.nodes.size > oldestMegaTree.nodes.size) {
+                            oldestMega = root;
+                        }
+                    }
+                    else {
+                        calculate.innerHTML = "Please narrow your selection to eliminate conflicting megas.";
+                        return true;
+                    }
+                }
+            }
+        }
+        var selectedEvols = evols.slice(youngestIndex, oldestIndex + 1);
+        console.log(selectedEvols);
+        var selectedMegas = oldestMega == "" ? [] : [oldestMega];
+        for (var mega of selectedMegas) {
+            for (var prevmon of prev(mega)) {
+                if (gem.nodes.has(prevmon) && !selectedMegas.includes(prevmon) && digi[prevmon].evol == "mega") {
+                    selectedMegas.push(prevmon);
+                }
+            }
+        }
+        console.log(selectedMegas);
+        if (selectedEvols.length == 0 && selectedMegas.length < 2) {
+            calculate.innerHTML = "Please selected at least two Digimon.";
+            return true;
+        }
+
+        var selectedTribe = {
+            "in-training-i": "",
+            "in-training-ii": "",
+            "rookie": "",
+            "champion": "",
+            "ultimate": ""
+        };
+        for (var node of gem.nodes) {
+            var evol = digi[node].evol;
+            if (evol != "mega" && selectedEvols.includes(evol)) {
+                var tribe = digi[node].tribe;
+                if (selectedTribe[evol] == "") {
+                    selectedTribe[evol] = tribe;
+                }
+                else if (selectedTribe[evol] != tribe) {
+                    calculate.innerHTML = "Please narrow your selection to eliminate conflicting tribes.";
+                    return true;
+                }
+            }
+        }
+
+        var selectedPlugins = {
+            "mirage": [0, 0, 0, 0],
+            "blazing": [0, 0, 0, 0],
+            "glacier": [0, 0, 0, 0],
+            "electric": [0, 0, 0, 0],
+            "earth": [0, 0, 0, 0],
+            "bright": [0, 0, 0, 0],
+            "abyss": [0, 0, 0, 0]
+        };
+        for (var evol of selectedEvols) {
+            var pluginCosts = plugins[settings.awkn];
+            if (evol != "mega" && evol in pluginCosts) {
+                for (var i = 0; i < 4; i++) {
+                    selectedPlugins[selectedTribe[evol]][i] += pluginCosts[evol][i];
+                }
+            }
+        }
+        for (var mega of selectedMegas) {
+            for (var i = 0; i < 4; i++) {
+                selectedPlugins[digi[mega].tribe][i] += pluginCosts["mega"][i];
+            }
+        }
+
+        calculate.innerHTML = "This route (" + (digi[youngestMon].name) + " → " + (digi[oldestMega == "" ? oldestMon : oldestMega].name) + ") costs ";
+        for (var evol in selectedPlugins) {
+            for (var i = 0; i < 4; i++) {
+                if (selectedPlugins[evol][i]) {
+                    calculate.innerHTML += selectedPlugins[evol][i] + " " + evol + " " + (i + 1) + ".0 plugins, ";
+                }
+            }
+        }
+        calculate.innerHTML += "and maybe some other stuff (this thing only calculates plugins).";
+    }
+
+    initTimestamp();
+    addTapListener(aboutFoot, function () {
+        about.classList.remove("hidden");
+        qa.classList.add("hidden");
+        calculate.classList.add("hidden");
+        close.classList.remove("hidden");
+        updateLines();
+    });
+    addTapListener(qaFoot, function () {
+        about.classList.add("hidden");
+        qa.classList.remove("hidden");
+        calculate.classList.add("hidden");
+        close.classList.remove("hidden");
+        updateLines();
+    });
+    addTapListener(calculateFoot, function () {
+        costPlugins();
+        about.classList.add("hidden");
+        qa.classList.add("hidden");
+        calculate.classList.remove("hidden");
+        close.classList.remove("hidden");
+        updateLines();
+    });
+    addTapListener(closeFoot, function () {
+        about.classList.add("hidden");
+        qa.classList.add("hidden");
+        calculate.classList.add("hidden");
+        close.classList.add("hidden");
+        updateLines();
+    });
 }
 
 function updateAdvent() {

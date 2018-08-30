@@ -21,12 +21,6 @@
 	<title>Awakening Helper</title>
 </head>
 <body>
-	<!-- <div id="header">
-		<div class="scroller">
-			Header.
-			<noscript>Please enable JavaScript in your browser settings in order to use this website.</noscript>
-		</div>
-	</div> -->
 	<div class="box" id="selection">
 		<div class="scroller">
 			<div class="profile-group">
@@ -174,13 +168,53 @@
 		</div>
 	</div>
 	<div id="footer">
-		<div class="scroller">
-			<span class="foot">About</span>
-			<span class="foot">Contact</span>
-			<span class="foot">Help</span>
-			<span class="foot">GitHub</span>
-			Last updated on <span id="update">August 23, 2018</span>.
+		<div class="hidden" id="about">
+			This website was created for the mobile game <i><a href="https://digimonlinkz-en.bn-ent.net/">Digimon Links</a></i> to ease the viewing of digivolution lines and assist with the awakening process.
+			<br>
+			Data and assets are intermittently gathered from <a href="https://growlmon.net">Growlmon.Net</a>, so this website may contain slightly outdated information.
+			<br>
+			The last update was on <span id="timestamp">a Tuesday</span>.
+			<br>
+			<br>
+			For more information on the latest updates, view this project's <a href="https://github.com/Krazete/takatomon">GitHub repository</a>.
+			<br>
+			<br>
+			You can also contact me at <a href="mailto:krazete@gmail.com">krazete@gmail.com</a> or send a message through
+			<a href="https://reddit.com/u/krazete"><img src="img/icons/reddit.png" alt="Reddit" class="icon"></a>,
+			<a href="https://github.com/krazete"><img src="img/icons/github.png" alt="GitHub" class="icon"></a>, or
+			<a href="https://paypal.me/krazete"><img src="img/icons/paypal.png" alt="PayPal" class="icon"></a>.
 		</div>
+		<div class="hidden" id="qa">
+			Q&A
+			<br><br>
+			Q: What is that circled exclamation mark in the corner of some Digimon cards?
+			<br>
+			A: This indicates that the Digimon is currently available in Advent Quests (or will be within 12 hours).
+			<br><br>
+			Q: What does the Tree option in the Special search filter do?
+			<br>
+			A: It narrows down your search to just the Digimon of the currently selected digivolution tree.
+			<br><br>
+			Q: Isn't the Untangle (Greedy) sort basis supposed to untangle the lines? It doesn't work too well.
+			<br>
+			A: Sorry, I can't figure out how to make it any better.
+			<br><br>
+			Q: Why can't I use the preview feature in search mode?
+			<br>
+			A: For clarity. Viewing digivolution lines in search mode would present an incomplete and misleading tree.
+		</div>
+		<div class="hidden" id="calculate">
+		</div>
+		<div class="hidden" id="close">
+			<br>
+			<span class="foot" id="foot-close">Close</span>
+			<br><br>
+		</div>
+		<span class="foot" id="foot-about">About</span>
+		|
+		<span class="foot" id="foot-qa">Q&A</span>
+		|
+		<span class="foot" id="foot-calculate">Calculate (Beta)</span>
 	</div>
 	<canvas id="linelayer"></canvas>
 </body>

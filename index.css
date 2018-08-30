@@ -251,19 +251,26 @@ body {
     pointer-events: none;
 }
 
-#header, #footer {
-    color: #666;
+#footer {
+    color: #888;
     text-align: center;
+    padding: 8px;
 }
-
-.foot {
-    margin: 0 12px;
+#footer a, .foot {
+    color: #aaa;
+    text-decoration: underline;
     cursor: pointer;
 }
 @media (hover: hover) {
-    .foot:hover {
-        color: #888;
+    #footer a:hover, .foot:hover {
+        color: #eee;
     }
+}
+
+.icon {
+    width: 24px;
+    vertical-align: bottom;
+    border-radius: 50%;
 }
 
 #search {
