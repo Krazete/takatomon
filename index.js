@@ -40,43 +40,11 @@ function getProfileGroup(id) {
     return profileGroup;
 }
 
-/* Advent Timer */
-
-function updateAdvent(profile, fa, fb) {
-    var mon = profile.id;
-    var request = true;
-    if (isCurrentAdvent(mon)) {
-        request &= fa(profile);
-    }
-    else {
-        request &= fb(profile);
-        if (!isFutureAdvent(mon)) {
-            request = false;
-        }
-    }
-    if (request) { // TODO: maybe just set request to false, timeouts are too cpu-heavy
-        requestAnimationFrame(function () {
-            updateAdvent(profile, fa, fb);
-        });
-    }
-}
-
-function isCurrentAdvent(mon) {
+function isAdvent(mon, now) {
     if (mon in advent) {
-        var now = Date.now();
-        if (advent[mon][0] <= now && now <= advent[mon][1]) {
-            return true;
-        }
-    }
-    return false;
-}
-
-function isFutureAdvent(mon) {
-    if (mon in advent) {
-        var now = Date.now();
-        if (now < advent[mon][0]) {
-            return true;
-        }
+        var start = advent[mon][0] - 21600000; // show advents a quarter day ahead of schedule
+        var end = advent[mon][1];
+        return start <= now && now <= end;
     }
     return false;
 }
@@ -89,9 +57,6 @@ function updateSearch() {
         profile.classList.remove("hidden");
         if (!okFilters(mon)) {
             profile.classList.add("hidden");
-        }
-        if (mon in advent) {
-            updateAdvent(profile, filterInAdvent, filterOutAdvent);
         }
     }
 }
@@ -120,25 +85,9 @@ function okFilters(mon) {
     var okTree = !filters.special.has("tree") || [gemelCore, gemel][settings.tree].nodes.has(mon);
     var okDNA2 = !filters.special.has("dna") || digi[mon].skills.length > 1;
     var okV2 = !filters.special.has("v2") || digi[mon].v2;
-    var okAdvent = !filters.special.has("advent") || isCurrentAdvent(mon);
+    var okAdvent = !filters.special.has("advent") || isAdvent(mon, Date.now());
     var okSpecial = okTree && okDNA2 && okV2 && okAdvent;
     return okQuery && okTribe && okSkill && okSpecial;
-}
-
-function filterInAdvent(profile) {
-    if (filters.special.has("advent")) {
-        profile.classList.remove("hidden");
-        return true;
-    }
-    return false;
-}
-
-function filterOutAdvent(profile) {
-    if (filters.special.has("advent")) {
-        profile.classList.add("hidden");
-        return true;
-    }
-    return false;
 }
 
 /* Tree Visualization */
@@ -345,6 +294,7 @@ function init() {
     initFiltration();
     initVisualization();
     initLineListeners();
+    updateAdvent();
     initLocalStorage(); // called last in case localStorage is bugged
 }
 
@@ -416,22 +366,9 @@ function initProfiles() {
         }
     }
 
-    function addRainbow(profile) {
-        profile.classList.add("advent");
-        return true;
-    }
-
-    function removeRainbow(profile) {
-        profile.classList.remove("advent");
-        return true;
-    }
-
     for (var mon in digi) { // skip sorting step, growlmon.js alphabetizes digi.js in preprocessing
         var profile = newProfile(mon);
         var card = profile.getElementsByClassName("card")[0];
-        if (mon in advent) {
-            updateAdvent(profile, addRainbow, removeRainbow);
-        }
         addTapListener(card, selectCard);
         getProfileGroup(digi[mon].evol).appendChild(profile);
         // below is for a triple-stacked mega row, which was abandoned
@@ -686,6 +623,28 @@ function initLineListeners() {
         scroller.addEventListener("scroll", updateLines);
     }
     window.addEventListener("resize", updateLines);
+}
+
+function updateAdvent() {
+    var now = Date.now();
+    for (var mon in advent) {
+        var profile = document.getElementById(mon);
+        if (isAdvent(mon, now)) {
+            profile.classList.add("advent");
+            if (filters.special.has("advent")) {
+                profile.classList.remove("hidden");
+            }
+        }
+        else {
+            profile.classList.remove("advent");
+            if (filters.special.has("advent")) {
+                profile.classList.add("hidden");
+            }
+        }
+    }
+    setTimeout(function () { // check every minute
+        requestAnimationFrame(updateAdvent);
+    }, 60000);
 }
 
 function initLocalStorage() {
