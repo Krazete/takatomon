@@ -43,7 +43,7 @@ function getProfileGroup(id) {
 
 function isAdvent(mon, now) {
     if (mon in advent) {
-        var start = advent[mon][0] - 21600000; // show advents a quarter day ahead of schedule
+        var start = advent[mon][0] - 43200000; // show advents half a day ahead of schedule
         var end = advent[mon][1];
         return start <= now && now <= end;
     }
@@ -162,11 +162,12 @@ function untangleProfiles() { // TODO: improve this algorithm
 
     function dfs(mon, d, repeat) {
         if (!visited.has(mon) || repeat) {
+            var gem = [gemelCore, gemel][settings.tree];
             visited.add(mon);
             if (d <= 0) {
                 for (var prevmon of prev(mon)) {
                     var profile = document.getElementById(prevmon);
-                    if (!profile.classList.contains("hidden")) {
+                    if (gem.nodes.has(prevmon)) {
                         dfs(prevmon, -1, false);
                     }
                 }
@@ -174,7 +175,7 @@ function untangleProfiles() { // TODO: improve this algorithm
             if (d >= 0) {
                 for (var nextmon of next(mon)) {
                     var profile = document.getElementById(nextmon);
-                    if (!profile.classList.contains("hidden")) {
+                    if (gem.nodes.has(nextmon)) {
                         dfs(nextmon, 1, false);
                     }
                 }
@@ -201,6 +202,7 @@ function sortProfiles(sortedDigi) {
 }
 
 function updateLines() { // cannot update individually because of line borders
+    linecontext.clearRect(0, 0, linelayer.width, linelayer.height);
     if (!searchMode) {
         linelayer.width = 2 * window.innerWidth;
         linelayer.height = 2 * document.body.getBoundingClientRect().height; // body is taller than window
