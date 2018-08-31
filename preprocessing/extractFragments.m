@@ -11,11 +11,11 @@ digimon = {
     'grankuwagamon', 'sakuyamon', 'saberleomon', 'craniamon', 'cherubimon-good', 'justimon', 'shinegreymon', 'kentaurosmon', 'jesmon', 'seraphimon';
     'tigervespamon', 'megagargomon', 'titamon', 'gallantmon', 'dianamon', 'creepymon', 'diaboromon', 'barbamon', 'dynasmon', 'hiandromon';
     'leopardmon', 'bancholeomon', 'platinumnumemon', 'puppetmon', 'piedmon', 'plesiomon', 'princemamemon', 'blackwargreymon', 'herculeskabuterimon', 'belphemon-sm';
-    'magnadramon', 'beelzemon', 'pheonixmon', 'mastemon', 'minervamon', 'boltmon', 'marineangemon', 'machinedramon', 'miragegaogamon', 'metaletemon';
-    'metalgarurumon', 'blackmetalgarurumon', 'leviamon', 'metalseadramon', 'rusttyranomon', 'lilithmon', 'ravemon', 'rosemon', 'lordknightmon', 'imperialdramon-pm';
+    'magnadramon', 'beelzemon', 'phoenixmon', 'mastemon', 'minervamon', 'boltmon', 'marineangemon', 'machinedramon', 'miragegaogamon', 'metaletemon';
+    'metalgarurumon', 'metalgarurumon-black', 'leviamon', 'metalseadramon', 'rusttyranomon', 'lilithmon', 'ravemon', 'rosemon', 'lordknightmon', 'imperialdramon-pm';
     'omegamon', 'omegamon-zwart', 'lotosmon', 'flamedramon', 'leopardmon-lm', 'lucemon-sm', 'belphemon-rm', 'susanoomon', 'meicrackmon-vm', 'rapidmon-gold';
-    'magnamon', 'omegamon-zwart-d', 'omegamon-alter-b', 'gallantmon-cm', 'jijimon', 'volcanicdramon', 'arresterdramon', 'omegashoutmon', 'shinegreymon-bm', 'kimeramon';
-    'ravemon-bm', 'rosemon-bm', 'miragegaogamon-bm', 'brakedramon', 'milleniummon', 'chaosdramon', 'slayerdramon', 'blackwargreymon-x', 'metalgarurumon-x', 'shinegreymon-rm';
+    'magnamon', 'omegamon-zwart-d', 'omegamon-alter-b', 'gallantmon-cm', 'jijimon', 'volcanicdramon', 'arresterdramon', 'omega-shoutmon', 'shinegreymon-bm', 'kimeramon';
+    'ravemon-bm', 'rosemon-bm', 'miragegaogamon-bm', 'brakedramon', 'millenniummon', 'chaosdramon', 'slayerdramon', 'blackwargreymon-x', 'metalgarurumon-x', 'shinegreymon-rm';
     'raguelmon', 'sakuyamon-mutant', 'herculeskabuterimon-mutant', 'shinegreymon-mutant', 'gaiomon-mutant', 'dianamon-mutant', 'leviamon-mutant', 'plesiomon-mutant', 'venommyotismon', ''
 }';
 
