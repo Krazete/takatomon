@@ -1,5 +1,5 @@
 % run in 'preprocessing' directory
-% change subdir and rerun for 'icons', 'mon', and 'mon' subdirectories
+% change subdir and rerun for 'icons/', 'mon/', and all 'mon/*/'
 
 imdir = 'img/';
 newimdir = '../img/';
