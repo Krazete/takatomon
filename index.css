@@ -269,12 +269,14 @@ body {
 
 .icon {
     width: 24px;
+    height: 24px;
     vertical-align: bottom;
     border-radius: 50%;
 }
 
 .plugin {
     width: 32px;
+    height: 32px;
     vertical-align: middle;
     border-radius: 15%;
 }
