@@ -1,32 +1,39 @@
-% for preprocessing/img/mon/*
-% change subdir and rerun as necessary
+% run in 'preprocessing' directory
+% change subdir and rerun for 'icons', 'mon', and 'mon' subdirectories
 
-imdir = '/Users/Krazete/Desktop/takatomon/preprocessing/img/';
-reimdir = '/Users/Krazete/Desktop/takatomon/img/';
-subdir = 'mon';
+imdir = 'img/';
+newimdir = '../img/';
+subdir = 'mon/';
 
-colors = 64; % 8 for mon/none.png
-dith = 'nodither';
+colors = 64;
+dither_option = 'nodither';
 
-mkdir([reimdir, subdir]);
-cd([imdir, subdir]);
+mkdir([newimdir, subdir]);
 
-files = dir;
+files = dir([imdir, subdir]);
 N = length(files);
 for n = 1:N
     file = files(n);
     if contains(file.name, '.png')
-        [im, map] = imread(file.name);
-        if size(map) > 0
-            [reim, remap] = imapprox(im, map, colors, dith);
+        [im, map] = imread([imdir, subdir, file.name]);
+        newname = [newimdir, subdir, file.name];
+        if strcmp(subdir, 'icons/') || strcmp([subdir, file.name], 'mon/none.png')
+            [newim, newmap] = im2ind(im, map, 8, dither_option);
         else
-            [reim, remap] = rgb2ind(im, colors, dith);
+            [newim, newmap] = im2ind(im, map, colors, dither_option);
         end
-        rename = [reimdir, subdir, '/', file.name];
-        imwrite(reim, remap, rename);
-        % add transparency for 'mon/birdramon.png'
-%         imwrite(reim, remap, rename, 'Transparency', 0);
+        if strcmp([subdir, file.name], 'mon/birdramon.png')
+            imwrite(newim, newmap, newname, 'Transparency', 0);
+        else
+            imwrite(newim, newmap, newname);
+        end
     end
 end
 
-cd(reimdir);
+function [newim, newmap] = im2ind(im, map, n, dither_option)
+    if size(map) > 0
+        [newim, newmap] = imapprox(im, map, n, dither_option);
+    else
+        [newim, newmap] = rgb2ind(im, n, dither_option);
+    end
+end

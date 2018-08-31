@@ -1,10 +1,10 @@
-% useful only for bichrome images
-% run in a copy of preprocessing/img/tribe
+% useful only for dichromatic images
+% run in 'preprocessing' directory
 
 % change to and rerun for each image base name
 tribe = 'mirage';
 
-im = imread([tribe, '.png']);
+im = imread(['img/tribe/', tribe, '.png']);
 
 % get color frequency information
 R = histcounts(im(:, :, 1), 0:256);
@@ -36,7 +36,7 @@ diffcolor = uint8(abs(double(im) - double(backcolor)));
 background = max(diffcolor, [], 3);
 
 % create monochrome image of second most common color and apply mask
-imwrite(forecolor, [tribe, '.png'], 'Alpha', background);
+imwrite(forecolor, ['../img/tribe/', tribe, '.png'], 'Alpha', background);
 
 % debugging
 imshow([backcolor, forecolor, gray2rgb(background)]);
