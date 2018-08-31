@@ -2,7 +2,7 @@
 
 /* Globals */
 
-var lastUpdate = new Date("08-30-2018 00:00:00 GMT+0800");
+var lastUpdate = new Date("08-31-2018 10:14:41 GMT+0800");
 
 var blank;
 var linelayer;
