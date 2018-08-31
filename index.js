@@ -690,8 +690,8 @@ function initFooter() {
 
         var gem = [gemelCore, gemel][settings.tree];
         var evols = ["in-training-i", "in-training-ii", "rookie", "champion", "ultimate", "mega"];
-        var youngestIndex = 5;
-        var oldestIndex = 0;
+        var youngestIndex = 6;
+        var oldestIndex = -1;
         var youngestMon = "";
         var oldestMon = "";
         var oldestMega = "";
@@ -726,7 +726,7 @@ function initFooter() {
                 }
             }
         }
-        var selectedEvols = evols.slice(youngestIndex, oldestIndex + 1);
+        var selectedEvols = evols.slice(youngestIndex + 1, oldestIndex + 1);
         console.log(selectedEvols);
         var selectedMegas = oldestMega == "" ? [] : [oldestMega];
         for (var mega of selectedMegas) {
@@ -772,8 +772,8 @@ function initFooter() {
             "bright": [0, 0, 0, 0],
             "abyss": [0, 0, 0, 0]
         };
+        var pluginCosts = plugins[settings.awkn];
         for (var evol of selectedEvols) {
-            var pluginCosts = plugins[settings.awkn];
             if (evol != "mega" && evol in pluginCosts) {
                 for (var i = 0; i < 4; i++) {
                     selectedPlugins[selectedTribe[evol]][i] += pluginCosts[evol][i];
@@ -786,15 +786,15 @@ function initFooter() {
             }
         }
 
-        calculate.innerHTML = "This route (" + (digi[youngestMon].name) + " → " + (digi[oldestMega == "" ? oldestMon : oldestMega].name) + ") costs ";
+        calculate.innerHTML = "This route (" + (digi[youngestMon].name) + " → " + (digi[oldestMega == "" ? oldestMon : oldestMega].name) + ") at awakening +" + settings.awkn + " costs<br>";
         for (var evol in selectedPlugins) {
             for (var i = 0; i < 4; i++) {
                 if (selectedPlugins[evol][i]) {
-                    calculate.innerHTML += selectedPlugins[evol][i] + " " + evol + " " + (i + 1) + ".0 plugins, ";
+                    calculate.innerHTML += selectedPlugins[evol][i] + " " + evol + " " + (i + 1) + ".0 plugins,<br>";
                 }
             }
         }
-        calculate.innerHTML += "and maybe some other stuff (this thing only calculates plugins).";
+        calculate.innerHTML += "and maybe some other stuff (this thing only calculates plugins, and it's inaccurate for multiple megas).";
     }
 
     initTimestamp();
