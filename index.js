@@ -790,11 +790,17 @@ function initFooter() {
         for (var evol in selectedPlugins) {
             for (var i = 0; i < 4; i++) {
                 if (selectedPlugins[evol][i]) {
-                    calculate.innerHTML += selectedPlugins[evol][i] + " " + evol + " " + (i + 1) + ".0 plugins,<br>";
+                    var img = document.createElement("img");
+                    img.className = "plugin";
+                    img.src = "img/plugins/" + (i + 1) + "/" + evol + ".png";
+                    img.alt = evol + (i + 1) + ".0";
+                    calculate.innerHTML += selectedPlugins[evol][i] + " ";
+                    calculate.appendChild(img);
+                    calculate.innerHTML += ", ";
                 }
             }
         }
-        calculate.innerHTML += "and maybe some other stuff (this thing only calculates plugins, and it's inaccurate for multiple megas).";
+        calculate.innerHTML += "<br> and maybe some other stuff (this thing only calculates plugins, and it's inaccurate for multiple megas).";
     }
 
     initTimestamp();

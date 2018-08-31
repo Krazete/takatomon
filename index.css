@@ -273,6 +273,12 @@ body {
     border-radius: 50%;
 }
 
+.plugin {
+    width: 32px;
+    vertical-align: middle;
+    border-radius: 15%;
+}
+
 #search {
     width: 100%;
     font-size: 20px;
