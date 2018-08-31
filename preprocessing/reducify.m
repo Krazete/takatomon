@@ -1,4 +1,4 @@
-% for preprocessing/img/mon and preprocessing/img/hina
+% for preprocessing/img/mon/*
 % change subdir and rerun as necessary
 
 imdir = '/Users/Krazete/Desktop/takatomon/preprocessing/img/';
@@ -24,7 +24,7 @@ for n = 1:N
         end
         rename = [reimdir, subdir, '/', file.name];
         imwrite(reim, remap, rename);
-        % add transparency for subdirs 'hina/*' and files 'mon/birdramon.png'
+        % add transparency for 'mon/birdramon.png'
 %         imwrite(reim, remap, rename, 'Transparency', 0);
     end
 end

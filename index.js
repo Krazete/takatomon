@@ -314,7 +314,7 @@ function initProfiles() {
                     portrait.src = "img/mon/0/" + mon + ".png";
                     if (mon == "birdramon") {
                         var r = Math.random();
-                        if (r < 0.0001) {
+                        if (r < 0.001) {
                             portrait.src = "img/mon/birdramon.png";
                         }
                     }
