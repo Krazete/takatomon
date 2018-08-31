@@ -13,6 +13,7 @@ A digivolution tree viewer for [Digimon Links](https://digimonlinkz-en.bn-ent.ne
 - /u/dinwitt - Search Box
 - /u/mviper13 - Link to Growlmon
 - /u/tyger249 - Tribe Icons, Digimon Nametags
+- /u/imnotyouama - Tribe Filter
 - /u/gashunum - DNA2 Filter
 - /u/Noah040718 - Plugin Calculator
 ### Not-Yet-Implemented Ideas
