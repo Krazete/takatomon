@@ -117,7 +117,7 @@ function updateClones() {
         update();
     }
     if (selectedDigi.size) {
-        for (var mon of selectedDigi) {
+        Array.from(selectedDigi).forEach(function (mon) {
             var profile = document.getElementById(mon);
             var clone = profile.cloneNode(true);
             clone.classList.remove("root");
@@ -129,7 +129,7 @@ function updateClones() {
             var card = clone.getElementsByClassName("card")[0];
             addTapListener(card, deselectClone);
             selection.appendChild(clone);
-        }
+        });
     }
     else {
         selection.appendChild(blank);
@@ -168,11 +168,11 @@ function untangleProfiles() { // TODO: improve this algorithm
             var gem = [gemelCore, gemel][settings.tree];
             visited.add(mon);
             if (d <= 0) {
-                for (var prevmon of prev(mon)) {
+                Array.from(prev(mon)).forEach(function (prevmon) {
                     if (gem.nodes.has(prevmon)) {
                         dfs(prevmon, -1, false);
                     }
-                }
+                });
             }
             if (d >= 0) {
                 for (var nextmon of next(mon)) {
@@ -184,9 +184,9 @@ function untangleProfiles() { // TODO: improve this algorithm
         }
     }
 
-    for (var mon of selectedDigi) {
+    Array.from(selectedDigi).forEach(function (mon) {
         dfs(mon, 0, true);
-    }
+    });
     for (var mon in digi) {
         visited.add(mon);
     }
@@ -194,11 +194,11 @@ function untangleProfiles() { // TODO: improve this algorithm
 }
 
 function sortProfiles(sortedDigi) {
-    for (var mon of sortedDigi) {
+    Array.from(sortedDigi).forEach(function (mon) {
         var profileGroup = getProfileGroup(digi[mon].evol);
         var profile = document.getElementById(mon);
         profileGroup.appendChild(profile);
-    }
+    });
     updateLines();
 }
 
@@ -330,7 +330,7 @@ function initProfiles() {
             profile.appendChild(card);
             var signatureGroup = document.createElement("div");
                 signatureGroup.className = "signature-group";
-                for (var skill of digi[mon].skills) {
+                Array.from(digi[mon].skills).forEach(function (skill) {
                     var signature = document.createElement("div");
                         var rival = document.createElement("img");
                             rival.className = "rival";
@@ -345,7 +345,7 @@ function initProfiles() {
                             tier.innerHTML = skill[2] ? ("[" + skill[2] + "]") : "";
                         signature.appendChild(tier);
                     signatureGroup.appendChild(signature);
-                }
+                });
             profile.appendChild(signatureGroup);
             var growlmon = document.createElement("div");
                 growlmon.className = "growlmon";
@@ -400,11 +400,11 @@ function initBoxLabels() {
         var box = this.parentNode.parentNode;
         var profiles = box.getElementsByClassName("profile");
         selectedDigi.clear();
-        for (var profile of profiles) {
+        Array.from(profiles).forEach(function (profile) {
             if (!profile.classList.contains("hidden")) {
                 selectedDigi.add(profile.id);
             }
-        }
+        });
         if (searchMode) {
             cancelSearch();
         }
@@ -413,9 +413,9 @@ function initBoxLabels() {
         }
     }
 
-    for (var boxLabel of boxLabels) {
+    Array.from(boxLabels).forEach(function (boxLabel) {
         addTapListener(boxLabel, selectBox);
-    }
+    });
 }
 
 function initFiltration() {
@@ -439,9 +439,9 @@ function initFiltration() {
         selection.classList.remove("hidden");
         filtration.classList.add("hidden");
         search.value = "";
-        for (var s of switches) {
+        Array.from(switches).forEach(function (s) {
             s.classList.remove("selected");
-        }
+        });
         filters.query.clear();
         filters.tribe.clear();
         filters.rival.clear();
@@ -486,9 +486,9 @@ function initFiltration() {
     addTapListener(exitSearch, exitSearchMode);
     search.addEventListener("input", parseQuery);
     search.addEventListener("keydown", enterBlur);
-    for (var s of switches) {
+    Array.from(switches).forEach(function (s) {
         addTapListener(s, flipSwitch);
-    }
+    });
     cancelSearch = exitSearchMode;
 }
 
@@ -516,13 +516,13 @@ function initVisualization() {
         "size": function () {
             var profiles = document.getElementsByClassName("profile");
             var size = ["", "large", "small"][settings.size];
-            for (var profile of profiles) {
+            Array.from(profiles).forEach(function (profile) {
                 profile.classList.remove("large");
                 profile.classList.remove("small");
                 if (settings.size) {
                     profile.classList.add(size);
                 }
-            }
+            });
             updateLines();
         },
         "awkn": function () {
@@ -577,9 +577,9 @@ function initVisualization() {
     function previewGemel() {
         if (!searchMode) {
             var tree = new Gemel(this.parentNode.id);
-            for (var node of tree.nodes) {
+            Array.from(tree.nodes).forEach(function (node) {
                 document.getElementById(node).classList.add("preview");
-            }
+            });
             tree.forEachEdge(function (edge, JSONedge) {
                 var profile0 = document.getElementById(edge[0]);
                 var profile1 = document.getElementById(edge[1]);
@@ -599,30 +599,29 @@ function initVisualization() {
 
     function advanceSlide() {
         var slides = this.getElementsByClassName("slide");
-        var i = 0;
-        for (var slide of slides) {
-            i++;
+        for (var i = 0; i < slides.length; i++) {
+            var slide = slides[i];
             if (!slide.classList.contains("hidden")) {
                 slide.classList.add("hidden");
                 break;
             }
         }
-        i %= slides.length;
+        i = (i + 1) % slides.length;
         slides[i].classList.remove("hidden");
         settings[this.id] = i;
         settingsFunction[this.id]();
     }
 
-    for (var slideGroup of slideGroups) {
+    Array.from(slideGroups).forEach(function (slideGroup) {
         addTapListener(slideGroup, advanceSlide);
-    }
+    });
 }
 
 function initLineListeners() {
     var scrollers = document.getElementsByClassName("scroller");
-    for (var scroller of scrollers) {
+    Array.from(scrollers).forEach(function (scroller) {
         scroller.addEventListener("scroll", updateLines);
-    }
+    });
     window.addEventListener("resize", updateLines);
 }
 
@@ -688,7 +687,7 @@ function initFooter() {
         var oldestMon = "";
         var oldestMega = "";
 
-        for (var root of gem.roots) {
+        Array.from(gem.roots).forEach(function (root) {
             var evol = digi[root].evol;
             var evolIndex = evols.indexOf(evol);
             if (evolIndex < youngestIndex) {
@@ -717,7 +716,7 @@ function initFooter() {
                     }
                 }
             }
-        }
+        });
         var selectedEvols = evols.slice(youngestIndex + 1, oldestIndex + 1);
         console.log(selectedEvols);
         var selectedMegas = oldestMega == "" ? [] : [oldestMega];
@@ -741,7 +740,7 @@ function initFooter() {
             "champion": "",
             "ultimate": ""
         };
-        for (var node of gem.nodes) {
+        Array.from(gem.nodes).forEach(function (node) {
             var evol = digi[node].evol;
             if (evol != "mega" && selectedEvols.includes(evol)) {
                 var tribe = digi[node].tribe;
@@ -753,7 +752,7 @@ function initFooter() {
                     return true;
                 }
             }
-        }
+        });
 
         var selectedPlugins = {
             "mirage": [0, 0, 0, 0],
@@ -765,13 +764,13 @@ function initFooter() {
             "abyss": [0, 0, 0, 0]
         };
         var pluginCosts = plugins[settings.awkn];
-        for (var evol of selectedEvols) {
+        Array.from(selectedEvols).forEach(function (evol) {
             if (evol != "mega" && evol in pluginCosts) {
                 for (var i = 0; i < 4; i++) {
                     selectedPlugins[selectedTribe[evol]][i] += pluginCosts[evol][i];
                 }
             }
-        }
+        });
         for (var mega of selectedMegas) {
             for (var i = 0; i < 4; i++) {
                 selectedPlugins[digi[mega].tribe][i] += pluginCosts.mega[i];
