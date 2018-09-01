@@ -17,24 +17,24 @@ digimon = {
     'magnamon', 'omegamon-zwart-d', 'omegamon-alter-b', 'gallantmon-cm', 'jijimon', 'volcanicdramon', 'arresterdramon', 'omega-shoutmon', 'shinegreymon-bm', 'kimeramon';
     'ravemon-bm', 'rosemon-bm', 'miragegaogamon-bm', 'brakedramon', 'millenniummon', 'chaosdramon', 'slayerdramon', 'blackwargreymon-x', 'metalgarurumon-x', 'shinegreymon-rm';
     'raguelmon', 'sakuyamon-mutant', 'herculeskabuterimon-mutant', 'shinegreymon-mutant', 'gaiomon-mutant', 'dianamon-mutant', 'leviamon-mutant', 'plesiomon-mutant', 'venommyotismon', ''
-}';
+};
 
 mkdir('../img/fragments/');
-for x = 1:10
-    for y = 1:10
-        if x == 10 && y == 10
+for y = 1:10
+    for x = 1:10
+        if y == 10 && x == 10
             break
         end
-        name = ['../img/fragments/', digimon{x, y}, '.png'];
-        ya = (size + gap) * (x - 1) + gap + 1;
-        xa = (size + gap) * (y - 1) + gap + 1;
-        yb = (size + gap) * x;
-        xb = (size + gap) * y;
+        name = ['../img/fragments/', digimon{y, x}, '.png'];
+        ya = (size + gap) * (y - 1) + gap + 1;
+        xa = (size + gap) * (x - 1) + gap + 1;
+        yb = (size + gap) * y;
+        xb = (size + gap) * x;
         if indexify_option
-            [fragment, map] = rgb2ind(im(xa:xb, ya:yb, :), 64, 'nodither');
+            [fragment, map] = rgb2ind(im(ya:yb, xa:xb, :), 64, 'nodither');
             imwrite(fragment, map, name);
         else
-            imwrite(im(xa:xb, ya:yb, :), name, 'Alpha', alpha(xa:xb, ya:yb));
+            imwrite(im(ya:yb, xa:xb, :), name, 'Alpha', alpha(ya:yb, xa:xb));
         end
     end
 end
