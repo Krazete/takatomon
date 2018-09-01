@@ -20,8 +20,8 @@ for y = 1:3
         yb = (h + gap) * y;
         xb = (w + gap) * x;
         if indexify_option
-            [plugin, map] = rgb2ind(im(ya:yb, xa:xb, :), 64, 'nodither');
-            imwrite(plugin, map, name, 'Transparency', 0);
+            [hina, map] = rgb2ind(im(ya:yb, xa:xb, :), 64, 'nodither');
+            imwrite(hina, map, name, 'Transparency', 0);
         else
             imwrite(im(ya:yb, xa:xb, :), name, 'Alpha', alpha(ya:yb, xa:xb));
         end

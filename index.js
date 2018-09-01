@@ -324,7 +324,7 @@ function initProfiles() {
                 card.appendChild(portrait);
                 var tribe = document.createElement("img");
                     tribe.className = "tribe";
-                    tribe.src = "img/tribe/" + digi[mon].tribe + ".png";
+                    tribe.src = "img/tribes/" + digi[mon].tribe + ".png";
                     tribe.alt = digi[mon].tribe;
                 card.appendChild(tribe);
                 var moniker = document.createElement("div");
@@ -338,7 +338,7 @@ function initProfiles() {
                     var signature = document.createElement("div");
                         var rival = document.createElement("img");
                             rival.className = "rival";
-                            rival.src = "img/tribe/" + skill[0] + ".png";
+                            rival.src = "img/tribes/" + skill[0] + ".png";
                             rival.alt = skill[0];
                         signature.appendChild(rival);
                         var effect = document.createElement("span");
