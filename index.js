@@ -100,6 +100,9 @@ function update() {
     gemelCore = gemel.intersection();
     updateClones(); // wanted to call updateLines on portrait load, but that creates new problems
     updateProfiles();
+    Array.from(document.getElementsByClassName("scroller")).forEach(function (scrollbox) {
+        scrollbox.scrollTo(0, 0);
+    });
     if (settings.sort == 2) {
         untangleProfiles();
     }
@@ -203,11 +206,12 @@ function sortProfiles(sortedDigi) {
 }
 
 function updateLines() { // cannot update individually because of line borders
+    var scale = 2;
     linecontext.clearRect(0, 0, linelayer.width, linelayer.height);
     if (!searchMode) {
-        linelayer.width = 2 * window.innerWidth;
-        linelayer.height = 2 * document.body.getBoundingClientRect().height; // body is taller than window
-        linecontext.scale(2, 2);
+        linelayer.width = scale * window.innerWidth;
+        linelayer.height = scale * document.body.getBoundingClientRect().height; // body is taller than window
+        linecontext.scale(scale, scale);
         if (settings.tree) {
             gemel.forEachEdge(function (edge, JSONedge) {
                 if (!gemelCore.JSONedges.has(JSONedge)) {
