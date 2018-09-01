@@ -803,6 +803,8 @@ function initFooter() {
         calculate.innerHTML += "<br> and maybe some other stuff (this thing only calculates plugins, and it's inaccurate for multiple megas).";
     }
 
+    about.classList.add("hidden");
+    close.classList.add("hidden");
     initTimestamp();
     addTapListener(aboutFoot, function () {
         about.classList.remove("hidden");
