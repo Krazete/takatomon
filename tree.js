@@ -29,34 +29,35 @@ function Gemel(roots) { // gemels are unions of trees
     this.roots = new Set(roots);
     this.nodes = new Set();
     this.JSONedges = new Set(); // stringify edges because [] != [] but "" == ""
+
+    function init(mon, direction) {
+        nodes.add(mon);
+        if (direction < 1) {
+            for (var prevmon of prev(mon)) {
+                var edge = [prevmon, mon];
+                var JSONedge = JSON.stringify(edge);
+                if (!JSONedges.has(JSONedge)) {
+                    JSONedges.add(JSONedge);
+                    init(prevmon, -1);
+                }
+            }
+        }
+        if (direction > -1) {
+            for (var nextmon of next(mon)) {
+                var edge = [mon, nextmon];
+                var JSONedge = JSON.stringify(edge);
+                if (!JSONedges.has(JSONedge)) {
+                    JSONedges.add(JSONedge);
+                    init(nextmon, 1);
+                }
+            }
+        }
+    }
     if (typeof roots == "object") {
         // pointers for initialization
         var nodes = this.nodes;
         var JSONedges = this.JSONedges;
         // initialization
-        function init(mon, direction) {
-            nodes.add(mon);
-            if (direction < 1) {
-                for (var prevmon of prev(mon)) {
-                    var edge = [prevmon, mon];
-                    var JSONedge = JSON.stringify(edge);
-                    if (!JSONedges.has(JSONedge)) {
-                        JSONedges.add(JSONedge);
-                        init(prevmon, -1);
-                    }
-                }
-            }
-            if (direction > -1) {
-                for (var nextmon of next(mon)) {
-                    var edge = [mon, nextmon];
-                    var JSONedge = JSON.stringify(edge);
-                    if (!JSONedges.has(JSONedge)) {
-                        JSONedges.add(JSONedge);
-                        init(nextmon, 1);
-                    }
-                }
-            }
-        }
         for (var root of roots) {
             init(root, 0);
         }

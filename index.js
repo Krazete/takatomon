@@ -111,11 +111,12 @@ function update() {
 function updateClones() {
     var selection = getProfileGroup("selection");
     selection.innerHTML = "";
+
+    function deselectClone() {
+        selectedDigi.delete(this.parentNode.id.slice(0, -6));
+        update();
+    }
     if (selectedDigi.size) {
-        function deselectClone() {
-            selectedDigi.delete(this.parentNode.id.slice(0, -6));
-            update();
-        }
         for (var mon of selectedDigi) {
             var profile = document.getElementById(mon);
             var clone = profile.cloneNode(true);
@@ -168,7 +169,6 @@ function untangleProfiles() { // TODO: improve this algorithm
             visited.add(mon);
             if (d <= 0) {
                 for (var prevmon of prev(mon)) {
-                    var profile = document.getElementById(prevmon);
                     if (gem.nodes.has(prevmon)) {
                         dfs(prevmon, -1, false);
                     }
@@ -176,7 +176,6 @@ function untangleProfiles() { // TODO: improve this algorithm
             }
             if (d >= 0) {
                 for (var nextmon of next(mon)) {
-                    var profile = document.getElementById(nextmon);
                     if (gem.nodes.has(nextmon)) {
                         dfs(nextmon, 1, false);
                     }
@@ -252,7 +251,6 @@ function getPoint(mon, side) {
 }
 
 function drawLine(a, b, color, width) {
-    var path = document.createElement("path");
     linecontext.beginPath();
     linecontext.moveTo(a.x, a.y);
     if (a.y < b.y) {
@@ -650,12 +648,6 @@ function initFooter() {
         timestamp.innerHTML = month + " " + date + ", " + year;
     }
 
-    function isRelated(mon0, mon1) {
-        var monTree0 = new Gemel(mon0);
-        var monTree1 = new Gemel(mon1);
-        return monTree0.nodes.has(mon1) || monTree1.nodes.has(mon0);
-    }
-
     function costPlugins() {
         var plugins = [
             {
@@ -782,7 +774,7 @@ function initFooter() {
         }
         for (var mega of selectedMegas) {
             for (var i = 0; i < 4; i++) {
-                selectedPlugins[digi[mega].tribe][i] += pluginCosts["mega"][i];
+                selectedPlugins[digi[mega].tribe][i] += pluginCosts.mega[i];
             }
         }
 
