@@ -546,11 +546,15 @@ function initVisualization() {
                 var card = profile.getElementsByClassName("card")[0];
                 if (settings.preview) {
                     card.addEventListener("mouseover", previewGemel);
+                    card.addEventListener("touchstart", previewGemel);
                     card.addEventListener("mouseout", deviewGemel);
+                    card.addEventListener("touchend", deviewGemel);
                 }
                 else {
                     card.removeEventListener("mouseover", previewGemel);
+                    card.removeEventListener("touchstart", previewGemel);
                     card.removeEventListener("mouseout", deviewGemel);
+                    card.removeEventListener("touchend", deviewGemel);
                 }
             }
         },
