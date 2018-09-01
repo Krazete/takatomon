@@ -6,12 +6,13 @@ A digivolution tree viewer for [Digimon Links](https://digimonlinkz-en.bn-ent.ne
 ## Acknowledgements
 ### Data
 - [Growlmon.Net](https://growlmon.net) - Created by /u/ChasingRaccoons, Growlmon.Net is this project's main source of images and information.
-- [Digimon Links](https://digimonlinkz-en.bn-ent.net) - The few assets that aren't available on Growlmon.Net are instead taken directly from the source.
-- [Spriter's Resource](https://spriters-resource.com/mobile/digimonlinks) - None of the Hina sprites are actually put in use yet, but they are pretty nifty to have.
+- [OnlineFanatic](http://onlinefanatic.com/digimon-links-attribute-status-debuff-resistance-guide/) - For higher resolution tribe images.
+- [Spriter's Resource](https://spriters-resource.com/mobile/digimonlinks) - Only used for plugin images. None of the fragments or Hina sprites are used yet, but they are pretty nifty to have.
+- [Digimon Links](https://digimonlinkz-en.bn-ent.net) - The few assets that aren't available on Growlmon.Net or Spriter's Resource are instead taken directly from the source.
 ### Ideas
 - /u/GrimmyTimmi - Initial Concept
 - /u/dinwitt - Search Box
-- /u/mviper13 - Link to Growlmon
+- /u/mviper13 - Links to Growlmon.Net
 - /u/tyger249 - Tribe Icons, Digimon Nametags
 - /u/imnotyouama - Tribe Filter
 - /u/gashunum - DNA2 Filter
