@@ -1,4 +1,4 @@
-# [V0](https://github.com/Krazete/takatomon/tree/v0)
+# [v0](https://github.com/Krazete/takatomon/tree/v0)
 ## Features
 - initialized main features
 - - tree mode
@@ -10,7 +10,7 @@
 ## Design
 - initialized
 
-# [V1](https://github.com/Krazete/takatomon/tree/v1)
+# [v1](https://github.com/Krazete/takatomon/tree/v1)
 ## Features
 - initialized search group
 - initialized tribe icons
@@ -25,7 +25,7 @@
 - added bottom padding to body
 - - to prevent mobile toolbar from popping up during mega selection
 
-# [V2](https://github.com/Krazete/takatomon/tree/v2)
+# [v2](https://github.com/Krazete/takatomon/tree/v2)
 ## Features
 - initialized github button
 - initialized growlmon.net export button
@@ -45,7 +45,7 @@
 - changed selection group to look like evol groups
 - normalized padding and border radius of evol group labels
 
-# [V3](https://github.com/Krazete/takatomon/tree/v3)
+# [v3](https://github.com/Krazete/takatomon/tree/v3)
 ## Features
 - initialized search filters
 - - basic: tribe, skill element, skill effect
@@ -97,7 +97,7 @@
 - fixed some problems with safari and firefox
 - - #rgba, gradients, scrolling, and for-of loops were the main issues
 
-# [V4](https://github.com/Krazete/takatomon/tree/master) (Plans)
+# [v4](https://github.com/Krazete/takatomon/tree/master) (Plans)
 ## Features
 - initialize planner
 - fix plugin calculator
