@@ -44,6 +44,7 @@ body {
     position: -webkit-sticky; /* for iOS*/
     position: sticky;
     left: 4px;
+    width: -moz-max-content;
     width: max-content;
     background: #fff8;
     padding: 0 4px;
@@ -58,6 +59,7 @@ body {
 }
 
 .profile-group {
+    width: -moz-max-content;
     width: max-content;
     padding: 0 4px;
     margin: auto;
@@ -297,12 +299,14 @@ body {
 
 .switchbox {
     width: 25%;
+    min-width: -moz-max-content;
     min-width: max-content;
     display: inline-block;
 }
 
 .switchbox-label {
     transform: translateY(6px);
+    width: -moz-max-content;
     width: max-content;
     line-height: 12px;
     background: #222;
@@ -312,6 +316,7 @@ body {
 }
 
 .switch-group {
+    width: -moz-max-content;
     width: max-content;
     padding: 3px 6px;
     border: 1px solid #aaa;
@@ -408,6 +413,7 @@ body {
 }
 
 .slidebox-label {
+    width: -moz-max-content;
     width: max-content;
     line-height: 10px;
     background: #222;
