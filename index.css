@@ -36,6 +36,8 @@ body {
     background: radial-gradient(#ff4, #c90);
 }
 #mega {
+    background: radial-gradient(transparent, rgba(0, 0, 0, 0.25)),
+        linear-gradient(to top right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
     background: radial-gradient(#0000, #0004),
         linear-gradient(to top right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
 }
@@ -44,8 +46,10 @@ body {
     position: -webkit-sticky; /* for iOS*/
     position: sticky;
     left: 4px;
+    width: -webkit-max-content;
     width: -moz-max-content;
     width: max-content;
+    background: rgba(256, 256, 256, 0.5);
     background: #fff8;
     padding: 0 4px;
     border-radius: 4px;
@@ -54,11 +58,12 @@ body {
 
 .scroller {
     padding: 4px 0;
-    overflow: scroll;
+    overflow-x: scroll;
     -webkit-overflow-scrolling: touch; /* for iOS */
 }
 
 .profile-group {
+    width: -webkit-max-content;
     width: -moz-max-content;
     width: max-content;
     padding: 0 4px;
@@ -183,6 +188,7 @@ body {
 .tribe {
     position: relative; /* to make background work */
     width: 25%;
+    background: radial-gradient(#000 55%, transparent 70%);
     background: radial-gradient(#000 55%, #0000 70%);
     border-radius: 50%;
     margin: -100% 0 75% 0;
@@ -197,6 +203,7 @@ body {
 .signature-group {
     position: relative; /* to make z-index work */
     width: 64px;
+    background: rgba(255, 255, 255, 0.5);
     background: #fff8;
     text-shadow: 0 0 1px #fff;
     padding: 2px;
@@ -227,6 +234,7 @@ body {
 
 .growlmon {
     position: relative; /* to make z-index work */
+    background: rgba(255, 255, 255, 0.5);
     background: #f888;
     text-align: center;
     text-shadow: 0 0 1px #f88;
@@ -299,6 +307,7 @@ body {
 
 .switchbox {
     width: 25%;
+    min-width: -webkit-max-content;
     min-width: -moz-max-content;
     min-width: max-content;
     display: inline-block;
@@ -306,6 +315,7 @@ body {
 
 .switchbox-label {
     transform: translateY(6px);
+    width: -webkit-max-content;
     width: -moz-max-content;
     width: max-content;
     line-height: 12px;
@@ -316,6 +326,7 @@ body {
 }
 
 .switch-group {
+    width: -webkit-max-content;
     width: -moz-max-content;
     width: max-content;
     padding: 3px 6px;
@@ -325,6 +336,7 @@ body {
 }
 
 .toggle-search {
+    background: linear-gradient(to right, rgba(160, 160, 160, 0.125), #aaa, rgba(160, 160, 160, 0.125));
     background: linear-gradient(to right, #aaa2, #aaa, #aaa2);
     color: #222;
     text-align: center;
@@ -413,6 +425,7 @@ body {
 }
 
 .slidebox-label {
+    width: -webkit-max-content;
     width: -moz-max-content;
     width: max-content;
     line-height: 10px;
