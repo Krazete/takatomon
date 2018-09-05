@@ -134,7 +134,6 @@ body {
 .preview .card {
     background: #000 !important; /* since classes are less specific than ids */
     color: #fff;
-    z-index: 1;
 }
 .advent .card:after {
     content: "!";
@@ -194,10 +193,17 @@ body {
     margin: -100% 0 75% 0;
     display: block;
 }
+.preview .tribe {
+    z-index: 1;
+}
 
 .moniker {
     text-align: center;
     overflow: hidden;
+}
+.preview .moniker {
+    position: relative; /* to make z-index work */
+    z-index: 1;
 }
 
 .signature-group {
