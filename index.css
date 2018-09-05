@@ -467,3 +467,65 @@ body {
 .hidden {
     display: none;
 }
+
+#entrylist {
+    background: #123;
+}
+.entry {
+    width: 100%;
+    background: #234;
+}
+.x {
+    width: 32px;
+    height: 32px;
+    background: #345;
+    vertical-align: bottom;
+    display: inline-block;
+}
+.x:after {
+    content: "×";
+    line-height: 32px;
+}
+.viewer {
+    position: relative;
+    width: 480px;
+    background: #456;
+    color: #abc;
+    vertical-align: bottom;
+    display: inline-block;
+}
+.viewer:hover:after {
+    content: "VIEW";
+    background: #0008;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    line-height: 48px;
+}
+.viewer img {
+    width: 48px;
+    height: 48px;
+    background: url(img/mon/none.png);
+    vertical-align: bottom;
+    border-radius: 10%;
+}
+.note {
+    background: #567;
+    vertical-align: bottom;
+    display: inline-block;
+}
+.include {
+    background: #678;
+    vertical-align: bottom;
+    display: inline-block;
+}
+#entryadd {
+    background: #789;
+    width: 100%;
+    height: 15px;
+}
+#entryadd:after {
+    content: "+";
+}

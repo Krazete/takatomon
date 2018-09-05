@@ -646,12 +646,14 @@ function initFooter() {
     var about = document.getElementById("about");
     var qa = document.getElementById("qa");
     var calculate = document.getElementById("calculate");
+    var planner = document.getElementById("planner");
     var close = document.getElementById("close");
     var timestamp = document.getElementById("timestamp");
     var closeFoot = document.getElementById("foot-close");
     var aboutFoot = document.getElementById("foot-about");
     var qaFoot = document.getElementById("foot-qa");
     var calculateFoot = document.getElementById("foot-calculate");
+    var plannerFoot = document.getElementById("foot-planner");
 
     function initTimestamp() {
         var months = [
@@ -818,6 +820,7 @@ function initFooter() {
         about.classList.remove("hidden");
         qa.classList.add("hidden");
         calculate.classList.add("hidden");
+        planner.classList.add("hidden");
         close.classList.remove("hidden");
         updateLines();
     });
@@ -825,6 +828,7 @@ function initFooter() {
         about.classList.add("hidden");
         qa.classList.remove("hidden");
         calculate.classList.add("hidden");
+        planner.classList.add("hidden");
         close.classList.remove("hidden");
         updateLines();
     });
@@ -833,6 +837,16 @@ function initFooter() {
         about.classList.add("hidden");
         qa.classList.add("hidden");
         calculate.classList.remove("hidden");
+        planner.classList.add("hidden");
+        close.classList.remove("hidden");
+        updateLines();
+    });
+    addTapListener(plannerFoot, function () {
+        costPlugins();
+        about.classList.add("hidden");
+        qa.classList.add("hidden");
+        calculate.classList.add("hidden");
+        planner.classList.remove("hidden");
         close.classList.remove("hidden");
         updateLines();
     });
@@ -840,6 +854,7 @@ function initFooter() {
         about.classList.add("hidden");
         qa.classList.add("hidden");
         calculate.classList.add("hidden");
+        planner.classList.add("hidden");
         close.classList.add("hidden");
         updateLines();
     });
