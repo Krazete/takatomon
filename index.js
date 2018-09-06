@@ -100,8 +100,12 @@ function update() {
     gemelCore = gemel.intersection();
     updateClones(); // wanted to call updateLines on portrait load, but that creates new problems
     updateProfiles();
-    Array.from(document.getElementsByClassName("scroller")).forEach(function (scrollbox) {
-        scrollbox.scrollTo(0, 0);
+
+    Array.from(document.getElementsByClassName("profile-group")).forEach(function (profileGroup) {
+        var rect = profileGroup.getBoundingClientRect();
+        if (rect.width < window.innerWidth) {
+            profileGroup.parentNode.scrollTo(0, 0);
+        }
     });
     if (settings.sort == 2) {
         untangleProfiles();
