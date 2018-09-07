@@ -535,7 +535,7 @@ function initVisualization() {
         },
         "awkn": function () {
             var portraits = document.getElementsByClassName("portrait");
-            var awkn = [0, 1, 3, 4, 5][settings.awkn];
+            var awkn = [0, 1, 1, 3, 4, 5][settings.awkn];
             for (var portrait of portraits) {
                 var mon = portrait.parentNode.parentNode.id;
                 if (awkn != 5 || mon != "blank" && !mon.endsWith("-clone") && digi[mon].v2) {

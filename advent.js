@@ -33,22 +33,34 @@ function initEntrylist() {
                 viewer.className = "viewer";
                 for (var mon of plans[i].digi) {
                     var photo = document.createElement("img");
-                        photo.src = "img/mon/" + settings.awkn + "/" + mon + ".png";
+                        if (plans[i].awkn != 5 || digi[mon].v2) {
+                            photo.src = "img/mon/" + [0, 1, 1, 3, 4, 5][plans[i].awkn] + "/" + mon + ".png";
+                        }
+                        else {
+                            photo.src = "img/mon/" + [0, 1, 1, 3, 4, 4][plans[i].awkn] + "/" + mon + ".png";
+                        }
                     viewer.appendChild(photo);
                 }
                 addTapListener(viewer, viewEntry);
             entry.appendChild(viewer);
-            var note = document.createElement("input");
+            var awkn = document.createElement("div");
+                awkn.className = "awkn";
+                if (plans[i].awkn == 5) {
+                    awkn.innerHTML = "+4/V2";
+                }
+                else {
+                    awkn.innerHTML = "+" + plans[i].awkn;
+                }
+            entry.appendChild(awkn);
+            var note = document.createElement("textarea");
                 note.className = "note";
+                note.placeholder = "Notes";
                 note.value = plans[i].note;
                 note.addEventListener("input", editNote);
             entry.appendChild(note);
-            var include = document.createElement("div");
-                include.className = "include";
-            entry.appendChild(include);
-            var edit = document.createElement("div");
-                edit.className = "edit";
-            entry.appendChild(edit);
+            var handle = document.createElement("div");
+                handle.className = "handle";
+            entry.appendChild(handle);
         entrylist.appendChild(entry);
     }
 
@@ -64,7 +76,13 @@ function initEntrylist() {
     }
 
     function viewEntry() {
-        selectedDigi = new Set(plans[this.parentNode.dataset.i].digi);
+        var i = this.parentNode.dataset.i;
+        selectedDigi = new Set(plans[i].digi);
+        var awknSlide = document.getElementById("awkn");
+        var x = (plans[i].awkn - settings.awkn + 6) % 6;
+        for (var j = 0; j < x; j++) {
+            awknSlide.click(); // TODO: change this hacky bullshit
+        }
         update();
     }
 
@@ -77,6 +95,7 @@ function initEntrylist() {
     function addSelection() {
         plans.push({
             "digi": Array.from(selectedDigi),
+            "awkn": settings.awkn,
             "note": ""
         });
         addEntry(plans.length - 1);
