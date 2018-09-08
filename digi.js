@@ -172,7 +172,7 @@ var digi = {
 	"megakabuterimon": {"name": "MegaKabuterimon", "evol": "ultimate", "next": ["grankuwagamon", "herculeskabuterimon", "magnadramon"], "tribe": "earth", "skills": [["electric", 1]], "v2": 0},
 	"megaseadramon": {"name": "MegaSeadramon", "evol": "ultimate", "next": ["leviamon", "metalseadramon", "plesiomon"], "tribe": "glacier", "skills": [["electric", 1]], "v2": 0},
 	"meicoomon": {"name": "Meicoomon", "evol": "champion", "next": ["meicrackmon-vm"], "tribe": "mirage", "skills": [["mirage", 1]], "v2": 0},
-	"meicrackmon-vm": {"name": "Meicrackmon VM", "evol": "ultimate", "next": ["raguelmon"], "tribe": "abyss", "skills": [["mirage", 1]], "v2": 0},
+	"meicrackmon-vm": {"name": "Meicrackmon VM", "evol": "ultimate", "next": ["raguelmon"], "tribe": "abyss", "skills": [["mirage", 1]], "v2": 0, "special": 1},
 	"meramon": {"name": "Meramon", "evol": "champion", "next": ["bluemeramon", "skullmeramon", "mamemon", "iceleomon"], "tribe": "blazing", "skills": [["blazing", 1]], "v2": 0},
 	"metaletemon": {"name": "MetalEtemon", "evol": "mega", "next": [], "tribe": "earth", "skills": [["mirage", 2, "F"]], "v2": 1},
 	"metalgarurumon": {"name": "MetalGarurumon", "evol": "mega", "next": ["omegamon", "metalgarurumon-x"], "tribe": "electric", "skills": [["glacier", 2, "C"], ["mirage", 1, "C"]], "v2": 0},

@@ -71,6 +71,7 @@ body {
 }
 
 .profile {
+    position: relative; /* to make .fragments position work */
     font-size: 10px;
     vertical-align: top;
     margin: 2px 1px;
@@ -81,6 +82,20 @@ body {
 }
 .profile.large {
     font-size: 12px;
+}
+
+.fragments {
+    position: absolute;
+    width: 20px;
+    background: #fffc;
+    text-align: right;
+    border: 1px solid #000;
+    border-radius: 4px;
+    margin: 51px 0px 0px 44px;
+    z-index: 1;
+}
+#selection .fragments {
+    display: none;
 }
 
 .card {
@@ -477,7 +492,8 @@ body {
 }
 .entry {
     width: 100%;
-    background: #234;
+    background: #456;
+    color: #abc;
     margin: 2px;
 }
 .entry > * {
@@ -497,9 +513,8 @@ body {
     line-height: 32px;
 }
 .viewer {
-    width: 480px;
+    width: 256px;
     min-height: 32px;
-    background: #456;
     cursor: pointer;
 }
 .viewer:hover:after {
@@ -524,7 +539,6 @@ body {
 .awkn {
     width: 32px;
     height: 32px;
-    background: #678;
     line-height: 32px;
 }
 .note {
@@ -532,7 +546,8 @@ body {
     max-width: 480px;
     min-height: 28px;
     max-height: 668px;
-    background: #fff;
+    background: #def;
+    color: #123;
     padding: 2px;
     border: 0;
 }
@@ -547,10 +562,15 @@ body {
     line-height: 32px;
 }
 #entryadd {
-    background: #789;
-    width: 100%;
+    width: 32px;
     height: 32px;
+    background: #abc;
+    color: #789;
+    border-radius: 50%;
+    margin: auto;
+    cursor: pointer;
 }
 #entryadd:after {
     content: "+";
+    line-height: 32px;
 }

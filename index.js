@@ -308,11 +308,38 @@ function init() {
     initLocalStorage(); // called last in case localStorage is bugged
 }
 
+var fragag = {};
+
 function initProfiles() {
+    function parseFragments(e) {
+        var mon = this.parentNode.id;
+        if (this.value == "" || this.value == "0") {
+            delete fragag[mon];
+        }
+        else {
+            if (this.value > 999) {
+                this.value = 999;
+            }
+            this.value = parseInt(this.value);
+            fragag[mon] = parseInt(this.value);
+        }
+        console.log(fragag);
+    }
+
     function newProfile(mon) {
         var profile = document.createElement("div");
             profile.className = "profile";
             profile.id = mon;
+            if (digi[mon].evol == "mega" && !digi[mon].special || digi[mon].special) {
+                var fragments = document.createElement("input");
+                    fragments.type = "number";
+                    fragments.className = "fragments";
+                    fragments.placeholder = "0";
+                    fragments.min = "0";
+                    fragments.max = "999";
+                    fragments.addEventListener("input", parseFragments);
+                profile.appendChild(fragments);
+            }
             var card = document.createElement("div");
                 card.className = "card";
                 var portrait = document.createElement("img");

@@ -60,6 +60,7 @@ function initEntrylist() {
             entry.appendChild(note);
             var handle = document.createElement("div");
                 handle.className = "handle";
+                handle.addEventListener("mousedown", startDrag);
             entry.appendChild(handle);
         entrylist.appendChild(entry);
     }
@@ -73,6 +74,7 @@ function initEntrylist() {
             }
         }
         this.parentNode.remove();
+        updateLines();
     }
 
     function viewEntry() {
@@ -94,12 +96,59 @@ function initEntrylist() {
 
     function addSelection() {
         plans.push({
-            "digi": Array.from(selectedDigi),
+            "digi": Array.from(selectedDigi).sort(byEvol),
             "awkn": settings.awkn,
             "note": ""
         });
         addEntry(plans.length - 1);
         updateLines();
+    }
+
+    var a;
+    var b;
+    function startDrag() {
+        window.addEventListener("mousemove", drag);
+        window.addEventListener("mouseup", stopDrag);
+        var rect = this.getBoundingClientRect();
+        a = {
+            "x": window.scrollX + (rect.left + rect.right) / 2,
+            "y": window.scrollY + (rect.top + rect.bottom) / 2
+        };
+    }
+
+    function drag(e) {
+        console.log(a, b);
+        if (b) {
+            linecontext.clearRect(
+                Math.min(a.x, b.x) - 5,
+                Math.min(a.y, b.y) - 5,
+                Math.abs(b.x - a.x) + 10,
+                Math.abs(b.y - a.y) + 10
+            );
+        }
+        b = {
+            "x": window.scrollX + e.x,
+            "y": window.scrollY + e.y
+        };
+        linecontext.beginPath();
+        linecontext.moveTo(a.x, a.y);
+        linecontext.lineTo(b.x, b.y);
+        linecontext.strokeStyle = "#fff";
+        linecontext.lineWidth = 5;
+        linecontext.stroke();
+        linecontext.closePath();
+    }
+
+    function stopDrag(e) {
+        linecontext.clearRect(
+            Math.min(a.x, b.x) - 5,
+            Math.min(a.y, b.y) - 5,
+            Math.abs(b.x - a.x) + 10,
+            Math.abs(b.y - a.y) + 10
+        );
+        window.removeEventListener("mousemove", drag);
+        window.removeEventListener("mouseup", stopDrag);
+        console.log(e.target.closest(".entry"));
     }
 
     for (var i = 0; i < plans.length; i++) {
@@ -109,6 +158,15 @@ function initEntrylist() {
     window.addEventListener("beforeunload", function () {
         localStorage.setItem("planner", JSON.stringify(plans));
     });
+}
+
+function byEvol(a, b) {
+    var evols = ["in-training-i", "in-training-ii", "rookie", "champion", "ultimate", "mega"];
+    var rank = evols.indexOf(digi[a].evol) - evols.indexOf(digi[b].evol);
+    // if (rank) {
+        return rank;
+    // }
+    // return byAlphabet(a, b);
 }
 
 window.addEventListener("DOMContentLoaded", initEntrylist);
