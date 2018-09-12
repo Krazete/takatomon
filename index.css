@@ -509,34 +509,35 @@ body {
 
 
 #entrylist {
+    width: max-content;
     background: #123;
 }
 .entry {
-    width: 100%;
+    width: 64px;
     background: #456;
     color: #abc;
     text-align: center;
-    margin: 2px;
-}
-.entry > * {
-    position: sticky;
-    top: 0;
     vertical-align: top;
+    margin: 1px;
     display: inline-block;
 }
 .x {
-    width: 32px;
     height: 32px;
-    background: #345;
+    background: #620;
+    color: #d88;
     cursor: pointer;
 }
 .x:after {
     content: "×";
     line-height: 32px;
 }
+.awkn {
+    height: 32px;
+    line-height: 32px;
+}
 .viewer {
-    width: 256px;
-    min-height: 32px;
+    position: relative;
+    min-height: 160px;
     cursor: pointer;
 }
 .viewer:hover:after {
@@ -546,8 +547,9 @@ body {
     top: 0;
     width: 100%;
     height: 100%;
-    line-height: 32px;
-    background: #0008;
+    line-height: 160px;
+    background: linear-gradient(#0000, #0008);
+    text-shadow: 0 0 8px #000;
     color: #fff;
 }
 .viewer img {
@@ -558,23 +560,17 @@ body {
     vertical-align: top;
     border-radius: 10%;
 }
-.awkn {
-    width: 32px;
-    height: 32px;
-    line-height: 32px;
-}
 .note {
-    min-width: 160px;
-    max-width: 480px;
+    width: 60px;
     min-height: 28px;
-    max-height: 668px;
+    max-height: 124px;
     background: #def;
     color: #123;
     padding: 2px;
     border: 0;
+    resize: vertical;
 }
 .handle {
-    width: 32px;
     height: 32px;
     background: #345;
     cursor: move;

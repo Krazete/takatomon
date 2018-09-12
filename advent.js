@@ -29,6 +29,15 @@ function initEntrylist() {
                 x.className = "x";
                 addTapListener(x, deleteEntry);
             entry.appendChild(x);
+            var awkn = document.createElement("div");
+                awkn.className = "awkn";
+                if (plans[i].awkn == 5) {
+                    awkn.innerHTML = "+4/V2";
+                }
+                else {
+                    awkn.innerHTML = "+" + plans[i].awkn;
+                }
+            entry.appendChild(awkn);
             var viewer = document.createElement("div");
                 viewer.className = "viewer";
                 for (var mon of plans[i].digi) {
@@ -43,15 +52,6 @@ function initEntrylist() {
                 }
                 addTapListener(viewer, viewEntry);
             entry.appendChild(viewer);
-            var awkn = document.createElement("div");
-                awkn.className = "awkn";
-                if (plans[i].awkn == 5) {
-                    awkn.innerHTML = "+4/V2";
-                }
-                else {
-                    awkn.innerHTML = "+" + plans[i].awkn;
-                }
-            entry.appendChild(awkn);
             var note = document.createElement("textarea");
                 note.className = "note";
                 note.placeholder = "Notes";
