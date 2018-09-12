@@ -1,4 +1,5 @@
 # TODO
+- check that growlmon.js works
 - use hina images somehow
 - improve untangling algorithm
 - complete plugin calculator

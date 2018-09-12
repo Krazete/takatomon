@@ -1,4 +1,4 @@
-# [v0](https://github.com/Krazete/takatomon/tree/v0)
+# [v0](https://github.com/Krazete/takatomon/tree/v0) (2/1/2018 - 2/6/2018)
 ## Features
 - initialized main features
 - - tree mode
@@ -10,7 +10,7 @@
 ## Design
 - initialized
 
-# [v1](https://github.com/Krazete/takatomon/tree/v1)
+# [v1](https://github.com/Krazete/takatomon/tree/v1) (2/6/2018 - 4/22/2018)
 ## Features
 - initialized search group
 - initialized tribe icons
@@ -25,7 +25,7 @@
 - added bottom padding to body
 - - to prevent mobile toolbar from popping up during mega selection
 
-# [v2](https://github.com/Krazete/takatomon/tree/v2)
+# [v2](https://github.com/Krazete/takatomon/tree/v2) (4/22/2018 - 8/30/2018)
 ## Features
 - initialized github button
 - initialized growlmon.net export button
@@ -38,6 +38,7 @@
 - switched default mode back from global to tree
 - switch default tree from union to intersection
 ## Design
+- added favicon
 - increased search box size
 - changed intersection/union tree toggle from text to button
 - changed global/tree mode toggle from text to button
@@ -45,7 +46,7 @@
 - changed selection group to look like evol groups
 - normalized padding and border radius of evol group labels
 
-# [v3](https://github.com/Krazete/takatomon/tree/v3)
+# [v3](https://github.com/Krazete/takatomon/tree/v3) (8/31/2018 -)
 ## Features
 - initialized search filters
 - - basic: tribe, skill element, skill effect
@@ -97,8 +98,11 @@
 - fixed some problems with safari and firefox
 - - #rgba, gradients, scrolling, and for-of loops were the main issues
 
-# [v4](https://github.com/Krazete/takatomon/tree/master) (Plans)
+# [v4](https://github.com/Krazete/takatomon/tree/master) (-)
 ## Features
 - initialize planner
 - fix plugin calculator
 - initialize fragment calculator
+
+_Changes are pushed incrementally, so all versions of Takatomon have overlapping timelines._  
+_The dates shown approximately mark when the defining changes were pushed and made available to the public._
