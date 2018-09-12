@@ -313,7 +313,8 @@ var fragag = {};
 function initProfiles() {
     function parseFragments(e) {
         var mon = this.parentNode.id;
-        if (this.value == "" || this.value == "0") {
+        if (this.value == "" || this.value <= 0) {
+            this.value = "";
             delete fragag[mon];
         }
         else {
@@ -332,8 +333,8 @@ function initProfiles() {
             profile.id = mon;
             if (digi[mon].evol == "mega" && !digi[mon].special || digi[mon].special) {
                 var fragments = document.createElement("input");
-                    fragments.type = "number";
                     fragments.className = "fragments";
+                    fragments.type = "number";
                     fragments.placeholder = "0";
                     fragments.min = "0";
                     fragments.max = "999";

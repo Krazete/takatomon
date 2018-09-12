@@ -86,16 +86,37 @@ body {
 
 .fragments {
     position: absolute;
-    width: 20px;
+    width: 24px;
+    height: 12px;
+    line-height: 12px;
     background: #fffc;
+    font-size: 12px;
     text-align: right;
     border: 1px solid #000;
     border-radius: 4px;
-    margin: 51px 0px 0px 44px;
+    margin: 52px 0 0 40px;
     z-index: 1;
+}
+.small .fragments {
+    width: 22px;
+    height: 10px;
+    line-height: 10px;
+    font-size: 10px;
+    margin: 38px 0 0 26px;
+}
+.large .fragments {
+    width: 26px;
+    height: 14px;
+    line-height: 14px;
+    font-size: 14px;
+    margin: 66px 0 0 54px;
 }
 #selection .fragments {
     display: none;
+}
+.fragments::-webkit-inner-spin-button, .fragments::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 .card {
@@ -494,6 +515,7 @@ body {
     width: 100%;
     background: #456;
     color: #abc;
+    text-align: center;
     margin: 2px;
 }
 .entry > * {
