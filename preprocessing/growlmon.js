@@ -1,140 +1,85 @@
-/* run on http://growlmon.net/digivolvetree */
+/* run on https://growlmon.net/digivolvetree */
 
 /* Messages */
+
 function warning(message) {
     console.log("%cWARNING: " + message, "background: #ff08; padding: 3px 13px;");
 }
+
 function error(message) {
     console.log("%cERROR: " + message, "background: #f008; padding: 3px 13px;");
 }
 
-/* Tribe Labels (for getDigimonInfo and getTribeImages) */
-function tribeFromSrc(src) {
-    var index = src.match(/(\d+).png/)[1];
-    return ["", "mirage", "blazing", "glacier", "electric", "earth", "bright", "abyss"][index];
+/* Helpers */
+
+var tribes = ["mirage", "blazing", "glacier", "electric", "earth", "bright", "abyss"];
+
+function getLowerText(element) {
+    return element.innerText.toLowerCase().trim();
 }
 
-/* Skill Assignment (for getDigimonInfo) */
-function skillTribe(src) {
-    var match = src.match(/\/([^\/]*).png/)[1];
-    var index = ["Null", "Fire", "Water", "Thunder", "Nature", "Light", "Darkness"].indexOf(match);
-    if (index < 0) {
-        index = ["-", "Fire", "Water", "Electric", "Earth", "Light", "Darkness"].indexOf(match);
+function getTailBase(url) {
+    var parts = url.split("/");
+    var tail = parts[parts.length - 1];
+    var base = tail.split(".")[0];
+    if (base.includes("lavogaritomon")) { // remove if growlmon fixes this typo
+        base = base.replace(/lavogaritomon/g, "lavogaritamon");
     }
-    return ["mirage", "blazing", "glacier", "electric", "earth", "bright", "abyss"][index];
-}
-function skillType(mon, text) {
-    var lower = text.toLowerCase();
-    if (lower.includes("all enem") || mon.name == "omegamon-x") { // delete omegamon-x condition when he arrives
-        return 2;
-    }
-    else if (lower.includes("single enem") || lower.includes("no signature")) {
-        return 1;
-    }
-    else if (lower.includes("ally") || lower.includes("counter") || lower.includes("deflect") || lower.includes("invalidate")) {
-        return 0;
-    }
-    else {
-        warning("No skill type found for " + mon.name + ".");
-        return -1;
-    }
-}
-function skillTier(mon, type, tables) { /* NOTE: getting tier by using type as an identifier is erroneous (e.g. examon) */
-    var table = tables[tables.length - 1];
-    if (table) {
-        var cells = table.rows[(type + 2) % 3].cells;
-        var tier = cells[cells.length - 1].innerText;
-        if (!tier.toLowerCase().includes("digi")) {
-            return tier;
-        }
-    }
-    warning("No skill tier found for " + mon.name + ".");
-    return "";
-}
-function skillset(mon, content, released) {
-    var skills = [];
-    for (var i = 1; i < 3; i++) {
-        var id = "#move" + i + "box";
-        if (content.querySelector(id)) {
-            var skill = [];
-            var tribe = skillTribe(content.querySelectorAll(id + " .movedesc td > *")[0].src);
-            skill.push(tribe);
-            var type = skillType(mon, content.querySelectorAll(id + " .movedesc td > *")[1].innerHTML);
-            skill.push(type);
-            if (mon.evol == "mega" && released && mon.name != "lucemon-sm") {
-                var tier = skillTier(mon, type, content.querySelectorAll("table"));
-                if (tier != "") {
-                    skill.push(tier);
-                }
-            }
-            skills.push(skill);
-        }
-    }
-    return skills;
+    return base;
 }
 
-/* Digimon Object Builder (for getDigimonInfo) */
-function newDigimon(mon, content) {
-    var name = content.getElementsByClassName("digiTopper")[0].children[1].innerHTML;
-    var evol = mon.evol;
-    var next = Array.from(
-        content.getElementsByClassName("dvolveTable")[0].rows[0].cells[2].getElementsByTagName("a")
-    ).map(function (a) {
-        return a.href.split("/")[4];
-    });
-    if (content.getElementsByClassName("dvolveTable")[0].innerText.toLowerCase().includes("can mode change") ||
-        content.getElementsByClassName("dvolveTable")[0].innerText.toLowerCase().includes("by paying gold at any time")) {
-        warning("Digimon [" + mon.name + "] is able to mode change."); // because growlmon doesn't want to deal with recursion
+/* Digimon Portraits */
+
+function getPortraits(awkn) { // skip awkn = 2 (+1 icons == +2 icons)
+    var blocks = document.getElementsByClassName("blockListEl");
+    for (var block of blocks) {
+        var mon = getTailBase(block.getElementsByTagName("a")[0].href);
+        var src = block.getElementsByClassName("blockListIco")[0].src;
+
+        var a = document.createElement("a");
+        if (awkn < 5) {
+            a.href = src.replace(/-0/g, "-" + awkn);
+        }
+        else {
+            a.href = "https://growlmon.net/img/digimon/v2/" + getTailBase(src.replace(/-0/g, "")) + ".png";
+        }
+        a.setAttribute("download", mon);
+        a.click();
     }
-    var tribe = mon.tribe;
-    var released = content.getElementsByClassName("digidesc")[0].innerText.toLowerCase().includes("to be released") ? 0 : 1;
-    var skills = skillset(mon, content, released);
-    var v2 = content.getElementsByClassName("stattable")[0].innerText.toLowerCase().includes("version upgrade") ? 1 : 0;
-    return {
-        "name": name,
-        "evol": evol,
-        "next": next,
-        "tribe": tribe,
-        // "released": released,
-        "skills": skills,
-        "v2": v2
-    };
-}
+} // put into preprocessing/img/mon/$awkn and run preprocessing/indexifyMon.m
 
 /* Digivolution Tree */
+var docs = [];
 function getDigimonInfo() {
     var digi = {};
-    var mons = Array.from(document.getElementsByClassName("blockListEl")).map(function (blockListEl) {
-        return {
-            "name": blockListEl.getElementsByTagName("a")[0].href.split("/")[4],
-            "evol": blockListEl.getElementsByClassName("blockListStage")[0].innerHTML.toLowerCase().replace(/ /g, "-"),
-            "tribe": tribeFromSrc(blockListEl.getElementsByClassName("blockListType")[0].src)
-        };
-    }).filter(function (mon) {
-        return !mon.name.endsWith("-mutant");
-    });
-    var monsRegistered = [];
-    mons.forEach(function (mon) {
+    var mons = [];
+    var blocks = document.getElementsByClassName("blockListEl");
+    Array.from(blocks).forEach(function (block) {
+        var mon = getTailBase(block.getElementsByTagName("a")[0].href);
+        if (mon.endsWith("-mutant")) { // remove when takatomon adds a mutant setting
+            return;
+        }
+        var evol = getLowerText(block.getElementsByClassName("blockListStage")[0]).replace(/\s+/g, "-");
+        var tribeIndex = getTailBase(block.getElementsByClassName("blockListType")[0].src);
+        var tribe = tribes[tribeIndex - 1];
+
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "http://growlmon.net/digimon/" + mon.name, true);
+        xhr.open("GET", "https://growlmon.net/digimon/" + mon, true);
         xhr.onload = function () {
             if (this.readyState == 4 && this.status == 200) {
-                var content = document.createElement("div");
-                content.innerHTML = this.response;
-                digi[mon.name] = newDigimon(mon, content);
-                console.log("Digimon [" + mon.name + "] has been successfully registered.");
+                var doc = document.createElement("div");
+                doc.innerHTML = this.response;
+                digi[mon] = new Digimon(mon, evol, tribe, doc);
+                console.log("Digimon [" + mon + "] has been successfully registered.");
             }
             else {
-                error("Digimon [" + mon.name + "] could not be registered.");
-                digi[mon.name] = {"ERROR": true, "next": []};
+                error("Digimon [" + mon + "] could not be registered.");
+                digi[mon] = {
+                    "name": "",
+                    "evol": "", "tribe": "ERROR", "next": []};
             }
-            monsRegistered.push(mon.name);
-            if (mons.length == monsRegistered.length) {
-                // special additions for mode change
-                digi["belphemon-rm"].next.push("belphemon-sm");
-                digi["imperialdramon-fm"].next.push("imperialdramon-dm");
-                digi["leopardmon-lm"].next.push("leopardmon");
-                // because growlmon doesn't want to deal with recursion
+            mons.push(mon);
+            if (mons.length == blocks.length) { // TODO: fix prettyJSON to allow subobjects
                 var prettyJSON = "{\n\t" +
                     JSON.stringify(digi)
                     .slice(1, -2).split("},").sort().join("},\n\t")
@@ -149,37 +94,98 @@ function getDigimonInfo() {
         };
         xhr.send();
     });
-} // add lavorvomon-spd-atk, fix examon skill, and put output into root folder
+    return digi;
+} // check warnings and errors, double-check data, and put into root
 
-/* Digimon Thumbnails */
-function getDigimonImages(n) { // n = 2 returns nothing; +1 images == +2 images
-    var mons = Array.from(document.getElementsByClassName("blockListEl")).map(function (blockListEl) {
-        return {
-            "name": blockListEl.getElementsByTagName("a")[0].href.split("/")[4],
-            "src": blockListEl.getElementsByClassName("blockListIco")[0].src
-        };
-    }).filter(function (mon) {
-        return !mon.name.endsWith("-mutant");
-    });
-    mons.forEach(function (mon) {
-        var a = document.createElement("a");
-        a.href = mon.src.replace(/-0/g, "-" + n);
-        a.setAttribute("download", mon.name);
-        a.click();
-    });
-} // put into appropriate root/img/awkn# folder
+function Digimon(mon, evol, tribe, doc) {
+    var digiTopper = doc.getElementsByClassName("digiTopper")[0];
+    var dvolveTable = doc.getElementsByClassName("dvolveTable")[0];
+    var stattable = doc.getElementsByClassName("stattable")[0];
 
-// /* Tribe Thumbnails */
-// function getTribeImages() { // obsolete; now using some image found on google, cropped and transparentified via matlab
-//     var tribes = new Set(
-//         Array.from(document.getElementsByClassName("blockListType")).map(function (blockListType) {
-//             return blockListType.src;
-//         })
-//     );
-//     tribes.forEach(function (src) {
-//         var a = document.createElement("a");
-//         a.href = src;
-//         a.setAttribute("download", tribeFromSrc(src));
-//         a.click();
-//     });
-// } // put into root/img/tribe folder
+    this.name = digiTopper.children[1].innerHTML;
+    this.evol = evol;
+    this.tribe = tribe;
+    this.next = [];
+    for (var a of dvolveTable.rows[0].cells[2].getElementsByTagName("a")) {
+        var nextmon = getTailBase(a.href);
+        this.next.push(nextmon);
+    }
+    var modematch = getLowerText(dvolveTable).match(/mode change to (.+) by/);
+    if (modematch) { // remove if growlmon ever decides to handle recursion
+        var modemon = modematch[1];
+        for (var a of dvolveTable.rows[0].cells[0].getElementsByTagName("a")) {
+            console.log(getLowerText(a), modemon);
+            if (getLowerText(a).includes(modemon)) {
+                var prevmon = getTailBase(a.href);
+                this.next.push(prevmon);
+            }
+        }
+    }
+    this.skills = getSkills(mon, doc);
+    this.v2 = getLowerText(stattable).includes("version upgrade");
+    this.deviant = mon == "kimeramon" || mon == "meicrackmon-vm" || modematch; // TODO: figure out how to use this flag
+}
+
+function getSkills(mon, doc) {
+    var skills = [];
+    for (var i = 1; i < 3; i++) {
+        var movebox = doc.querySelector("#move" + i + "box");
+        if (movebox) {
+            var movedesc = movebox.getElementsByClassName("movedesc")[0];
+            var img = movedesc.getElementsByTagName("img")[0];
+            var rival = getRival(img.src);
+            var effect = getEffect(mon, movedesc);
+            var tier = getTier(mon, i, effect, doc.getElementsByTagName("table"));
+            var skill = {"rival": rival, "effect": effect, "tier": tier};
+            skills.push(skill);
+        }
+    }
+    return skills;
+}
+
+function getRival(src) {
+    var base = getTailBase(src);
+    var bases = ["Null", "Fire", "Water", "Thunder", "Nature", "Light", "Darkness"];
+    var bases2 = ["-", "Blazing", "Glacier", "Electric", "Earth", "Bright", "Abyss"]; // TODO: eliminate this if unneeded (comment out, check, then see)
+    var index = bases.indexOf(base);
+    if (index < 0) {
+        warning("Detected alternate tribe name [" + base + "].")
+        index = bases2.indexOf(base);
+    }
+    return tribes[index];
+}
+
+function getEffect(mon, movedesc) { // TODO: see if it's better to output strings
+    var text = getLowerText(movedesc);
+    if (text.includes("all enem")) {
+        return 2;
+    }
+    else if (text.includes("single enem") || text.includes("no signature")) {
+        return 1;
+    }
+    else if (["restore", "counter", "deflect", "invalidate"].some(term => text.includes(term))) { // TODO: find all keywords by removing this condition for a sec
+        return 0;
+    }
+    else {
+        warning("No skill type found for " + mon + " [" + text + "].");
+        return -1;
+    }
+}
+
+function getTier(mon, i, effect, tables) {
+    if (mon == "examon" && i == 1) { // because examon's skill is weird
+        effect = 1;
+    }
+    var table = tables[tables.length - 1];
+    var labels = ["single target:", "area of effect:", "support:"];
+    if (table && labels.every(term => getLowerText(table).includes(term))) { // NOTE: if takatomon ever adds mutants, put a mutant condition
+        var cells = table.rows[(effect + 2) % 3].cells;
+        var tier = getLowerText(cells[cells.length - 1]);
+        if (tier == "" || tier == "-") { // TODO: see if this ever actually happens
+            warning("The skill tier for " + mon + " was incorrectly assigned.");
+        }
+        return tier;
+    }
+    warning("No skill tier found for " + mon + ".");
+    return;
+}
