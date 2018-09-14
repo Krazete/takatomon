@@ -591,4 +591,35 @@ body {
 #entryadd:after {
     content: "+";
     line-height: 32px;
+
+#paypal {
+    position: relative; /* to make z-index work */
+    background: none;
+    padding: 0;
+    border: 1px solid #fff0;
+    border-radius: 0;
+    margin: 0;
+    transition: all 10s linear;
+    z-index: 1;
+}
+#paypal:after {
+    content: ' ☹︎';
+    white-space: pre;
+    color: #fff0 ;
+    width: 0;
+    display: inline-block;
+    transition: color 10s linear;
+}
+#paypal:hover {
+    background: #0008;
+    padding: 32px;
+    border: 1px solid #fff;
+    border-radius: 32px;
+    margin: -32px;
+    transition: all 100ms;
+}
+#paypal:hover:after {
+    content: ' ☺︎';
+    color: #fff;
+    transition: color 100ms;
 }
