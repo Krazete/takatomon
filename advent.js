@@ -15,7 +15,7 @@ var advent = {
     "titamon":       [new Date("10-01-2018 02:00:00 PDT"), new Date("10-15-2018 01:59:59 PDT")]
 };
 
-function initEntrylist() {
+function initPlanner() {
     "use strict";
     var entrylist = document.getElementById("entrylist");
     var entryadd = document.getElementById("entryadd");
@@ -158,6 +158,7 @@ function initEntrylist() {
     window.addEventListener("beforeunload", function () {
         localStorage.setItem("planner", JSON.stringify(plans));
     });
+    document.getElementById("foot-planner").click();
 }
 
 function byEvol(a, b) {
@@ -168,5 +169,3 @@ function byEvol(a, b) {
     // }
     // return byAlphabet(a, b);
 }
-
-window.addEventListener("DOMContentLoaded", initEntrylist);

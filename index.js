@@ -11,6 +11,7 @@ var linecontext;
 var selectedDigi = new Set();
 var gemel = new Gemel();
 var gemelCore = gemel.intersection();
+var fragmentDigi = {};
 
 var searchMode;
 var cancelSearch;
@@ -38,8 +39,8 @@ function addTapListener(e, f) {
 }
 
 function getProfileGroup(id) {
-    var box = document.getElementById(id);
-    var profileGroup = box.getElementsByClassName("profile-group")[0];
+    var section = document.getElementById(id);
+    var profileGroup = section.getElementsByClassName("profile-group")[0];
     return profileGroup;
 }
 
@@ -299,39 +300,22 @@ function init() {
     linelayer = document.getElementById("linelayer");
     linecontext = linelayer.getContext("2d");
     initProfiles();
-    initBoxLabels();
+    initAdvent();
+    initEvolLabels();
     initFiltration();
     initVisualization();
-    initLineListeners();
+    initPlanner();
     initFooter();
-    updateAdvent();
+    initLineListeners();
     initLocalStorage(); // called last in case localStorage is bugged
 }
 
-var fragag = {};
-
 function initProfiles() {
-    function parseFragments(e) {
-        var mon = this.parentNode.id;
-        if (this.value == "" || this.value <= 0) {
-            this.value = "";
-            delete fragag[mon];
-        }
-        else {
-            if (this.value > 999) {
-                this.value = 999;
-            }
-            this.value = parseInt(this.value);
-            fragag[mon] = parseInt(this.value);
-        }
-        console.log(fragag);
-    }
-
     function newProfile(mon) {
         var profile = document.createElement("div");
             profile.className = "profile";
             profile.id = mon;
-            if (digi[mon].evol == "mega" && !digi[mon].special || digi[mon].special) {
+            if (digi[mon].fragments) {
                 var fragments = document.createElement("input");
                     fragments.className = "fragments";
                     fragments.type = "number";
@@ -364,8 +348,8 @@ function initProfiles() {
                     moniker.innerHTML = digi[mon].name.replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2");
                 card.appendChild(moniker);
             profile.appendChild(card);
-            var signatureGroup = document.createElement("div");
-                signatureGroup.className = "signature-group";
+            var signatureSet = document.createElement("div");
+                signatureSet.className = "signature-set";
                 Array.from(digi[mon].skills).forEach(function (skill) {
                     var signature = document.createElement("div");
                         var rival = document.createElement("img");
@@ -380,9 +364,9 @@ function initProfiles() {
                             tier.className = "tier";
                             tier.innerHTML = skill[2] ? ("[" + skill[2] + "]") : "";
                         signature.appendChild(tier);
-                    signatureGroup.appendChild(signature);
+                    signatureSet.appendChild(signature);
                 });
-            profile.appendChild(signatureGroup);
+            profile.appendChild(signatureSet);
             var growlmon = document.createElement("div");
                 growlmon.className = "growlmon";
                 var anchor = document.createElement("a");
@@ -402,6 +386,22 @@ function initProfiles() {
         else {
             update();
         }
+    }
+
+    function parseFragments(e) {
+        var mon = this.parentNode.id;
+        if (this.value == "" || this.value <= 0) {
+            this.value = "";
+            delete fragmentDigi[mon];
+        }
+        else {
+            if (this.value > 999) {
+                this.value = 999;
+            }
+            this.value = parseInt(this.value);
+            fragmentDigi[mon] = parseInt(this.value);
+        }
+        console.log(fragmentDigi);
     }
 
     for (var mon in digi) { // skip sorting step, growlmon.js alphabetizes digi.js in preprocessing
@@ -429,12 +429,12 @@ function initProfiles() {
     }
 }
 
-function initBoxLabels() {
-    var boxLabels = document.getElementsByClassName("box-label");
+function initEvolLabels() {
+    var evolLabels = document.getElementsByClassName("evol-label");
 
-    function selectBox() {
-        var box = this.parentNode.parentNode;
-        var profiles = box.getElementsByClassName("profile");
+    function selectSection() {
+        var section = this.parentNode.parentNode;
+        var profiles = section.getElementsByClassName("profile");
         selectedDigi.clear();
         Array.from(profiles).forEach(function (profile) {
             if (!profile.classList.contains("hidden")) {
@@ -449,8 +449,8 @@ function initBoxLabels() {
         }
     }
 
-    Array.from(boxLabels).forEach(function (boxLabel) {
-        addTapListener(boxLabel, selectBox);
+    Array.from(evolLabels).forEach(function (evolLabel) {
+        addTapListener(evolLabel, selectSection);
     });
 }
 
@@ -461,6 +461,8 @@ function initFiltration() {
     var exitSearch = document.getElementById("exit-search");
     var search = document.getElementById("search");
     var switches = filtration.getElementsByClassName("switch");
+
+    exitSearchMode();
 
     function enterSearchMode() {
         selection.classList.add("hidden");
@@ -530,7 +532,7 @@ function initFiltration() {
 
 function initVisualization() {
     var visualization = document.getElementById("visualization");
-    var slideGroups = visualization.getElementsByClassName("slide-group");
+    var slideSets = visualization.getElementsByClassName("slide-set");
     var settingsFunction = {
         "tree": function () {
             update();
@@ -591,13 +593,13 @@ function initVisualization() {
             }
         },
         "skill": function () {
-            var signatureGroups = document.getElementsByClassName("signature-group");
-            for (var signatureGroup of signatureGroups) {
+            var signatureSets = document.getElementsByClassName("signature-set");
+            for (var signatureSet of signatureSets) {
                 if (settings.skill) {
-                    signatureGroup.style.display = "block";
+                    signatureSet.style.display = "block";
                 }
                 else {
-                    signatureGroup.removeAttribute("style");
+                    signatureSet.removeAttribute("style");
                 }
             }
             updateLines();
@@ -661,8 +663,8 @@ function initVisualization() {
         settingsFunction[this.id]();
     }
 
-    Array.from(slideGroups).forEach(function (slideGroup) {
-        addTapListener(slideGroup, advanceSlide);
+    Array.from(slideSets).forEach(function (slideSet) {
+        addTapListener(slideSet, advanceSlide);
     });
 }
 
@@ -892,26 +894,29 @@ function initFooter() {
     });
 }
 
-function updateAdvent() {
-    var now = Date.now();
-    for (var mon in advent) {
-        var profile = document.getElementById(mon);
-        if (isAdvent(mon, now)) {
-            profile.classList.add("advent");
-            if (filters.special.has("advent")) {
-                profile.classList.remove("hidden");
+function initAdvent() {
+    function updateAdvent() {
+        var now = Date.now();
+        for (var mon in advent) {
+            var profile = document.getElementById(mon);
+            if (isAdvent(mon, now)) {
+                profile.classList.add("advent");
+                if (filters.special.has("advent")) {
+                    profile.classList.remove("hidden");
+                }
+            }
+            else {
+                profile.classList.remove("advent");
+                if (filters.special.has("advent")) {
+                    profile.classList.add("hidden");
+                }
             }
         }
-        else {
-            profile.classList.remove("advent");
-            if (filters.special.has("advent")) {
-                profile.classList.add("hidden");
-            }
-        }
+        setTimeout(function () { // check every minute
+            requestAnimationFrame(updateAdvent);
+        }, 60000);
     }
-    setTimeout(function () { // check every minute
-        requestAnimationFrame(updateAdvent);
-    }, 60000);
+    updateAdvent();
 }
 
 function initLocalStorage() {

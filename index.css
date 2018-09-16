@@ -241,7 +241,7 @@ body {
     z-index: 1;
 }
 
-.signature-group {
+.signature-set {
     position: relative; /* to make z-index work */
     width: 64px;
     background: rgba(255, 255, 255, 0.5);
@@ -253,13 +253,13 @@ body {
     z-index: 1;
     display: none;
 }
-.small .signature-group {
+.small .signature-set {
     width: 48px;
 }
-.large .signature-group {
+.large .signature-set {
     width: 80px;
 }
-#mega .signature-group {
+#mega .signature-set {
     display: block;
 }
 

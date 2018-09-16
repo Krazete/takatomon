@@ -111,7 +111,8 @@ function Digimon(mon, evol, tribe, doc) {
         this.next.push(nextmon);
     }
     var modematch = getLowerText(dvolveTable).match(/mode change to (.+) by/);
-    if (modematch) { // remove if growlmon ever decides to handle recursion
+    this.fragments = mon == "kimeramon" || mon == "meicrackmon-vm" || evol == "mega" && !mon.includes("volcanic") && (this.next.length || modematch == null); // TODO: figure out how to use this flag
+    if (modematch != null) { // remove if growlmon ever decides to handle recursion
         var modemon = modematch[1];
         for (var a of dvolveTable.rows[0].cells[0].getElementsByTagName("a")) {
             console.log(getLowerText(a), modemon);
@@ -123,7 +124,6 @@ function Digimon(mon, evol, tribe, doc) {
     }
     this.skills = getSkills(mon, doc);
     this.v2 = getLowerText(stattable).includes("version upgrade");
-    this.deviant = mon == "kimeramon" || mon == "meicrackmon-vm" || modematch; // TODO: figure out how to use this flag
 }
 
 function getSkills(mon, doc) {
