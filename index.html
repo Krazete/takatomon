@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-US">
 <head>
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-108437510-2"></script>
@@ -12,22 +12,23 @@
 	<meta charset="utf-8">
 	<meta name="google" content="notranslate">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="shortcut icon" type="image/png" href="img/icons/favicon.png">
+	<meta name="description" content="A digivolution tree viewer and awakening path planner for Digimon Links.">
+	<title>Takatomon - Awakening Helper</title>
+	<link rel="shortcut icon" type="image/png" href="img/favicon.png">
 	<link href="index.css" rel="stylesheet" type="text/css">
 	<script src="digi.js"></script>
 	<script src="tree.js"></script>
 	<script src="advent.js"></script>
 	<script src="index.js"></script>
-	<title>Awakening Helper</title>
 </head>
 <body>
-	<div class="box hidden" id="planner">
+	<div class="section" id="planner">
 		<div class="scroller">
 			<div id="entrylist"></div>
 		</div>
-		<div id="entryadd"></div>
+		<div class="bar-button" id="entryadd">+</div>
 	</div>
-	<div class="box" id="selection">
+	<div class="section" id="selection">
 		<div class="scroller">
 			<div class="profile-group">
 				<div class="profile" id="blank">
@@ -38,16 +39,16 @@
 				</div>
 			</div>
 		</div>
-		<div class="toggle-search" id="enter-search">
+		<div class="bar-button" id="enter-search">
 			Search
 		</div>
 	</div>
-	<div class="box hidden" id="filtration">
+	<div class="section" id="filtration">
 		<input type="text" placeholder="Search Digimon" id="search">
-		<div class="switchboxes scroller">
+		<div class="scroller switchbox-set">
 			<div class="switchbox">
 				<div class="switchbox-label">Special</div>
-				<div class="switch-group">
+				<div class="switch-set">
 					<div class="switch" id="special-tree">Tree</div>
 					<div class="switch" id="special-dna">DNA2</div>
 					<div class="switch" id="special-v2">V2</div>
@@ -56,7 +57,7 @@
 			</div>
 			<div class="switchbox">
 				<div class="switchbox-label">Filter Tribe</div>
-				<div class="switch-group">
+				<div class="switch-set">
 					<img src="img/tribes/mirage.png" alt="mirage" class="switch mirage" id="tribe-mirage">
 					<img src="img/tribes/blazing.png" alt="blazing" class="switch blazing" id="tribe-blazing">
 					<img src="img/tribes/glacier.png" alt="glacier" class="switch glacier" id="tribe-glacier">
@@ -68,7 +69,7 @@
 			</div>
 			<div class="switchbox">
 				<div class="switchbox-label">Filter Skill</div>
-				<div class="switch-group">
+				<div class="switch-set">
 					<img src="img/tribes/mirage.png" alt="mirage" class="switch mirage" id="rival-mirage">
 					<img src="img/tribes/blazing.png" alt="blazing" class="switch blazing" id="rival-blazing">
 					<img src="img/tribes/glacier.png" alt="glacier" class="switch glacier" id="rival-glacier">
@@ -82,155 +83,168 @@
 				</div>
 			</div>
 		</div>
-		<div class="toggle-search" id="exit-search">
+		<div class="bar-button" id="exit-search">
 			Cancel
 		</div>
 	</div>
-	<div class="box" id="in-training-i">
+	<div class="section" id="in-training-i">
 		<div class="scroller">
-			<div class="box-label">In Training I</div>
+			<div class="evol-label">In Training I</div>
 			<div class="profile-group"></div>
 		</div>
 	</div>
-	<div class="box" id="in-training-ii">
+	<div class="section" id="in-training-ii">
 		<div class="scroller">
-			<div class="box-label">In Training II</div>
+			<div class="evol-label">In Training II</div>
 			<div class="profile-group"></div>
 		</div>
 	</div>
-	<div class="box" id="rookie">
+	<div class="section" id="rookie">
 		<div class="scroller">
-			<div class="box-label">Rookie</div>
+			<div class="evol-label">Rookie</div>
 			<div class="profile-group"></div>
 		</div>
 	</div>
-	<div class="box" id="champion">
+	<div class="section" id="champion">
 		<div class="scroller">
-			<div class="box-label">Champion</div>
+			<div class="evol-label">Champion</div>
 			<div class="profile-group"></div>
 		</div>
 	</div>
-	<div class="box" id="ultimate">
+	<div class="section" id="ultimate">
 		<div class="scroller">
-			<div class="box-label">Ultimate</div>
+			<div class="evol-label">Ultimate</div>
 			<div class="profile-group"></div>
 		</div>
 	</div>
-	<div class="box" id="mega">
+	<div class="section" id="mega">
 		<div class="scroller">
-			<div class="box-label">Mega</div>
+			<div class="evol-label">Mega</div>
 			<div class="profile-group"></div>
 		</div>
 	</div>
-	<div class="box" id="visualization">
-		<div class="slideboxes scroller">
+	<div class="section" id="visualization">
+		<div class="scroller slidebox-set">
 			<div class="slidebox">
-				<div class="slide-group" id="tree">
+				<div class="slide-set" id="tree">
 					<div class="slide">Intersect<wbr>ion</div>
-					<div class="slide hidden">Union</div>
+					<div class="slide">Union</div>
 				</div>
 				<div class="slidebox-label">Tree Mode</div>
 			</div>
 			<div class="slidebox">
-				<div class="slide-group" id="sort">
+				<div class="slide-set" id="sort">
 					<div class="slide">Alphabet<wbr>ical</div>
-					<div class="slide hidden">Tribe</div>
-					<div class="slide hidden">Untangled (Beta)</div>
+					<div class="slide">Tribe</div>
+					<div class="slide">Untangled (Beta)</div>
 				</div>
 				<div class="slidebox-label">Sort Basis</div>
 			</div>
 			<div class="slidebox">
-				<div class="slide-group" id="preview">
+				<div class="slide-set" id="preview">
 					<div class="slide">Off</div>
-					<div class="slide hidden">On</div>
+					<div class="slide">On</div>
 				</div>
 				<div class="slidebox-label">Preview</div>
 			</div>
 			<div class="slidebox">
-				<div class="slide-group" id="size">
+				<div class="slide-set" id="size">
 					<div class="slide">Medium</div>
-					<div class="slide hidden">Large</div>
-					<div class="slide hidden">Small</div>
+					<div class="slide">Large</div>
+					<div class="slide">Small</div>
 				</div>
 				<div class="slidebox-label">Card Size</div>
 			</div>
 			<div class="slidebox">
-				<div class="slide-group" id="awkn">
+				<div class="slide-set" id="awkn">
 					<div class="slide">+0</div>
-					<div class="slide hidden">+1</div>
-					<div class="slide hidden">+2</div>
-					<div class="slide hidden">+3</div>
-					<div class="slide hidden">+4</div>
-					<div class="slide hidden">+4/V2</div>
+					<div class="slide">+1</div>
+					<div class="slide">+2</div>
+					<div class="slide">+3</div>
+					<div class="slide">+4</div>
+					<div class="slide">+4/V2</div>
 				</div>
 				<div class="slidebox-label">Awakening</div>
 			</div>
-			<div class="slidebox hidden">
-				<div class="slide-group" id="skill">
+			<div class="slidebox">
+				<div class="slide-set" id="skill">
 					<div class="slide">Mega Only</div>
-					<div class="slide hidden">All</div>
+					<div class="slide">All</div>
 				</div>
 				<div class="slidebox-label">Skills</div>
 			</div>
 		</div>
 	</div>
-	<div id="footer">
-		<div id="about">
-			This website was created for the mobile game <i><a href="https://digimonlinkz-en.bn-ent.net" target="_blank">Digimon Links</a></i> to ease the viewing of digivolution lines and assist with the awakening process.
-			<br>
-			Data and assets are intermittently gathered from <a href="https://growlmon.net" target="_blank">Growlmon.Net</a>, so this website may contain slightly outdated information.
+	<div class="section" id="footer">
+		<div id="foot-about">
+			This website was created for the mobile game
+			<i><a href="https://digimonlinkz-en.bn-ent.net" target="_blank">Digimon Links</a></i>
+			to ease the viewing of digivolution lines and to assist with the awakening process.
+			<br><br>
+			Data and assets are intermittently gathered from
+			<a href="https://growlmon.net" target="_blank">Growlmon.Net</a>,
+			so this website may contain slightly outdated information.
 			<br>
 			The last database update was on <span id="timestamp">a Tuesday</span>.
-			<br>
-			<br>
-			If you want to see more about the latest updates or send a bug report, visit this project's <a href="https://github.com/Krazete/takatomon" target="_blank">GitHub repository</a>.
-			<br>
-			<br>
+			<br><br>
+			To see the latest updates or send a bug report, visit this project's
+			<a href="https://github.com/Krazete/takatomon" target="_blank">GitHub repository</a>.
+			<br><br>
 			You can also send me a message through
 			<a href="mailto:krazete@gmail.com">krazete@gmail.com</a>,
 			<a href="https://reddit.com/u/krazete" target="_blank">Reddit</a>, or
 			<a href="https://paypal.me/krazete" target="_blank" id="paypal">PayPal</a>.
 		</div>
-		<div class="hidden" id="qa">
+		<div id="foot-qa">
 			Q&A
 			<br><br>
 			Q: What is that circled exclamation mark in the corner of some Digimon cards?
 			<br>
-			A: This indicates that the Digimon is currently available in Advent Quests (or will be within 12 hours).
+			A: This indicates the Digimon is currently available in Advent Quests (or will be within 12 hours).
 			<br><br>
-			Q: What does the Tree option in the Special search filter do?
+			Q: What does the <i>Tree</i> option in the <i>Special</i> search filter do?
 			<br>
-			A: It narrows down your search to just the Digimon of the currently selected digivolution tree.
+			A: Enabled this if you want the search results to display only Digimon of your currently selected digivolution tree.
 			<br><br>
-			Q: Isn't the Untangle (Beta) sort basis supposed to untangle the lines? It doesn't work too well.
+			Q: Isn't the <i>Untangled (Beta)</i> sort basis supposed to untangle the lines? It doesn't work too well.
 			<br>
-			A: Sorry, I can't figure out how to make it any better. A greedy algorithm is the best I can do for now.
+			A: Sorry, I don't know how to improve it. A greedy algorithm is the best I can do for now.
 			<br><br>
-			Q: What does the Preview feature do?
+			Q: What does the <i>Preview</i> option do?
 			<br>
-			A: With Preview on, hovering your cursor over a Digimon will show that single Digimon's digivolution tree within the context of the currently selected digivolution tree.
+			A: With this enabled, hovering your cursor over a Digimon card will show that single Digimon's digivolution tree within the context of your currently selected digivolution tree.
 			<br><br>
-			Q: Why can't I use the Preview feature in search mode?
+			Q: Why can't I use the <i>Preview</i> feature in search mode?
 			<br>
 			A: For clarity. Viewing digivolution lines in search mode would present an incomplete and misleading tree.
 			<br><br>
 			Q: Why does this website look so janky?
 			<br>
-			A: I mainly tested this in Chrome. I fixed a few issues in Safari and Firefox, but if you're still experiencing any issues, please contact me (click "About" below).
+			A: I mainly tested this in Chrome. I fixed some issues in Safari and Firefox, but if you're still experiencing bugs, please send a report through
+			<a href="mailto:krazete@gmail.com">krazete@gmail.com</a>,
+			<a href="https://reddit.com/u/krazete" target="_blank">Reddit</a>, or
+			<a href="https://github.com/Krazete/takatomon" target="_blank">GitHub</a>.
 		</div>
-		<div class="hidden" id="calculate"></div>
-		<div id="close">
+		<div id="foot-planner">
+			<span class="toe">Import planner.</span>
 			<br>
-			<span class="foot" id="foot-close">Close</span>
-			<br><br>
+			<span class="toe">Export planner.</span>
+			<br>
+			<span class="toe">Enable planner.</span>
+			<br>
+			<span class="toe">Enable fragment counter.</span>
 		</div>
-		<span class="foot" id="foot-about">About</span>
+		<div id="foot-calculate"></div>
+		<div id="foot-close">
+			<div class="bar-button" id="toe-close">Close</div>
+		</div>
+		<span class="toe" id="toe-about">About</span>
 		|
-		<span class="foot" id="foot-qa">Q&A</span>
+		<span class="toe" id="toe-qa">Q&A</span>
 		|
-		<span class="foot" id="foot-calculate">Calculate (Beta)</span>
+		<span class="toe" id="toe-planner">Planner</span>
 		|
-		<span class="foot" id="foot-planner">Planner (Beta)</span>
+		<span class="toe" id="toe-calculate">Calculate (Beta)</span>
 	</div>
 	<canvas id="linelayer"></canvas>
 </body>
