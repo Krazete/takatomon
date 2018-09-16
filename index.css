@@ -2,22 +2,22 @@ body {
     position: relative; /* to make height work */
     height: 100%; /* to make .linelayer height work */
     background: #000;
-    font-family: "Trebuchet MS", "Helvetica", "Arial", sans-serif;
+    font-family: 'Trebuchet MS', 'Helvetica', 'Arial', sans-serif;
     font-size: 14px;
     margin: 0;
     overflow-x: hidden;
 }
 
-.box {
+.section {
     box-shadow: inset 0 0 8px #000;
+}
+#planner {
+    background: #123;
 }
 #selection {
     background: #fff;
 }
-#filtration {
-    background: #222;
-}
-#visualization {
+#filtration, #visualization {
     background: #222;
 }
 #in-training-i {
@@ -42,8 +42,8 @@ body {
         linear-gradient(to top right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
 }
 
-.box-label {
-    position: -webkit-sticky; /* for iOS*/
+.evol-label {
+    position: -webkit-sticky; /* for iOS */
     position: sticky;
     left: 4px;
     width: -webkit-max-content;
@@ -62,7 +62,7 @@ body {
     -webkit-overflow-scrolling: touch; /* for iOS */
 }
 
-.profile-group {
+.profile-group { /* TODO: see if this can be generalized */
     width: -webkit-max-content;
     width: -moz-max-content;
     width: max-content;
@@ -116,7 +116,6 @@ body {
 }
 .fragments::-webkit-inner-spin-button, .fragments::-webkit-outer-spin-button {
     -webkit-appearance: none;
-    margin: 0;
 }
 
 .card {
@@ -126,11 +125,6 @@ body {
     border: 1px solid #000;
     border-radius: 10%;
     cursor: pointer;
-}
-@media (hover: hover) {
-    .card:hover {
-        border-color: #fff;
-    }
 }
 .small .card {
     width: 48px;
@@ -156,6 +150,11 @@ body {
 #mega .card {
     background: linear-gradient(to top right, #f44, #ff4, #4f4, #4ff, #44f, #f4f, #f44);
 }
+@media (hover: hover) {
+    .card:hover {
+        border-color: #fff;
+    }
+}
 .root .card {
     box-shadow: 0 0 0 2px #fff;
     border-color: #000;
@@ -172,7 +171,7 @@ body {
     color: #fff;
 }
 .advent .card:after {
-    content: "!";
+    content: '!';
     position: absolute;
     top: -2px;
     right: -2px;
@@ -308,7 +307,10 @@ body {
     text-align: center;
     padding: 8px;
 }
-#footer a, .foot {
+#footer > div {
+    padding: 12px 0;
+}
+#footer a, .toe {
     color: #aaa;
     text-decoration: underline;
     cursor: pointer;
@@ -341,7 +343,7 @@ body {
     border: none;
 }
 
-.switchboxes {
+.switchbox-set {
     color: #aaa;
     text-align: center;
     margin-bottom: 6px;
@@ -367,7 +369,7 @@ body {
     margin: auto;
 }
 
-.switch-group {
+.switch-set {
     width: -webkit-max-content;
     width: -moz-max-content;
     width: max-content;
@@ -377,7 +379,7 @@ body {
     margin: auto;
 }
 
-.toggle-search {
+.bar-button {
     background: linear-gradient(to right, rgba(160, 160, 160, 0.125), #aaa, rgba(160, 160, 160, 0.125));
     background: linear-gradient(to right, #aaa2, #aaa, #aaa2);
     color: #222;
@@ -386,7 +388,7 @@ body {
     cursor: pointer;
 }
 @media (hover: hover) {
-    .toggle-search:hover {
+    .bar-button:hover {
         background: #888;
         color: #000;
     }
@@ -455,7 +457,7 @@ body {
     }
 }
 
-.slideboxes {
+.slidebox-set {
     color: #aaa;
     display: flex;
 }
@@ -479,7 +481,7 @@ body {
     pointer-events: none;
 }
 
-.slide-group {
+.slide-set {
     padding: 8px;
     border: 1px solid #aaa;
     border-radius: 8px;
@@ -487,7 +489,7 @@ body {
     user-select: none;
 }
 @media (hover: hover) {
-    .slide-group:hover {
+    .slide-set:hover {
         color: #ddd;
         border-color: #ddd;
     }
@@ -522,35 +524,36 @@ body {
     display: inline-block;
 }
 .x {
-    height: 32px;
+    height: 24px;
     background: #620;
     color: #d88;
     cursor: pointer;
 }
 .x:after {
-    content: "×";
-    line-height: 32px;
+    content: '×';
+    line-height: 24px;
 }
 .awkn {
-    height: 32px;
-    line-height: 32px;
+    height: 24px;
+    line-height: 24px;
 }
 .viewer {
     position: relative;
-    min-height: 160px;
+    min-height: 96px;
     cursor: pointer;
 }
 .viewer:hover:after {
-    content: "VIEW";
+    content: 'VIEW';
     position: absolute;
     left: 0;
-    top: 0;
+    bottom: 0;
     width: 100%;
-    height: 100%;
-    line-height: 160px;
+    height: 32px;
+    line-height: 32px;
     background: linear-gradient(#0000, #0008);
     text-shadow: 0 0 8px #000;
     color: #fff;
+    padding-top: 64px;
 }
 .viewer img {
     width: 32px;
@@ -569,28 +572,17 @@ body {
     padding: 2px;
     border: 0;
     resize: vertical;
+    display: block;
 }
 .handle {
-    height: 32px;
+    height: 24px;
     background: #345;
     cursor: move;
 }
 .handle:after {
-    content: "≡";
-    line-height: 32px;
+    content: '≡';
+    line-height: 24px;
 }
-#entryadd {
-    width: 32px;
-    height: 32px;
-    background: #abc;
-    color: #789;
-    border-radius: 50%;
-    margin: auto;
-    cursor: pointer;
-}
-#entryadd:after {
-    content: "+";
-    line-height: 32px;
 
 #paypal {
     position: relative; /* to make z-index work */
@@ -605,21 +597,23 @@ body {
 #paypal:after {
     content: ' ☹︎';
     white-space: pre;
-    color: #fff0 ;
+    color: #fff0;
     width: 0;
+    margin: 0 14px 0 -14px;
     display: inline-block;
-    transition: color 10s linear;
+    transition: all 10s linear;
 }
 #paypal:hover {
-    background: #0008;
+    background: #000;
     padding: 32px;
     border: 1px solid #fff;
     border-radius: 32px;
     margin: -32px;
-    transition: all 100ms;
+    transition: all 0.1s;
 }
 #paypal:hover:after {
     content: ' ☺︎';
     color: #fff;
-    transition: color 100ms;
+    margin: 0;
+    transition: all 0.1s;
 }
