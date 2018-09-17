@@ -24,14 +24,14 @@ var filters = { // only global because of advents
 var exitSearchMode;
 var updateSearchResults;
 
-var settings = {
+var settings = load("settings", {
     "tree": 0,
     "sort": 0,
     "preview": 0,
     "size": 0,
     "awkn": 0,
     "skill": 0
-};
+});
 var updateAdvent;
 
 /* Helpers */
@@ -53,6 +53,32 @@ function hide(element) {
 
 function show(element) {
     element.classList.remove("hidden");
+}
+
+function save(key, value) {
+    try {
+        var valueJSON = JSON.stringify(value);
+        window.localStorage.setItem(key, valueJSON);
+    }
+    catch (e) {
+        console.log(e);
+        console.log(key, value);
+    }
+}
+
+function load(key, defaultValue) {
+    try {
+        var valueJSON = window.localStorage.getItem(key);
+        var value = JSON.parse(valueJSON);
+        if (value != null) {
+            return value;
+        }
+    }
+    catch (e) {
+        console.log(e);
+        console.log(key, defaultValue);
+    }
+    return defaultValue;
 }
 
 /* Tree Visualization */
@@ -698,25 +724,6 @@ function initVisualization() {
         setSlide(key, value);
     }
 
-    function saveSettings() {
-        var settingsJSON = JSON.stringify(settings);
-        window.localStorage.setItem("settings", settingsJSON);
-    }
-
-    function loadSettings() {
-        var settingsJSON = window.localStorage.getItem("settings");
-        settings = JSON.parse(settingsJSON);
-    }
-
-    function deleteLegacyLocalStorage() { // TODO: delete this in the next version?
-        window.localStorage.removeItem("tree");
-        window.localStorage.removeItem("sort");
-        window.localStorage.removeItem("preview");
-        window.localStorage.removeItem("size");
-        window.localStorage.removeItem("awkn");
-        window.localStorage.removeItem("skill");
-    }
-
     function hideUselessSettings() {
         var uselessSettings = ["skill"];
         uselessSettings.forEach(function (uselessSetting) {
@@ -726,28 +733,39 @@ function initVisualization() {
         })
     }
 
-    try {
-        deleteLegacyLocalStorage();
-        loadSettings();
-        window.addEventListener("beforeunload", saveSettings);
+    function saveSettings() {
+        save("settings", settings);
     }
-    catch (e) {
-        console.log(e);
+
+    function deleteLegacyLocalStorage() { // TODO: delete this in the next version?
+        try {
+            window.localStorage.removeItem("tree");
+            window.localStorage.removeItem("sort");
+            window.localStorage.removeItem("preview");
+            window.localStorage.removeItem("size");
+            window.localStorage.removeItem("awkn");
+            window.localStorage.removeItem("skill");
+        }
+        catch (e) {
+            console.log(e);
+        }
     }
+
+    hideUselessSettings();
     Array.from(slideSets).forEach(function (slideSet) {
         var key = slideSet.id;
         var value = settings[key];
         setSlide(key, value)
         addTapListener(slideSet, advanceSlide);
     });
-    hideUselessSettings();
+    window.addEventListener("beforeunload", saveSettings);
+    deleteLegacyLocalStorage();
 }
 
 function initPlanner() {
-    "use strict";
     var entrylist = document.getElementById("entrylist");
     var entryadd = document.getElementById("entryadd");
-    var plans = localStorage.getItem("planner") ? JSON.parse(localStorage.getItem("planner")) : [];
+    var planner = load("planner", []);
 
     function addEntry(i) {
         var entry = document.createElement("div");
@@ -759,22 +777,22 @@ function initPlanner() {
             entry.appendChild(x);
             var awkn = document.createElement("div");
                 awkn.className = "awkn";
-                if (plans[i].awkn == 5) {
+                if (planner[i].awkn == 5) {
                     awkn.innerHTML = "+4/V2";
                 }
                 else {
-                    awkn.innerHTML = "+" + plans[i].awkn;
+                    awkn.innerHTML = "+" + planner[i].awkn;
                 }
             entry.appendChild(awkn);
             var viewer = document.createElement("div");
                 viewer.className = "viewer";
-                for (var mon of plans[i].digi) {
+                for (var mon of planner[i].digi) {
                     var photo = document.createElement("img");
-                        if (plans[i].awkn != 5 || digi[mon].v2) {
-                            photo.src = "img/mon/" + [0, 1, 1, 3, 4, 5][plans[i].awkn] + "/" + mon + ".png";
+                        if (planner[i].awkn != 5 || digi[mon].v2) {
+                            photo.src = "img/mon/" + [0, 1, 1, 3, 4, 5][planner[i].awkn] + "/" + mon + ".png";
                         }
                         else {
-                            photo.src = "img/mon/" + [0, 1, 1, 3, 4, 4][plans[i].awkn] + "/" + mon + ".png";
+                            photo.src = "img/mon/" + [0, 1, 1, 3, 4, 4][planner[i].awkn] + "/" + mon + ".png";
                         }
                     viewer.appendChild(photo);
                 }
@@ -783,7 +801,7 @@ function initPlanner() {
             var note = document.createElement("textarea");
                 note.className = "note";
                 note.placeholder = "Notes";
-                note.value = plans[i].note;
+                note.value = planner[i].note;
                 note.addEventListener("input", editNote);
             entry.appendChild(note);
             var handle = document.createElement("div");
@@ -795,7 +813,7 @@ function initPlanner() {
 
     function deleteEntry() {
         var i = parseInt(this.parentNode.dataset.i);
-        plans = plans.slice(0, i).concat(plans.slice(i + 1));
+        planner = planner.slice(0, i).concat(planner.slice(i + 1));
         for (var entry of document.getElementsByClassName("entry")) {
             if (entry.dataset.i > i) {
                 entry.dataset.i -= 1;
@@ -807,9 +825,9 @@ function initPlanner() {
 
     function viewEntry() {
         var i = this.parentNode.dataset.i;
-        selectedDigi = new Set(plans[i].digi);
+        selectedDigi = new Set(planner[i].digi);
         var awknSlide = document.getElementById("awkn");
-        var x = (plans[i].awkn - settings.awkn + 6) % 6;
+        var x = (planner[i].awkn - settings.awkn + 6) % 6;
         for (var j = 0; j < x; j++) {
             awknSlide.click(); // TODO: change this hacky bullshit
         }
@@ -819,16 +837,16 @@ function initPlanner() {
     function editNote() {
         var message = this.value;
         var i = this.parentNode.dataset.i;
-        plans[i].note = message;
+        planner[i].note = message;
     }
 
     function addSelection() {
-        plans.push({
+        planner.push({
             "digi": Array.from(selectedDigi).sort(byEvol),
             "awkn": settings.awkn,
             "note": ""
         });
-        addEntry(plans.length - 1);
+        addEntry(planner.length - 1);
         updateLines();
     }
 
@@ -888,14 +906,15 @@ function initPlanner() {
         console.log(e.target.closest(".entry"));
     }
 
-    for (var i = 0; i < plans.length; i++) {
+    function savePlanner() {
+        save("planner", planner);
+    }
+
+    for (var i = 0; i < planner.length; i++) {
         addEntry(i);
     }
     addTapListener(entryadd, addSelection);
-    window.addEventListener("beforeunload", function () {
-        localStorage.setItem("planner", JSON.stringify(plans));
-    });
-    document.getElementById("foot-planner").click();
+    window.addEventListener("beforeunload", savePlanner);
 }
 
 function initFooter() {
@@ -1075,7 +1094,7 @@ function initFooter() {
     hide(footPlanner);
     hide(footCalculate);
     hide(footClose);
-    addTapListener(aboutFoot, function () {
+    addTapListener(toeAbout, function () {
         show(footAbout);
         hide(footQA);
         hide(footCalculate);
@@ -1083,7 +1102,7 @@ function initFooter() {
         show(footClose);
         updateLines();
     });
-    addTapListener(qaFoot, function () {
+    addTapListener(toeQA, function () {
         hide(footAbout);
         show(footQA);
         hide(footCalculate);
@@ -1091,7 +1110,7 @@ function initFooter() {
         show(footClose);
         updateLines();
     });
-    addTapListener(calculateFoot, function () {
+    addTapListener(toeCalculate, function () {
         costPlugins();
         hide(footAbout);
         hide(footQA);
@@ -1100,7 +1119,7 @@ function initFooter() {
         show(footClose);
         updateLines();
     });
-    addTapListener(plannerFoot, function () {
+    addTapListener(toePlanner, function () {
         hide(footAbout);
         hide(footQA);
         hide(footCalculate);
@@ -1108,7 +1127,7 @@ function initFooter() {
         show(footClose);
         updateLines();
     });
-    addTapListener(closeFoot, function () {
+    addTapListener(toeClose, function () {
         hide(footAbout);
         hide(footQA);
         hide(footCalculate);
