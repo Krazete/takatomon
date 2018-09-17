@@ -743,6 +743,161 @@ function initVisualization() {
     hideUselessSettings();
 }
 
+function initPlanner() {
+    "use strict";
+    var entrylist = document.getElementById("entrylist");
+    var entryadd = document.getElementById("entryadd");
+    var plans = localStorage.getItem("planner") ? JSON.parse(localStorage.getItem("planner")) : [];
+
+    function addEntry(i) {
+        var entry = document.createElement("div");
+            entry.className = "entry";
+            entry.dataset.i = i;
+            var x = document.createElement("div");
+                x.className = "x";
+                addTapListener(x, deleteEntry);
+            entry.appendChild(x);
+            var awkn = document.createElement("div");
+                awkn.className = "awkn";
+                if (plans[i].awkn == 5) {
+                    awkn.innerHTML = "+4/V2";
+                }
+                else {
+                    awkn.innerHTML = "+" + plans[i].awkn;
+                }
+            entry.appendChild(awkn);
+            var viewer = document.createElement("div");
+                viewer.className = "viewer";
+                for (var mon of plans[i].digi) {
+                    var photo = document.createElement("img");
+                        if (plans[i].awkn != 5 || digi[mon].v2) {
+                            photo.src = "img/mon/" + [0, 1, 1, 3, 4, 5][plans[i].awkn] + "/" + mon + ".png";
+                        }
+                        else {
+                            photo.src = "img/mon/" + [0, 1, 1, 3, 4, 4][plans[i].awkn] + "/" + mon + ".png";
+                        }
+                    viewer.appendChild(photo);
+                }
+                addTapListener(viewer, viewEntry);
+            entry.appendChild(viewer);
+            var note = document.createElement("textarea");
+                note.className = "note";
+                note.placeholder = "Notes";
+                note.value = plans[i].note;
+                note.addEventListener("input", editNote);
+            entry.appendChild(note);
+            var handle = document.createElement("div");
+                handle.className = "handle";
+                handle.addEventListener("mousedown", startDrag);
+            entry.appendChild(handle);
+        entrylist.appendChild(entry);
+    }
+
+    function deleteEntry() {
+        var i = parseInt(this.parentNode.dataset.i);
+        plans = plans.slice(0, i).concat(plans.slice(i + 1));
+        for (var entry of document.getElementsByClassName("entry")) {
+            if (entry.dataset.i > i) {
+                entry.dataset.i -= 1;
+            }
+        }
+        this.parentNode.remove();
+        updateLines();
+    }
+
+    function viewEntry() {
+        var i = this.parentNode.dataset.i;
+        selectedDigi = new Set(plans[i].digi);
+        var awknSlide = document.getElementById("awkn");
+        var x = (plans[i].awkn - settings.awkn + 6) % 6;
+        for (var j = 0; j < x; j++) {
+            awknSlide.click(); // TODO: change this hacky bullshit
+        }
+        update();
+    }
+
+    function editNote() {
+        var message = this.value;
+        var i = this.parentNode.dataset.i;
+        plans[i].note = message;
+    }
+
+    function addSelection() {
+        plans.push({
+            "digi": Array.from(selectedDigi).sort(byEvol),
+            "awkn": settings.awkn,
+            "note": ""
+        });
+        addEntry(plans.length - 1);
+        updateLines();
+    }
+
+    function byEvol(a, b) {
+        var evols = ["in-training-i", "in-training-ii", "rookie", "champion", "ultimate", "mega"];
+        var rank = evols.indexOf(digi[a].evol) - evols.indexOf(digi[b].evol);
+        // if (rank) {
+            return rank;
+        // }
+        // return byAlphabet(a, b);
+    }
+
+    var a;
+    var b;
+    function startDrag() {
+        window.addEventListener("mousemove", drag);
+        window.addEventListener("mouseup", stopDrag);
+        var rect = this.getBoundingClientRect();
+        a = {
+            "x": window.scrollX + (rect.left + rect.right) / 2,
+            "y": window.scrollY + (rect.top + rect.bottom) / 2
+        };
+    }
+
+    function drag(e) {
+        console.log(a, b);
+        if (b) {
+            linecontext.clearRect(
+                Math.min(a.x, b.x) - 5,
+                Math.min(a.y, b.y) - 5,
+                Math.abs(b.x - a.x) + 10,
+                Math.abs(b.y - a.y) + 10
+            );
+        }
+        b = {
+            "x": window.scrollX + e.x,
+            "y": window.scrollY + e.y
+        };
+        linecontext.beginPath();
+        linecontext.moveTo(a.x, a.y);
+        linecontext.lineTo(b.x, b.y);
+        linecontext.strokeStyle = "#fff";
+        linecontext.lineWidth = 5;
+        linecontext.stroke();
+        linecontext.closePath();
+    }
+
+    function stopDrag(e) {
+        linecontext.clearRect(
+            Math.min(a.x, b.x) - 5,
+            Math.min(a.y, b.y) - 5,
+            Math.abs(b.x - a.x) + 10,
+            Math.abs(b.y - a.y) + 10
+        );
+        window.removeEventListener("mousemove", drag);
+        window.removeEventListener("mouseup", stopDrag);
+        console.log(e.target.closest(".entry"));
+    }
+
+    for (var i = 0; i < plans.length; i++) {
+        addEntry(i);
+    }
+    addTapListener(entryadd, addSelection);
+    window.addEventListener("beforeunload", function () {
+        localStorage.setItem("planner", JSON.stringify(plans));
+    });
+    document.getElementById("foot-planner").click();
+}
+
 function initFooter() {
     var footAbout = document.getElementById("foot-about");
     var footQA = document.getElementById("foot-qa");
@@ -961,6 +1116,85 @@ function initFooter() {
         hide(footClose);
         updateLines();
     });
+
+    var canvas = document.createElement("canvas");
+    var context = canvas.getContext("2d");
+    document.body.appendChild(canvas);
+
+    function exportPlanner() {
+        var chars = localStorage.planner;
+        var codes = [];
+        for (var i = 0; i < chars.length; i++) {
+            var code = chars.charCodeAt(i);
+            if (code < 255) {
+                codes.push(code);
+            }
+            else {
+                var multiplier = Math.floor(code / 256)
+                codes.push(255);
+                codes.push(multiplier);
+                codes.push(code - 256 * multiplier);
+            }
+        }
+        var size = Math.ceil(Math.sqrt(codes.length / 3));
+        while (codes.length < 3 * Math.pow(size, 2)) {
+        	codes.push(0);
+        }
+
+        canvas.width = size;
+        canvas.height = size;
+        var imageData = context.createImageData(size, size);
+        var d = 0;
+        for (var i = 0; i < Math.pow(size, 2) * 4; i++) {
+        	imageData.data[i] = codes[i - d];
+        	if (!((i + 1) % 4)) {
+        		imageData.data[i] = 255;
+                d++;
+            }
+        }
+        context.putImageData(imageData, 0, 0);
+
+        return {codes:codes, chars:chars};
+    }
+
+    function importPlanner() {
+        function skipAlpha(value, index) {
+            return (index + 1) % 4;
+        }
+
+        var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        var data = Array.from(imageData.data);
+        var codes = data.filter(skipAlpha);
+        var chars = "";
+        for (var i = 0; i < codes.length; i++) {
+            if (codes[i] < 255) {
+                if (codes[i] > 0) {
+                    chars += String.fromCharCode(codes[i]);
+                }
+            }
+            else {
+                var code = 256 * codes[i + 1] + codes[i + 2];
+                chars += String.fromCharCode(code);
+                i += 2;
+            }
+        }
+
+        return {codes:codes, chars:chars};
+    }
+
+    // var exported = exportPlanner();
+    // var imported = importPlanner();
+    //
+    // var k = [0, 0, 0, [], []];
+    // for (var i = 0; i < exported.codes.length; i++) {
+    //     if (exported.codes[i] != imported.codes[i]) {
+    //         k[i % 3] += 1;
+    //         k[3].push(getChar(exported.codes[i]));
+    //         k[4].push(getChar(imported.codes[i]));
+    //     }
+    // }
+    // console.log(k);
+    // console.log(exported.chars == imported.chars);
 }
 
 function initLineListeners() {
