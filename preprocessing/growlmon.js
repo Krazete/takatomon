@@ -155,16 +155,16 @@ function getRival(src) {
     return tribes[index];
 }
 
-function getEffect(mon, movedesc) { // TODO: see if it's better to output strings
+function getEffect(mon, movedesc) {
     var text = getLowerText(movedesc);
     if (text.includes("all enem")) {
-        return 2;
+        return 2; // aoe
     }
     else if (text.includes("single enem") || text.includes("no signature")) {
-        return 1;
+        return 1; // st
     }
     else if (["restore", "counter", "deflect", "invalidate"].some(term => text.includes(term))) { // TODO: find all keywords by removing this condition for a sec
-        return 0;
+        return 0; // support
     }
     else {
         warning("No skill type found for " + mon + " [" + text + "].");
