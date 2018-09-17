@@ -14,14 +14,16 @@ var gemelCore = gemel.intersection();
 var fragmentDigi = {};
 
 var searchMode;
-var cancelSearch;
-var filters = { // global because initProfile and initSettings needs filters.special
+var filters = { // only global because of advents
     "query": new Set(),
     "tribe": new Set(),
     "rival": new Set(),
     "effect": new Set(),
-    "special": new Set()
+    "special": new Set() // NOTE: used in updateAdvent
 };
+var exitSearchMode;
+var updateSearchResults;
+
 var settings = {
     "tree": 0,
     "sort": 0,
@@ -30,6 +32,7 @@ var settings = {
     "awkn": 0,
     "skill": 0
 };
+var updateAdvent;
 
 /* Helpers */
 
@@ -44,65 +47,24 @@ function getProfileGroup(id) {
     return profileGroup;
 }
 
-function isAdvent(mon, now) {
-    if (mon in advent) {
-        var start = advent[mon][0] - 43200000; // show advents half a day ahead of schedule
-        var end = advent[mon][1];
-        return start <= now && now <= end;
-    }
-    return false;
+function hide(element) {
+    element.classList.add("hidden");
 }
 
-/* Filtration Updater */
-
-function updateSearch() {
-    for (var mon in digi) {
-        var profile = document.getElementById(mon);
-        profile.classList.remove("hidden");
-        if (!okFilters(mon)) {
-            profile.classList.add("hidden");
-        }
-    }
-}
-
-function okFilters(mon) {
-    var okQuery = !filters.query.size || Array.from(filters.query).every(function (term) {
-        return mon.includes(term);
-        // below allows tier search, excluded for confusingness
-        // var okName = mon.includes(term);
-        // var okTier = term.match(/[\[*\]]/) && digi[mon].skills.some(function (skill) {
-        //     if (typeof skill[2] != "undefined") {
-        //         var tier = "[" + skill[2].toLowerCase() + "]";
-        //         return tier.includes(term);
-        //     }
-        //     return false;
-        // });
-        // return okName || okTier;
-    });
-    var okTribe = !filters.tribe.size || filters.tribe.has(digi[mon].tribe);
-    var okSkill = digi[mon].skills.some(function (skill) {
-        var okRival = !filters.rival.size || filters.rival.has(skill[0]);
-        var effect = ["support", "st", "aoe"][skill[1]];
-        var okEffect = !filters.effect.size || filters.effect.has(effect);
-        return okRival && okEffect;
-    });
-    var okTree = !filters.special.has("tree") || [gemelCore, gemel][settings.tree].nodes.has(mon);
-    var okDNA2 = !filters.special.has("dna") || digi[mon].skills.length > 1;
-    var okV2 = !filters.special.has("v2") || digi[mon].v2;
-    var okAdvent = !filters.special.has("advent") || isAdvent(mon, Date.now());
-    var okSpecial = okTree && okDNA2 && okV2 && okAdvent;
-    return okQuery && okTribe && okSkill && okSpecial;
+function show(element) {
+    element.classList.remove("hidden");
 }
 
 /* Tree Visualization */
 
 function update() {
+    var profileGroups = document.getElementsByClassName("profile-group");
+
     gemel = new Gemel(selectedDigi);
     gemelCore = gemel.intersection();
     updateClones(); // wanted to call updateLines on portrait load, but that creates new problems
     updateProfiles();
-
-    Array.from(document.getElementsByClassName("profile-group")).forEach(function (profileGroup) {
+    Array.from(profileGroups).forEach(function (profileGroup) { // for safari
         var rect = profileGroup.getBoundingClientRect();
         if (rect.width < window.innerWidth) {
             profileGroup.parentNode.scrollTo(0, 0);
@@ -120,7 +82,7 @@ function updateClones() {
     var selection = getProfileGroup("selection");
     selection.innerHTML = "";
 
-    function deselectClone() {
+    function deselectProfile() {
         selectedDigi.delete(this.parentNode.id.slice(0, -6));
         update();
     }
@@ -131,11 +93,11 @@ function updateClones() {
             clone.classList.remove("root");
             clone.classList.remove("core-node");
             clone.classList.remove("node");
-            clone.classList.remove("hidden");
             clone.classList.remove("preview");
+            show(clone);
             clone.id = mon + "-clone";
             var card = clone.getElementsByClassName("card")[0];
-            addTapListener(card, deselectClone);
+            addTapListener(card, deselectProfile);
             selection.appendChild(clone);
         });
     }
@@ -146,23 +108,23 @@ function updateClones() {
 
 function updateProfiles() {
     for (var mon in digi) {
-        document.getElementById(mon).classList.remove("root");
-        document.getElementById(mon).classList.remove("core-node");
-        document.getElementById(mon).classList.remove("node");
-        document.getElementById(mon).classList.remove("hidden");
-        document.getElementById(mon).classList.remove("preview");
+        var profile = document.getElementById(mon);
+        profile.classList.remove("root");
+        profile.classList.remove("core-node");
+        profile.classList.remove("node");
+        show(profile);
         if (selectedDigi.size) {
             if (gemel.roots.has(mon)) {
-                document.getElementById(mon).classList.add("root");
+                profile.classList.add("root");
             }
             else if (gemelCore.nodes.has(mon)) {
-                document.getElementById(mon).classList.add("core-node");
+                profile.classList.add("core-node");
             }
             else if (settings.tree && gemel.nodes.has(mon)) {
-                document.getElementById(mon).classList.add("node");
+                profile.classList.add("node");
             }
             else {
-                document.getElementById(mon).classList.add("hidden");
+                hide(profile);
             }
         }
     }
@@ -307,7 +269,6 @@ function init() {
     initPlanner();
     initFooter();
     initLineListeners();
-    initLocalStorage(); // called last in case localStorage is bugged
 }
 
 function initProfiles() {
@@ -322,7 +283,7 @@ function initProfiles() {
                     fragments.placeholder = "0";
                     fragments.min = "0";
                     fragments.max = "999";
-                    fragments.addEventListener("input", parseFragments);
+                    fragments.addEventListener("input", setFragments);
                 profile.appendChild(fragments);
             }
             var card = document.createElement("div");
@@ -354,15 +315,15 @@ function initProfiles() {
                     var signature = document.createElement("div");
                         var rival = document.createElement("img");
                             rival.className = "rival";
-                            rival.src = "img/tribes/" + skill[0] + ".png";
-                            rival.alt = skill[0];
+                            rival.src = "img/tribes/" + skill.rival + ".png";
+                            rival.alt = skill.rival;
                         signature.appendChild(rival);
                         var effect = document.createElement("span");
-                            effect.innerHTML = ["Support", "ST", "AoE"][skill[1]];
+                            effect.innerHTML = ["Support", "ST", "AoE"][skill.effect];
                         signature.appendChild(effect);
                         var tier = document.createElement("span");
                             tier.className = "tier";
-                            tier.innerHTML = skill[2] ? ("[" + skill[2] + "]") : "";
+                            tier.innerHTML = skill.tier ? ("[" + skill.tier + "]") : "";
                         signature.appendChild(tier);
                     signatureSet.appendChild(signature);
                 });
@@ -378,17 +339,17 @@ function initProfiles() {
         return profile;
     }
 
-    function selectCard() {
+    function selectProfile() {
         selectedDigi.add(this.parentNode.id);
         if (searchMode) {
-            cancelSearch();
+            exitSearchMode();
         }
         else {
             update();
         }
     }
 
-    function parseFragments(e) {
+    function setFragments(e) {
         var mon = this.parentNode.id;
         if (this.value == "" || this.value <= 0) {
             this.value = "";
@@ -398,41 +359,59 @@ function initProfiles() {
             if (this.value > 999) {
                 this.value = 999;
             }
-            this.value = parseInt(this.value);
             fragmentDigi[mon] = parseInt(this.value);
         }
-        console.log(fragmentDigi);
     }
 
     for (var mon in digi) { // skip sorting step, growlmon.js alphabetizes digi.js in preprocessing
         var profile = newProfile(mon);
         var card = profile.getElementsByClassName("card")[0];
-        addTapListener(card, selectCard);
+        addTapListener(card, selectProfile);
         getProfileGroup(digi[mon].evol).appendChild(profile);
-        // below is for a triple-stacked mega row, which was abandoned
-        // if (digi[mon].evol == "mega") {
-        //     var mega = document.getElementById("mega");
-        //     var profileGroups = mega.getElementsByClassName("profile-group");
-        //     if (prev(mon).some(prevmon => digi[prevmon].evol != "mega")) {
-        //         profileGroups[0].appendChild(profile);
-        //     }
-        //     else if (prev(mon).some(prevmon => prev(prevmon).some(prevprevmon => digi[prevprevmon].evol != "mega" && prevprevmon != mon))) {
-        //         profileGroups[1].appendChild(profile);
-        //     }
-        //     else {
-        //         profileGroups[2].appendChild(profile);
-        //     }
-        // }
-        // else {
-        //     getProfileGroup(digi[mon].evol).appendChild(profile);
-        // }
     }
+}
+
+function initAdvent() {
+    updateAdvent = function (repeat) { // NOTE: used in updateSearchResults
+        var now = Date.now();
+        for (var mon in advent) {
+            var profile = document.getElementById(mon);
+            if (isAdvent(mon, now)) {
+                profile.classList.add("advent");
+                if (filters.special.has("advent")) {
+                    show(profile);
+                }
+            }
+            else {
+                profile.classList.remove("advent");
+                if (filters.special.has("advent")) {
+                    hide(profile);
+                }
+            }
+        }
+        if (repeat) {
+            setTimeout(function () { // check every minute
+                requestAnimationFrame(updateAdvent);
+            }, 60000);
+        }
+    }
+
+    function isAdvent(mon, now) {
+        if (mon in advent) {
+            var start = advent[mon][0] - 43200000; // show advents half a day ahead of schedule
+            var end = advent[mon][1];
+            return start <= now && now <= end;
+        }
+        return false;
+    }
+
+    updateAdvent(true);
 }
 
 function initEvolLabels() {
     var evolLabels = document.getElementsByClassName("evol-label");
 
-    function selectSection() {
+    function selectProfileGroup() {
         var section = this.parentNode.parentNode;
         var profiles = section.getElementsByClassName("profile");
         selectedDigi.clear();
@@ -442,7 +421,7 @@ function initEvolLabels() {
             }
         });
         if (searchMode) {
-            cancelSearch();
+            exitSearchMode();
         }
         else {
             update();
@@ -450,7 +429,7 @@ function initEvolLabels() {
     }
 
     Array.from(evolLabels).forEach(function (evolLabel) {
-        addTapListener(evolLabel, selectSection);
+        addTapListener(evolLabel, selectProfileGroup);
     });
 }
 
@@ -462,20 +441,18 @@ function initFiltration() {
     var search = document.getElementById("search");
     var switches = filtration.getElementsByClassName("switch");
 
-    exitSearchMode();
-
     function enterSearchMode() {
-        selection.classList.add("hidden");
-        filtration.classList.remove("hidden");
+        hide(selection);
+        show(filtration);
         search.focus();
-        searchMode = 1;
+        searchMode = true;
         updateLines();
-        updateSearch();
+        updateSearchResults();
     }
 
-    function exitSearchMode() {
-        selection.classList.remove("hidden");
-        filtration.classList.add("hidden");
+    exitSearchMode = function() { // NOTE: used in selectProfile and selectEvolLabel
+        show(selection);
+        hide(filtration);
         search.value = "";
         Array.from(switches).forEach(function (s) {
             s.classList.remove("selected");
@@ -485,17 +462,16 @@ function initFiltration() {
         filters.rival.clear();
         filters.effect.clear();
         filters.special.clear();
-        searchMode = 0;
+        searchMode = false;
         update();
     }
 
-    function parseQuery() {
+    function setQuery() {
         var lower = this.value.toLowerCase();
         var parsed = lower.split(/[^a-z]+/);
-        // var parsed = lower.split(/[^a-z\[*\]]+/); // for tier search, excluded for confusingness
         filters.query = new Set(parsed);
         filters.query.delete("");
-        updateSearch();
+        updateSearchResults();
     }
 
     function enterBlur(e) {
@@ -516,95 +492,82 @@ function initFiltration() {
             this.classList.add("selected");
             filters[key].add(value);
         }
-        updateSearch();
+        updateSearchResults();
+    }
+
+    updateSearchResults = function() { // NOTE: used in setTree
+        updateAdvent(false);
+        for (var mon in digi) {
+            var profile = document.getElementById(mon);
+            show(profile);
+            if (!okFilters(mon)) {
+                hide(profile);
+            }
+        }
+    }
+
+    function okFilters(mon) {
+        var okQuery = !filters.query.size || Array.from(filters.query).every(function (term) {
+            return mon.includes(term);
+        });
+        var okTribe = !filters.tribe.size || filters.tribe.has(digi[mon].tribe);
+        var okSkill = digi[mon].skills.some(function (skill) {
+            var okRival = !filters.rival.size || filters.rival.has(skill.rival);
+            var effect = ["support", "st", "aoe"][skill.effect];
+            var okEffect = !filters.effect.size || filters.effect.has(effect);
+            return okRival && okEffect;
+        });
+        var okTree = !filters.special.has("tree") || [gemelCore, gemel][settings.tree].nodes.has(mon);
+        var okDNA2 = !filters.special.has("dna") || digi[mon].skills.length > 1;
+        var okV2 = !filters.special.has("v2") || digi[mon].v2;
+        var profile = document.getElementById(mon);
+        var okAdvent = !filters.special.has("advent") || profile.classList.contains("advent");
+        var okSpecial = okTree && okDNA2 && okV2 && okAdvent;
+        return okQuery && okTribe && okSkill && okSpecial;
     }
 
     addTapListener(blank, enterSearchMode);
     addTapListener(enterSearch, enterSearchMode);
     addTapListener(exitSearch, exitSearchMode);
-    search.addEventListener("input", parseQuery);
+    search.addEventListener("input", setQuery);
     search.addEventListener("keydown", enterBlur);
     Array.from(switches).forEach(function (s) {
         addTapListener(s, flipSwitch);
     });
-    cancelSearch = exitSearchMode;
+
+    exitSearchMode();
 }
 
 function initVisualization() {
     var visualization = document.getElementById("visualization");
     var slideSets = visualization.getElementsByClassName("slide-set");
-    var settingsFunction = {
-        "tree": function () {
-            update();
-            if (searchMode) {
-                updateSearch();
-            }
-        },
-        "sort": function () {
-            if (settings.sort == 2) {
-                untangleProfiles();
-            }
-            else {
-                var basis = settings.sort ? byTribe : byAlphabet;
-                var keys = Object.keys(digi);
-                keys.sort(basis);
-                sortProfiles(keys);
-            }
-        },
-        "size": function () {
-            var profiles = document.getElementsByClassName("profile");
-            var size = ["", "large", "small"][settings.size];
-            Array.from(profiles).forEach(function (profile) {
-                profile.classList.remove("large");
-                profile.classList.remove("small");
-                if (settings.size) {
-                    profile.classList.add(size);
-                }
-            });
-            updateLines();
-        },
-        "awkn": function () {
-            var portraits = document.getElementsByClassName("portrait");
-            var awkn = [0, 1, 1, 3, 4, 5][settings.awkn];
-            for (var portrait of portraits) {
-                var mon = portrait.parentNode.parentNode.id;
-                if (awkn != 5 || mon != "blank" && !mon.endsWith("-clone") && digi[mon].v2) {
-                    portrait.src = portrait.src.replace(/mon\/[01345]/, "mon/" + awkn);
-                    portrait.alt = portrait.alt.replace(/\+[01345]/, "+" + awkn);
-                }
-            }
-        },
-        "preview": function () {
-            for (var mon in digi) {
-                var profile = document.getElementById(mon);
-                var card = profile.getElementsByClassName("card")[0];
-                if (settings.preview) {
-                    card.addEventListener("mouseover", previewGemel);
-                    card.addEventListener("touchstart", previewGemel);
-                    card.addEventListener("mouseout", deviewGemel);
-                    card.addEventListener("touchend", deviewGemel);
-                }
-                else {
-                    card.removeEventListener("mouseover", previewGemel);
-                    card.removeEventListener("touchstart", previewGemel);
-                    card.removeEventListener("mouseout", deviewGemel);
-                    card.removeEventListener("touchend", deviewGemel);
-                }
-            }
-        },
-        "skill": function () {
-            var signatureSets = document.getElementsByClassName("signature-set");
-            for (var signatureSet of signatureSets) {
-                if (settings.skill) {
-                    signatureSet.style.display = "block";
-                }
-                else {
-                    signatureSet.removeAttribute("style");
-                }
-            }
-            updateLines();
-        }
+    var setters = {
+        "tree": setTree,
+        "sort": setSort,
+        "size": setSize,
+        "awkn": setAwkn,
+        "preview": setPreview,
+        "skill": setSkill
     };
+
+    function setTree(n) {
+        update();
+        if (searchMode) {
+            updateSearchResults();
+        }
+    }
+
+    function setSort(n) {
+        if (n == 2) {
+            untangleProfiles();
+        }
+        else {
+            var basis = n ? byTribe : byAlphabet;
+            var keys = Object.keys(digi);
+            keys.sort(basis);
+            sortProfiles(keys);
+        }
+    }
 
     function byAlphabet(a, b) {
         return a < b ? -1 : a > b ? 1 : 0;
@@ -614,6 +577,56 @@ function initVisualization() {
         var tribes = ["mirage", "blazing", "glacier", "electric", "earth", "bright", "abyss"];
         var tribeComparison = tribes.indexOf(digi[a].tribe) - tribes.indexOf(digi[b].tribe);
         return tribeComparison ? tribeComparison : byAlphabet(a, b);
+    }
+
+    function setSize(n) {
+        var profiles = document.getElementsByClassName("profile");
+        var size = ["", "large", "small"][n];
+        Array.from(profiles).forEach(function (profile) {
+            profile.classList.remove("large");
+            profile.classList.remove("small");
+            if (settings.size) {
+                profile.classList.add(size);
+            }
+        });
+        updateLines();
+    }
+
+    function setAwkn(n) {
+        var portraits = document.getElementsByClassName("portrait");
+        var awkn = n == 2 ? 1 : n;
+        for (var portrait of portraits) {
+            var mon = portrait.parentNode.parentNode.id;
+            if (mon == "blank") {
+                continue;
+            }
+            if (mon.endsWith("clone")) {
+                mon = mon.slice(0, -6);
+            }
+            if (awkn != 5 || digi[mon].v2) {
+                portrait.src = portrait.src.replace(/mon\/[01345]/, "mon/" + awkn);
+                portrait.alt = portrait.alt.replace(/\+[01345]/, "+" + awkn);
+            }
+        }
+    }
+
+    function setPreview(n) {
+        for (var mon in digi) {
+            var profile = document.getElementById(mon);
+            var card = profile.getElementsByClassName("card")[0];
+            if (n) {
+                card.addEventListener("mouseover", previewGemel);
+                card.addEventListener("touchstart", previewGemel);
+                card.addEventListener("mouseout", deviewGemel);
+                card.addEventListener("touchend", deviewGemel);
+            }
+            else {
+                card.removeEventListener("mouseover", previewGemel);
+                card.removeEventListener("touchstart", previewGemel);
+                card.removeEventListener("mouseout", deviewGemel);
+                card.removeEventListener("touchend", deviewGemel);
+            }
+        }
     }
 
     function previewGemel() {
@@ -643,51 +656,105 @@ function initVisualization() {
 
     function deviewGemel() {
         if (!searchMode) {
-            updateProfiles();
+            var tree = new Gemel(this.parentNode.id);
+            Array.from(tree.nodes).forEach(function (node) {
+                var profile = document.getElementById(node);
+                profile.classList.remove("preview");
+            });
             updateLines();
         }
     }
 
-    function advanceSlide() {
-        var slides = this.getElementsByClassName("slide");
-        for (var i = 0; i < slides.length; i++) {
-            var slide = slides[i];
-            if (!slide.classList.contains("hidden")) {
-                slide.classList.add("hidden");
-                break;
+    function setSkill(n) {
+        var signatureSets = document.getElementsByClassName("signature-set");
+        for (var signatureSet of signatureSets) {
+            if (n) {
+                signatureSet.style.display = "block";
+            }
+            else {
+                signatureSet.removeAttribute("style");
             }
         }
-        i = (i + 1) % slides.length;
-        slides[i].classList.remove("hidden");
-        settings[this.id] = i;
-        settingsFunction[this.id]();
+        updateLines();
     }
 
+    function setSlide(key, value) {
+        var slideSet = document.getElementById(key);
+        var slides = slideSet.getElementsByClassName("slide");
+        for (var slide of slides) {
+            hide(slide);
+            if (slide == slides[value]) {
+                show(slide);
+            }
+        }
+        settings[key] = value;
+        setters[key](value);
+    }
+
+    function advanceSlide() {
+        var key = this.id;
+        var slides = this.getElementsByClassName("slide");
+        var value = (settings[key] + 1) % slides.length;
+        setSlide(key, value);
+    }
+
+    function saveSettings() {
+        var settingsJSON = JSON.stringify(settings);
+        window.localStorage.setItem("settings", settingsJSON);
+    }
+
+    function loadSettings() {
+        var settingsJSON = window.localStorage.getItem("settings");
+        settings = JSON.parse(settingsJSON);
+    }
+
+    function deleteLegacyLocalStorage() { // TODO: delete this in the next version?
+        window.localStorage.removeItem("tree");
+        window.localStorage.removeItem("sort");
+        window.localStorage.removeItem("preview");
+        window.localStorage.removeItem("size");
+        window.localStorage.removeItem("awkn");
+        window.localStorage.removeItem("skill");
+    }
+
+    function hideUselessSettings() {
+        var uselessSettings = ["skill"];
+        uselessSettings.forEach(function (uselessSetting) {
+            var slideSet = document.getElementById(uselessSetting);
+            var slidebox = slideSet.parentNode;
+            hide(slidebox);
+        })
+    }
+
+    try {
+        deleteLegacyLocalStorage();
+        loadSettings();
+        window.addEventListener("beforeunload", saveSettings);
+    }
+    catch (e) {
+        console.log(e);
+    }
     Array.from(slideSets).forEach(function (slideSet) {
+        var key = slideSet.id;
+        var value = settings[key];
+        setSlide(key, value)
         addTapListener(slideSet, advanceSlide);
     });
-}
-
-function initLineListeners() {
-    var scrollers = document.getElementsByClassName("scroller");
-    Array.from(scrollers).forEach(function (scroller) {
-        scroller.addEventListener("scroll", updateLines);
-    });
-    window.addEventListener("resize", updateLines);
+    hideUselessSettings();
 }
 
 function initFooter() {
-    var about = document.getElementById("about");
-    var qa = document.getElementById("qa");
-    var calculate = document.getElementById("calculate");
-    var planner = document.getElementById("planner");
-    var close = document.getElementById("close");
+    var footAbout = document.getElementById("foot-about");
+    var footQA = document.getElementById("foot-qa");
+    var footCalculate = document.getElementById("foot-calculate");
+    var footPlanner = document.getElementById("foot-planner");
+    var footClose = document.getElementById("foot-close");
     var timestamp = document.getElementById("timestamp");
-    var closeFoot = document.getElementById("foot-close");
-    var aboutFoot = document.getElementById("foot-about");
-    var qaFoot = document.getElementById("foot-qa");
-    var calculateFoot = document.getElementById("foot-calculate");
-    var plannerFoot = document.getElementById("foot-planner");
+    var toeAbout = document.getElementById("toe-about");
+    var toeQA = document.getElementById("toe-qa");
+    var toeCalculate = document.getElementById("toe-calculate");
+    var toePlanner = document.getElementById("toe-planner");
+    var toeClose = document.getElementById("toe-close");
 
     function initTimestamp() {
         var months = [
@@ -847,107 +914,62 @@ function initFooter() {
         calculate.innerHTML += "<br> and maybe some other stuff (this thing only calculates plugins, and it's inaccurate for multiple megas).";
     }
 
-    about.classList.add("hidden");
-    close.classList.add("hidden");
     initTimestamp();
+    hide(footAbout);
+    hide(footQA);
+    hide(footPlanner);
+    hide(footCalculate);
+    hide(footClose);
     addTapListener(aboutFoot, function () {
-        about.classList.remove("hidden");
-        qa.classList.add("hidden");
-        calculate.classList.add("hidden");
-        planner.classList.add("hidden");
-        close.classList.remove("hidden");
+        show(footAbout);
+        hide(footQA);
+        hide(footCalculate);
+        hide(footPlanner);
+        show(footClose);
         updateLines();
     });
     addTapListener(qaFoot, function () {
-        about.classList.add("hidden");
-        qa.classList.remove("hidden");
-        calculate.classList.add("hidden");
-        planner.classList.add("hidden");
-        close.classList.remove("hidden");
+        hide(footAbout);
+        show(footQA);
+        hide(footCalculate);
+        hide(footPlanner);
+        show(footClose);
         updateLines();
     });
     addTapListener(calculateFoot, function () {
         costPlugins();
-        about.classList.add("hidden");
-        qa.classList.add("hidden");
-        calculate.classList.remove("hidden");
-        planner.classList.add("hidden");
-        close.classList.remove("hidden");
+        hide(footAbout);
+        hide(footQA);
+        show(footCalculate);
+        hide(footPlanner);
+        show(footClose);
         updateLines();
     });
     addTapListener(plannerFoot, function () {
-        costPlugins();
-        about.classList.add("hidden");
-        qa.classList.add("hidden");
-        calculate.classList.add("hidden");
-        planner.classList.remove("hidden");
-        close.classList.remove("hidden");
+        hide(footAbout);
+        hide(footQA);
+        hide(footCalculate);
+        show(footPlanner);
+        show(footClose);
         updateLines();
     });
     addTapListener(closeFoot, function () {
-        about.classList.add("hidden");
-        qa.classList.add("hidden");
-        calculate.classList.add("hidden");
-        planner.classList.add("hidden");
-        close.classList.add("hidden");
+        hide(footAbout);
+        hide(footQA);
+        hide(footCalculate);
+        hide(footPlanner);
+        hide(footClose);
         updateLines();
     });
 }
 
-function initAdvent() {
-    function updateAdvent() {
-        var now = Date.now();
-        for (var mon in advent) {
-            var profile = document.getElementById(mon);
-            if (isAdvent(mon, now)) {
-                profile.classList.add("advent");
-                if (filters.special.has("advent")) {
-                    profile.classList.remove("hidden");
-                }
-            }
-            else {
-                profile.classList.remove("advent");
-                if (filters.special.has("advent")) {
-                    profile.classList.add("hidden");
-                }
-            }
-        }
-        setTimeout(function () { // check every minute
-            requestAnimationFrame(updateAdvent);
-        }, 60000);
-    }
-    updateAdvent();
-}
-
-function initLocalStorage() {
-    function loadSettings() {
-        return {
-            "tree": window.localStorage.getItem("tree"),
-            "sort": window.localStorage.getItem("sort"),
-            "preview": window.localStorage.getItem("preview"),
-            "size": window.localStorage.getItem("size"),
-            "awkn": window.localStorage.getItem("awkn"),
-            "skill": window.localStorage.getItem("skill")
-        };
-    }
-
-    function saveSettings() {
-        window.localStorage.setItem("tree", settings.tree);
-        window.localStorage.setItem("sort", settings.sort);
-        window.localStorage.setItem("preview", settings.preview);
-        window.localStorage.setItem("size", settings.size);
-        window.localStorage.setItem("awkn", settings.awkn);
-        window.localStorage.setItem("skill", settings.skill);
-    }
-
-    var storedSettings = loadSettings();
-    for (var id in window.localStorage) {
-        var slideBox = document.getElementById(id);
-        for (var i = 0; i < storedSettings[id]; i++) {
-            slideBox.click();
-        }
-    }
-    window.addEventListener("beforeunload", saveSettings);
+function initLineListeners() {
+    var profileGroups = document.getElementsByClassName("profile-group");
+    Array.from(profileGroups).forEach(function (profileGroup) {
+        var scroller = profileGroup.parentNode;
+        scroller.addEventListener("scroll", updateLines);
+    });
+    window.addEventListener("resize", updateLines);
 }
 
 window.addEventListener("DOMContentLoaded", init);
