@@ -89,7 +89,7 @@ body {
     width: 24px;
     height: 12px;
     line-height: 12px;
-    background: #fffc;
+    background: #fff8;
     font-size: 12px;
     text-align: right;
     border: 1px solid #000;
@@ -116,6 +116,22 @@ body {
 }
 .fragments::-webkit-inner-spin-button, .fragments::-webkit-outer-spin-button {
     -webkit-appearance: none;
+}
+.fragments.vii {
+    background: #fff;
+}
+.fragments.xi {
+    background: #ff8;
+}
+.fragments.xiv {
+    background: #8ff;
+}
+.fragments.xxi {
+    background: #8f8;
+}
+.fragments.xxxv {
+    background: #0f0;
+    box-shadow: 0 0 0 1px #0f0;
 }
 
 .card {
@@ -510,11 +526,11 @@ body {
 
 
 
-#entrylist {
+#plan-group {
     width: max-content;
     background: #123;
 }
-.entry {
+.plan {
     width: 64px;
     background: #456;
     color: #abc;

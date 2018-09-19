@@ -14,7 +14,7 @@ var gemelCore = gemel.intersection();
 var fragmentDigi = {};
 
 var searchMode;
-var filters = { // only global because of advents
+var filters = { // only global because of advent
     "query": new Set(),
     "tribe": new Set(),
     "rival": new Set(),
@@ -32,7 +32,7 @@ var settings = load("settings", {
     "awkn": 0,
     "skill": 0
 });
-var updateAdvent;
+var setSlide, updateAdvent;
 
 /* Helpers */
 
@@ -62,7 +62,6 @@ function save(key, value) {
     }
     catch (e) {
         console.log(e);
-        console.log(key, value);
     }
 }
 
@@ -76,7 +75,6 @@ function load(key, defaultValue) {
     }
     catch (e) {
         console.log(e);
-        console.log(key, defaultValue);
     }
     return defaultValue;
 }
@@ -376,12 +374,32 @@ function initProfiles() {
     }
 
     function setFragments(e) {
+        this.classList.remove("vii");
+        this.classList.remove("xi");
+        this.classList.remove("xiv");
+        this.classList.remove("xxi");
+        this.classList.remove("xxxv");
         var mon = this.parentNode.id;
         if (this.value == "" || this.value <= 0) {
             this.value = "";
             delete fragmentDigi[mon];
         }
         else {
+            if (this.value >= 35) {
+                this.classList.add("xxxv");
+            }
+            else if (this.value >= 21) {
+                this.classList.add("xxi");
+            }
+            else if (this.value >= 14) {
+                this.classList.add("xiv");
+            }
+            else if (this.value >= 11) {
+                this.classList.add("xi");
+            }
+            else if (this.value >= 7) {
+                this.classList.add("vii");
+            }
             if (this.value > 999) {
                 this.value = 999;
             }
@@ -704,7 +722,7 @@ function initVisualization() {
         updateLines();
     }
 
-    function setSlide(key, value) {
+    setSlide = function (key, value) {
         var slideSet = document.getElementById(key);
         var slides = slideSet.getElementsByClassName("slide");
         for (var slide of slides) {
@@ -763,13 +781,13 @@ function initVisualization() {
 }
 
 function initPlanner() {
-    var entrylist = document.getElementById("entrylist");
-    var entryadd = document.getElementById("entryadd");
+    var planGroup = document.getElementById("plan-group");
+    var addPlan = document.getElementById("add-plan");
     var planner = load("planner", []);
 
-    function addEntry(i) {
+    function newPlan(i) {
         var entry = document.createElement("div");
-            entry.className = "entry";
+            entry.className = "plan";
             entry.dataset.i = i;
             var x = document.createElement("div");
                 x.className = "x";
@@ -798,6 +816,11 @@ function initPlanner() {
                 }
                 addTapListener(viewer, viewEntry);
             entry.appendChild(viewer);
+            var deduct = document.createElement("div");
+                deduct.className = "deduct";
+                deduct.innerHTML = "Deducted";
+                addTapListener(deduct, toggleDeduction);
+            entry.appendChild(deduct);
             var note = document.createElement("textarea");
                 note.className = "note";
                 note.placeholder = "Notes";
@@ -808,7 +831,7 @@ function initPlanner() {
                 handle.className = "handle";
                 handle.addEventListener("mousedown", startDrag);
             entry.appendChild(handle);
-        entrylist.appendChild(entry);
+        planGroup.appendChild(entry);
     }
 
     function deleteEntry() {
@@ -825,13 +848,14 @@ function initPlanner() {
 
     function viewEntry() {
         var i = this.parentNode.dataset.i;
-        selectedDigi = new Set(planner[i].digi);
-        var awknSlide = document.getElementById("awkn");
-        var x = (planner[i].awkn - settings.awkn + 6) % 6;
-        for (var j = 0; j < x; j++) {
-            awknSlide.click(); // TODO: change this hacky bullshit
-        }
+        var plan = planner[i];
+        selectedDigi = new Set(plan.digi);
+        setSlide("awkn", plan.awkn);
         update();
+    }
+
+    function toggleDeduction() {
+
     }
 
     function editNote() {
@@ -844,19 +868,17 @@ function initPlanner() {
         planner.push({
             "digi": Array.from(selectedDigi).sort(byEvol),
             "awkn": settings.awkn,
+            "deduct": true,
             "note": ""
         });
-        addEntry(planner.length - 1);
+        newPlan(planner.length - 1);
         updateLines();
     }
 
-    function byEvol(a, b) {
+    function byEvol(a, b) { // TODO: fix mega order and sort secondarily by alphabet
         var evols = ["in-training-i", "in-training-ii", "rookie", "champion", "ultimate", "mega"];
         var rank = evols.indexOf(digi[a].evol) - evols.indexOf(digi[b].evol);
-        // if (rank) {
-            return rank;
-        // }
-        // return byAlphabet(a, b);
+        return rank;
     }
 
     var a;
@@ -911,9 +933,9 @@ function initPlanner() {
     }
 
     for (var i = 0; i < planner.length; i++) {
-        addEntry(i);
+        newPlan(i);
     }
-    addTapListener(entryadd, addSelection);
+    addTapListener(addPlan, addSelection);
     window.addEventListener("beforeunload", savePlanner);
 }
 
@@ -1005,7 +1027,7 @@ function initFooter() {
                         }
                     }
                     else {
-                        calculate.innerHTML = "Please narrow your selection to eliminate conflicting megas.";
+                        footCalculate.innerHTML = "Please narrow your selection to eliminate conflicting megas.";
                         return true;
                     }
                 }
@@ -1023,7 +1045,7 @@ function initFooter() {
         }
         console.log(selectedMegas);
         if (selectedEvols.length == 0 && selectedMegas.length < 2) {
-            calculate.innerHTML = "Please selected at least two Digimon.";
+            footCalculate.innerHTML = "Please selected at least two Digimon.";
             return true;
         }
 
@@ -1042,7 +1064,7 @@ function initFooter() {
                     selectedTribe[evol] = tribe;
                 }
                 else if (selectedTribe[evol] != tribe) {
-                    calculate.innerHTML = "Please narrow your selection to eliminate conflicting tribes.";
+                    footCalculate.innerHTML = "Please narrow your selection to eliminate conflicting tribes.";
                     return true;
                 }
             }
@@ -1071,7 +1093,7 @@ function initFooter() {
             }
         }
 
-        calculate.innerHTML = "This route (" + (digi[youngestMon].name) + " → " + (digi[oldestMega == "" ? oldestMon : oldestMega].name) + ") at awakening +" + settings.awkn + " costs<br>";
+        footCalculate.innerHTML = "This route (" + (digi[youngestMon].name) + " → " + (digi[oldestMega == "" ? oldestMon : oldestMega].name) + ") at awakening +" + settings.awkn + " costs<br>";
         for (var evol in selectedPlugins) {
             for (var i = 0; i < 4; i++) {
                 if (selectedPlugins[evol][i]) {
@@ -1079,13 +1101,13 @@ function initFooter() {
                     img.className = "plugin";
                     img.src = "img/plugins/" + (i + 1) + "/" + evol + ".png";
                     img.alt = evol + (i + 1) + ".0";
-                    calculate.innerHTML += selectedPlugins[evol][i] + " ";
-                    calculate.appendChild(img);
-                    calculate.innerHTML += ", ";
+                    footCalculate.innerHTML += selectedPlugins[evol][i] + " ";
+                    footCalculate.appendChild(img);
+                    footCalculate.innerHTML += ", ";
                 }
             }
         }
-        calculate.innerHTML += "<br> and maybe some other stuff (this thing only calculates plugins, and it's inaccurate for multiple megas).";
+        footCalculate.innerHTML += "<br> and maybe some other stuff (this thing only calculates plugins, and it's inaccurate for multiple megas).";
     }
 
     initTimestamp();
