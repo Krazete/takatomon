@@ -7,7 +7,7 @@ body {
     margin: 0;
     overflow-x: hidden;
 }
-body.drag {
+body.drag { /* for planner */
     user-select: none;
     pointer-events: none;
 }
@@ -15,11 +15,11 @@ body.drag {
 .section {
     box-shadow: inset 0 0 8px #000;
 }
-#planner {
-    background: #123;
-}
 #selection {
     background: #fff;
+}
+#planner {
+    background: #123;
 }
 #filtration, #visualization {
     background: #222;
@@ -46,6 +46,22 @@ body.drag {
         linear-gradient(to top right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
 }
 
+.scroller {
+    padding: 4px 0;
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch; /* for iOS */
+}
+
+/* Profile Groups */
+
+.profile-group {
+    width: -webkit-max-content;
+    width: -moz-max-content;
+    width: max-content;
+    padding: 0 4px;
+    margin: auto;
+}
+
 .evol-label {
     position: -webkit-sticky; /* for iOS */
     position: sticky;
@@ -58,20 +74,6 @@ body.drag {
     padding: 0 4px;
     border-radius: 4px;
     cursor: pointer;
-}
-
-.scroller {
-    padding: 4px 0;
-    overflow-x: scroll;
-    -webkit-overflow-scrolling: touch; /* for iOS */
-}
-
-.profile-group { /* TODO: see if this can be generalized */
-    width: -webkit-max-content;
-    width: -moz-max-content;
-    width: max-content;
-    padding: 0 4px;
-    margin: auto;
 }
 
 .profile {
@@ -313,47 +315,96 @@ body.drag {
     display: block;
 }
 
-#linelayer {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
+/* Planner */
+
+#plan-group {
+    width: max-content;
+    background: #123;
 }
 
-#footer {
-    color: #888;
+.plan {
+    position: relative;
+    width: 64px;
+    background: #456;
+    color: #abc;
     text-align: center;
-    padding: 8px;
+    vertical-align: top;
+    margin: 1px;
+    display: inline-block;
 }
-#footer > div {
-    padding: 12px 0;
+.plan.drag {
+    box-shadow: 0 0 10px 1px #000;
+    z-index: 1;
 }
-#footer a, .toe {
-    color: #aaa;
-    text-decoration: underline;
+
+.x {
+    height: 24px;
+    background: #620;
+    color: #d88;
     cursor: pointer;
 }
-@media (hover: hover) {
-    #footer a:hover, .foot:hover {
-        color: #eee;
-    }
+.x:after {
+    content: '×';
+    line-height: 24px;
 }
 
-.icon {
-    width: 24px;
+.awkn {
     height: 24px;
-    vertical-align: bottom;
-    border-radius: 50%;
+    line-height: 24px;
 }
 
-.plugin {
+.viewer {
+    position: relative;
+    min-height: 96px;
+    cursor: pointer;
+}
+.viewer:hover:after {
+    content: 'VIEW';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 32px;
+    line-height: 32px;
+    background: linear-gradient(#0000, #0008);
+    text-shadow: 0 0 8px #000;
+    color: #fff;
+    padding-top: 64px;
+}
+
+.viewer img {
     width: 32px;
     height: 32px;
-    vertical-align: middle;
-    border-radius: 15%;
+    background: url(img/mon/none.png);
+    background-size: 32px;
+    vertical-align: top;
+    border-radius: 10%;
 }
+
+.note {
+    width: 60px;
+    min-height: 28px;
+    max-height: 124px;
+    background: #def;
+    color: #123;
+    padding: 2px;
+    border: 0;
+    resize: vertical;
+    display: block;
+}
+
+.handle {
+    height: 24px;
+    background: #345;
+    cursor: move;
+    cursor: -webkit-grab;
+}
+.handle:after {
+    content: '≡';
+    line-height: 24px;
+}
+
+/* Filtration */
 
 #search {
     width: 100%;
@@ -477,6 +528,8 @@ body.drag {
     }
 }
 
+/* Visualization */
+
 .slidebox-set {
     color: #aaa;
     display: flex;
@@ -522,92 +575,25 @@ body.drag {
     overflow: hidden;
 }
 
-.hidden {
-    display: none;
-}
+/* Footer */
 
-
-
-
-
-#plan-group {
-    width: max-content;
-    background: #123;
-}
-.plan {
-    position: relative;
-    width: 64px;
-    background: #456;
-    color: #abc;
+#footer {
+    color: #888;
     text-align: center;
-    vertical-align: top;
-    margin: 1px;
-    display: inline-block;
+    padding: 8px;
 }
-.plan.drag {
-    box-shadow: 0 0 10px 1px #000;
-    z-index: 1;
+#footer > div {
+    padding: 12px 0;
 }
-.x {
-    height: 24px;
-    background: #620;
-    color: #d88;
+#footer a, .toe {
+    color: #aaa;
+    text-decoration: underline;
     cursor: pointer;
 }
-.x:after {
-    content: '×';
-    line-height: 24px;
-}
-.awkn {
-    height: 24px;
-    line-height: 24px;
-}
-.viewer {
-    position: relative;
-    min-height: 96px;
-    cursor: pointer;
-}
-.viewer:hover:after {
-    content: 'VIEW';
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 32px;
-    line-height: 32px;
-    background: linear-gradient(#0000, #0008);
-    text-shadow: 0 0 8px #000;
-    color: #fff;
-    padding-top: 64px;
-}
-.viewer img {
-    width: 32px;
-    height: 32px;
-    background: url(img/mon/none.png);
-    background-size: 32px;
-    vertical-align: top;
-    border-radius: 10%;
-}
-.note {
-    width: 60px;
-    min-height: 28px;
-    max-height: 124px;
-    background: #def;
-    color: #123;
-    padding: 2px;
-    border: 0;
-    resize: vertical;
-    display: block;
-}
-.handle {
-    height: 24px;
-    background: #345;
-    cursor: move;
-    cursor: -webkit-grab;
-}
-.handle:after {
-    content: '≡';
-    line-height: 24px;
+@media (hover: hover) {
+    #footer a:hover, .foot:hover {
+        color: #eee;
+    }
 }
 
 #paypal {
@@ -635,11 +621,33 @@ body.drag {
     border: 1px solid #fff;
     border-radius: 32px;
     margin: -32px;
-    transition: all 0.1s;
+    transition: none;
 }
 #paypal:hover:after {
     content: ' ☺︎';
     color: #fff;
     margin: 0;
-    transition: all 0.1s;
+    transition: none;
+}
+
+.plugin {
+    width: 32px;
+    height: 32px;
+    vertical-align: middle;
+    border-radius: 15%;
+}
+
+/* Linelayer */
+
+#linelayer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.hidden {
+    display: none;
 }

@@ -11,6 +11,8 @@ var linecontext;
 var selectedDigi = new Set();
 var gemel = new Gemel();
 var gemelCore = gemel.intersection();
+
+var planner = load("planner", []);
 var fragCount = load("fragCount", {});
 
 var searchMode;
@@ -24,14 +26,14 @@ var filters = { // only global because of advent
 var exitSearchMode;
 var updateSearchResults;
 
-var settings = load("settings", {
+var settings = {
     "tree": 0,
-    "sort": 0,
-    "preview": 0,
-    "size": 0,
+    "sort": load("sort", 0),
+    "preview": load("preview", 0),
+    "size": load("size", 0),
     "awkn": 0,
     "skill": 0
-});
+};
 var setSlide, updateAdvent;
 
 /* Helpers */
@@ -770,15 +772,14 @@ function initVisualization() {
     }
 
     function saveSettings() {
-        save("settings", settings);
+        save("sort", settings.sort);
+        save("preview", settings.preview);
+        save("size", settings.size);
     }
 
     function deleteLegacyLocalStorage() { // TODO: delete this in the next version?
         try {
             window.localStorage.removeItem("tree");
-            window.localStorage.removeItem("sort");
-            window.localStorage.removeItem("preview");
-            window.localStorage.removeItem("size");
             window.localStorage.removeItem("awkn");
             window.localStorage.removeItem("skill");
         }
@@ -801,7 +802,6 @@ function initVisualization() {
 function initPlanner() {
     var planGroup = document.getElementById("plan-group");
     var addPlan = document.getElementById("add-plan");
-    var planner = load("planner", []);
     var planA, x0, nA, nB;
 
     function newPlan(n) {
@@ -826,10 +826,10 @@ function initPlanner() {
                 for (var mon of planner[n].digi) {
                     var photo = document.createElement("img");
                         if (planner[n].awkn != 5 || digi[mon].v2) {
-                            photo.src = "img/mon/" + [0, 1, 1, 3, 4, 5][planner[i].awkn] + "/" + mon + ".png";
+                            photo.src = "img/mon/" + [0, 1, 1, 3, 4, 5][planner[n].awkn] + "/" + mon + ".png";
                         }
                         else {
-                            photo.src = "img/mon/" + [0, 1, 1, 3, 4, 4][planner[i].awkn] + "/" + mon + ".png";
+                            photo.src = "img/mon/" + [0, 1, 1, 3, 4, 4][planner[n].awkn] + "/" + mon + ".png";
                         }
                     viewer.appendChild(photo);
                 }
@@ -902,6 +902,7 @@ function initPlanner() {
         planA.style.transform = "translateX(" + (x1 - x0) + "px)";
 
         var plans = document.getElementsByClassName("plan");
+        nB = nA;
         for (var planB of plans) {
             if (planA != planB) {
                 var xA = getMidX(planA);
@@ -924,7 +925,6 @@ function initPlanner() {
                 }
             }
         }
-        console.log(nB);
     }
 
     function stopDrag() {
@@ -1233,7 +1233,6 @@ function initFooter() {
 
     var canvas = document.createElement("canvas");
     var context = canvas.getContext("2d");
-    document.body.appendChild(canvas);
 
     function exportPlanner() {
         var chars = localStorage.planner;
