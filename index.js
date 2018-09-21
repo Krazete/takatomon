@@ -11,7 +11,7 @@ var linecontext;
 var selectedDigi = new Set();
 var gemel = new Gemel();
 var gemelCore = gemel.intersection();
-var fragmentDigi = {};
+var fragCount = load("fragCount", {});
 
 var searchMode;
 var filters = { // only global because of advent
@@ -301,14 +301,13 @@ function initProfiles() {
             profile.className = "profile";
             profile.id = mon;
             if (digi[mon].fragments) {
-                var fragments = document.createElement("input");
-                    fragments.className = "fragments";
-                    fragments.type = "number";
-                    fragments.placeholder = "0";
-                    fragments.min = "0";
-                    fragments.max = "999";
-                    fragments.addEventListener("input", setFragments);
-                profile.appendChild(fragments);
+                var fragCounter = document.createElement("input");
+                    fragCounter.className = "frag-counter";
+                    fragCounter.type = "number";
+                    fragCounter.placeholder = "0";
+                    fragCounter.min = "0";
+                    fragCounter.max = "999";
+                profile.appendChild(fragCounter);
             }
             var card = document.createElement("div");
                 card.className = "card";
@@ -373,46 +372,64 @@ function initProfiles() {
         }
     }
 
-    function setFragments(e) {
-        this.classList.remove("vii");
-        this.classList.remove("xi");
-        this.classList.remove("xiv");
-        this.classList.remove("xxi");
-        this.classList.remove("xxxv");
+    function setFragments() {
         var mon = this.parentNode.id;
         if (this.value == "" || this.value <= 0) {
             this.value = "";
-            delete fragmentDigi[mon];
+            delete fragCount[mon];
         }
         else {
-            if (this.value >= 35) {
-                this.classList.add("xxxv");
-            }
-            else if (this.value >= 21) {
-                this.classList.add("xxi");
-            }
-            else if (this.value >= 14) {
-                this.classList.add("xiv");
-            }
-            else if (this.value >= 11) {
-                this.classList.add("xi");
-            }
-            else if (this.value >= 7) {
-                this.classList.add("vii");
-            }
             if (this.value > 999) {
                 this.value = 999;
             }
-            fragmentDigi[mon] = parseInt(this.value);
+            fragCount[mon] = parseInt(this.value);
         }
+        styleFragments(this);
+    }
+
+    function styleFragments(element) {
+        element.classList.remove("vii");
+        element.classList.remove("xi");
+        element.classList.remove("xiv");
+        element.classList.remove("xxi");
+        element.classList.remove("xxxv");
+        if (element.value >= 35) {
+            element.classList.add("xxxv");
+        }
+        else if (element.value >= 21) {
+            element.classList.add("xxi");
+        }
+        else if (element.value >= 14) {
+            element.classList.add("xiv");
+        }
+        else if (element.value >= 11) {
+            element.classList.add("xi");
+        }
+        else if (element.value >= 7) {
+            element.classList.add("vii");
+        }
+    }
+
+    function saveFragCount() {
+        save("fragCount", fragCount);
     }
 
     for (var mon in digi) { // skip sorting step, growlmon.js alphabetizes digi.js in preprocessing
         var profile = newProfile(mon);
+        var fragCounters = profile.getElementsByClassName("frag-counter");
         var card = profile.getElementsByClassName("card")[0];
+        if (fragCounters.length) {
+            var fragCounter = fragCounters[0];
+            if (fragCount[mon]) {
+                fragCounter.value = fragCount[mon];
+                styleFragments(fragCounter);
+            }
+            fragCounter.addEventListener("input", setFragments);
+        }
         addTapListener(card, selectProfile);
         getProfileGroup(digi[mon].evol).appendChild(profile);
     }
+    window.addEventListener("beforeunload", saveFragCount);
 }
 
 function initAdvent() {

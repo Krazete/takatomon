@@ -75,7 +75,7 @@ body.drag {
 }
 
 .profile {
-    position: relative; /* to make .fragments position work */
+    position: relative; /* to make .frag-counter position work */
     font-size: 10px;
     vertical-align: top;
     margin: 2px 1px;
@@ -88,7 +88,7 @@ body.drag {
     font-size: 12px;
 }
 
-.fragments {
+.frag-counter {
     position: absolute;
     width: 24px;
     height: 12px;
@@ -101,39 +101,39 @@ body.drag {
     margin: 52px 0 0 40px;
     z-index: 1;
 }
-.small .fragments {
+.small .frag-counter {
     width: 22px;
     height: 10px;
     line-height: 10px;
     font-size: 10px;
     margin: 38px 0 0 26px;
 }
-.large .fragments {
+.large .frag-counter {
     width: 26px;
     height: 14px;
     line-height: 14px;
     font-size: 14px;
     margin: 66px 0 0 54px;
 }
-#selection .fragments {
+#selection .frag-counter {
     display: none;
 }
-.fragments::-webkit-inner-spin-button, .fragments::-webkit-outer-spin-button {
+.frag-counter::-webkit-inner-spin-button, .frag-counter::-webkit-outer-spin-button {
     -webkit-appearance: none;
 }
-.fragments.vii {
+.frag-counter.vii {
     background: #fff;
 }
-.fragments.xi {
+.frag-counter.xi {
     background: #ff8;
 }
-.fragments.xiv {
+.frag-counter.xiv {
     background: #8ff;
 }
-.fragments.xxi {
+.frag-counter.xxi {
     background: #8f8;
 }
-.fragments.xxxv {
+.frag-counter.xxxv {
     background: #0f0;
     box-shadow: 0 0 0 1px #0f0;
 }
