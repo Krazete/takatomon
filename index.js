@@ -624,9 +624,10 @@ function initVisualization() {
     }
 
     function setSize(n) {
-        var profiles = document.getElementsByClassName("profile");
+        var profiles = Array.from(document.getElementsByClassName("profile"));
+        profiles.push(blank);
         var size = ["", "large", "small"][n];
-        Array.from(profiles).forEach(function (profile) {
+        profiles.forEach(function (profile) {
             profile.classList.remove("large");
             profile.classList.remove("small");
             if (settings.size) {
@@ -784,29 +785,30 @@ function initPlanner() {
     var planGroup = document.getElementById("plan-group");
     var addPlan = document.getElementById("add-plan");
     var planner = load("planner", []);
+    var planA, x0, nA, nB;
 
-    function newPlan(i) {
+    function newPlan(n) {
         var entry = document.createElement("div");
             entry.className = "plan";
-            entry.dataset.i = i;
+            entry.dataset.n = n;
             var x = document.createElement("div");
                 x.className = "x";
                 addTapListener(x, deleteEntry);
             entry.appendChild(x);
             var awkn = document.createElement("div");
                 awkn.className = "awkn";
-                if (planner[i].awkn == 5) {
+                if (planner[n].awkn == 5) {
                     awkn.innerHTML = "+4/V2";
                 }
                 else {
-                    awkn.innerHTML = "+" + planner[i].awkn;
+                    awkn.innerHTML = "+" + planner[n].awkn;
                 }
             entry.appendChild(awkn);
             var viewer = document.createElement("div");
                 viewer.className = "viewer";
-                for (var mon of planner[i].digi) {
+                for (var mon of planner[n].digi) {
                     var photo = document.createElement("img");
-                        if (planner[i].awkn != 5 || digi[mon].v2) {
+                        if (planner[n].awkn != 5 || digi[mon].v2) {
                             photo.src = "img/mon/" + [0, 1, 1, 3, 4, 5][planner[i].awkn] + "/" + mon + ".png";
                         }
                         else {
@@ -824,22 +826,23 @@ function initPlanner() {
             var note = document.createElement("textarea");
                 note.className = "note";
                 note.placeholder = "Notes";
-                note.value = planner[i].note;
+                note.value = planner[n].note;
                 note.addEventListener("input", editNote);
             entry.appendChild(note);
             var handle = document.createElement("div");
                 handle.className = "handle";
                 handle.addEventListener("mousedown", startDrag);
+                handle.addEventListener("touchstart", startDrag);
             entry.appendChild(handle);
         planGroup.appendChild(entry);
     }
 
     function deleteEntry() {
-        var i = parseInt(this.parentNode.dataset.i);
-        planner = planner.slice(0, i).concat(planner.slice(i + 1));
-        for (var entry of document.getElementsByClassName("entry")) {
-            if (entry.dataset.i > i) {
-                entry.dataset.i -= 1;
+        var n = parseInt(this.parentNode.dataset.n);
+        planner = planner.slice(0, n).concat(planner.slice(n + 1));
+        for (var plan of document.getElementsByClassName("plan")) {
+            if (plan.dataset.n > n) {
+                plan.dataset.n -= 1;
             }
         }
         this.parentNode.remove();
@@ -847,8 +850,8 @@ function initPlanner() {
     }
 
     function viewEntry() {
-        var i = this.parentNode.dataset.i;
-        var plan = planner[i];
+        var n = this.parentNode.dataset.n;
+        var plan = planner[n];
         selectedDigi = new Set(plan.digi);
         setSlide("awkn", plan.awkn);
         update();
@@ -860,8 +863,108 @@ function initPlanner() {
 
     function editNote() {
         var message = this.value;
-        var i = this.parentNode.dataset.i;
-        planner[i].note = message;
+        var n = this.parentNode.dataset.n;
+        planner[n].note = message;
+    }
+
+    function startDrag(e) {
+        x0 = getX(e);
+        planA = this.parentNode;
+        nA = parseInt(planA.dataset.n);
+        nB = nA;
+        planA.classList.add("drag");
+        document.body.classList.add("drag");
+        window.addEventListener("mousemove", drag);
+        window.addEventListener("touchmove", drag);
+        window.addEventListener("mouseup", stopDrag);
+        window.addEventListener("touchend", stopDrag);
+    }
+
+    function drag(e) {
+        var x1 = getX(e);
+        planA.style.transform = "translateX(" + (x1 - x0) + "px)";
+
+        var plans = document.getElementsByClassName("plan");
+        for (var planB of plans) {
+            if (planA != planB) {
+                var xA = getMidX(planA);
+                var xB = getMidX(planB);
+                var mB = parseInt(planB.dataset.n);
+                planB.removeAttribute("style");
+                if (nA < mB) {
+                    if (xA > xB) {
+                        if (nB < mB) {
+                            nB = mB;
+                        }
+                        planB.style.transform = "translateX(-66px)";
+                    }
+                }
+                else if (xA < xB) {
+                    if (nB > mB) {
+                        nB = mB;
+                    }
+                    planB.style.transform = "translateX(66px)";
+                }
+            }
+        }
+        console.log(nB);
+    }
+
+    function stopDrag() {
+        var planGroup = document.getElementById("plan-group");
+        var plans = planGroup.getElementsByClassName("plan");
+        var newPlanner = [];
+        var d = 0;
+        for (var i = 0; i < planner.length; i++) {
+            if (i == nB) {
+                newPlanner.push(planner[nA]);
+                d--;
+            }
+            else {
+                if (i + d == nA) {
+                    d++;
+                }
+                newPlanner.push(planner[i + d]);
+            }
+            if (nA < nB) {
+                planGroup.appendChild(plans[d]);
+            }
+            else {
+                if (i == nB) {
+                    planGroup.appendChild(plans[nA - i]);
+                }
+                else {
+                    planGroup.appendChild(plans[0]);
+                }
+            }
+            plans[plans.length - 1].dataset.n = i;
+        }
+        planner = newPlanner;
+
+        for (var plan of plans) {
+            plan.removeAttribute("style");
+        }
+        planA.classList.remove("drag");
+        document.body.classList.remove("drag");
+        window.removeEventListener("mousemove", drag);
+        window.removeEventListener("touchmove", drag);
+        window.removeEventListener("mouseup", stopDrag);
+        window.removeEventListener("touchend", stopDrag);
+    }
+
+    function getX(e) {
+        if (e.touches) {
+            if (e.touches.length > 0) {
+                return e.touches[0].clientX;
+            }
+        }
+        return e.clientX;
+    }
+
+    function getMidX(element) {
+        var rect = element.getBoundingClientRect();
+        var x = window.scrollX + (rect.left + rect.right) / 2;
+        return x;
     }
 
     function addSelection() {
@@ -879,53 +982,6 @@ function initPlanner() {
         var evols = ["in-training-i", "in-training-ii", "rookie", "champion", "ultimate", "mega"];
         var rank = evols.indexOf(digi[a].evol) - evols.indexOf(digi[b].evol);
         return rank;
-    }
-
-    var a;
-    var b;
-    function startDrag() {
-        window.addEventListener("mousemove", drag);
-        window.addEventListener("mouseup", stopDrag);
-        var rect = this.getBoundingClientRect();
-        a = {
-            "x": window.scrollX + (rect.left + rect.right) / 2,
-            "y": window.scrollY + (rect.top + rect.bottom) / 2
-        };
-    }
-
-    function drag(e) {
-        console.log(a, b);
-        if (b) {
-            linecontext.clearRect(
-                Math.min(a.x, b.x) - 5,
-                Math.min(a.y, b.y) - 5,
-                Math.abs(b.x - a.x) + 10,
-                Math.abs(b.y - a.y) + 10
-            );
-        }
-        b = {
-            "x": window.scrollX + e.x,
-            "y": window.scrollY + e.y
-        };
-        linecontext.beginPath();
-        linecontext.moveTo(a.x, a.y);
-        linecontext.lineTo(b.x, b.y);
-        linecontext.strokeStyle = "#fff";
-        linecontext.lineWidth = 5;
-        linecontext.stroke();
-        linecontext.closePath();
-    }
-
-    function stopDrag(e) {
-        linecontext.clearRect(
-            Math.min(a.x, b.x) - 5,
-            Math.min(a.y, b.y) - 5,
-            Math.abs(b.x - a.x) + 10,
-            Math.abs(b.y - a.y) + 10
-        );
-        window.removeEventListener("mousemove", drag);
-        window.removeEventListener("mouseup", stopDrag);
-        console.log(e.target.closest(".entry"));
     }
 
     function savePlanner() {
