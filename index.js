@@ -694,6 +694,9 @@ function initVisualization() {
     }
 
     function previewGemel() {
+        if (selectedDigi.size == 0) { // initialize linelayer
+            updateLines();
+        }
         if (!searchMode) {
             var tree = new Gemel(this.parentNode.id);
             Array.from(tree.nodes).forEach(function (node) {
@@ -804,6 +807,24 @@ function initPlanner() {
     var addPlan = document.getElementById("add-plan");
     var planA, x0, nA, nB;
 
+    function addSelection() {
+        planner.push({
+            "digi": Array.from(selectedDigi).sort(byEvol),
+            "awkn": settings.awkn,
+            "deduct": true,
+            "note": ""
+        });
+        newPlan(planner.length - 1);
+        updateLines();
+        noplan();
+    }
+
+    function byEvol(a, b) { // TODO: fix mega order and sort secondarily by alphabet
+        var evols = ["in-training-i", "in-training-ii", "rookie", "champion", "ultimate", "mega"];
+        var rank = evols.indexOf(digi[a].evol) - evols.indexOf(digi[b].evol);
+        return rank;
+    }
+
     function newPlan(n) {
         var entry = document.createElement("div");
             entry.className = "plan";
@@ -864,6 +885,7 @@ function initPlanner() {
         }
         this.parentNode.remove();
         updateLines();
+        noplan();
     }
 
     function viewEntry() {
@@ -874,8 +896,7 @@ function initPlanner() {
         update();
     }
 
-    function toggleDeduction() {
-
+    function toggleDeduction() { // TODO: this
     }
 
     function editNote() {
@@ -984,21 +1005,13 @@ function initPlanner() {
         return x;
     }
 
-    function addSelection() {
-        planner.push({
-            "digi": Array.from(selectedDigi).sort(byEvol),
-            "awkn": settings.awkn,
-            "deduct": true,
-            "note": ""
-        });
-        newPlan(planner.length - 1);
-        updateLines();
-    }
-
-    function byEvol(a, b) { // TODO: fix mega order and sort secondarily by alphabet
-        var evols = ["in-training-i", "in-training-ii", "rookie", "champion", "ultimate", "mega"];
-        var rank = evols.indexOf(digi[a].evol) - evols.indexOf(digi[b].evol);
-        return rank;
+    function noplan() {
+        if (planner.length) {
+            addPlan.classList.remove("noplan");
+        }
+        else {
+            addPlan.classList.add("noplan");
+        }
     }
 
     function savePlanner() {
@@ -1008,6 +1021,7 @@ function initPlanner() {
     for (var i = 0; i < planner.length; i++) {
         newPlan(i);
     }
+    noplan();
     addTapListener(addPlan, addSelection);
     window.addEventListener("beforeunload", savePlanner);
 }

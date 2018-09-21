@@ -52,6 +52,21 @@ body.drag { /* for planner */
     -webkit-overflow-scrolling: touch; /* for iOS */
 }
 
+.bar-button {
+    background: linear-gradient(to right, rgba(160, 160, 160, 0.125), #aaa, rgba(160, 160, 160, 0.125));
+    background: linear-gradient(to right, #aaa2, #aaa, #aaa2);
+    color: #222;
+    text-align: center;
+    padding: 4px;
+    cursor: pointer;
+}
+@media (hover: hover) {
+    .bar-button:hover {
+        background: #888;
+        color: #000;
+    }
+}
+
 /* Profile Groups */
 
 .profile-group {
@@ -317,9 +332,12 @@ body.drag { /* for planner */
 
 /* Planner */
 
+.nopad {
+    padding: 0;
+}
+
 #plan-group {
     width: max-content;
-    background: #123;
 }
 
 .plan {
@@ -404,6 +422,11 @@ body.drag { /* for planner */
     line-height: 24px;
 }
 
+.noplan {
+    background: #222;
+    color: #888;
+}
+
 /* Filtration */
 
 #search {
@@ -448,21 +471,6 @@ body.drag { /* for planner */
     border: 1px solid #aaa;
     border-radius: 8px;
     margin: auto;
-}
-
-.bar-button {
-    background: linear-gradient(to right, rgba(160, 160, 160, 0.125), #aaa, rgba(160, 160, 160, 0.125));
-    background: linear-gradient(to right, #aaa2, #aaa, #aaa2);
-    color: #222;
-    text-align: center;
-    padding: 4px;
-    cursor: pointer;
-}
-@media (hover: hover) {
-    .bar-button:hover {
-        background: #888;
-        color: #000;
-    }
 }
 
 .switch {
