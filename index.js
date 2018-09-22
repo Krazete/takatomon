@@ -297,6 +297,7 @@ function init() {
     initPlanner();
     initFooter();
     initLineListeners();
+    initParameter();
 }
 
 function initProfiles() {
@@ -1437,6 +1438,20 @@ function initLineListeners() {
         scroller.addEventListener("scroll", updateLines);
     });
     window.addEventListener("resize", updateLines);
+}
+
+function initParameter() { // fake ?key=value format
+    var paramSplit = window.decodeURIComponent(location.search).split("sd=");
+    if (paramSplit.length > 1) {
+        var paramString = paramSplit[1];
+        var mons = paramString.split(",");
+        for (var mon of mons) {
+            if (mon in digi) {
+                selectedDigi.add(mon);
+            }
+        }
+        update();
+    }
 }
 
 window.addEventListener("DOMContentLoaded", init);
