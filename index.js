@@ -31,8 +31,9 @@ var settings = {
     "tree": 0,
     "sort": load("sort", 0),
     "preview": load("preview", 0),
-    "size": load("size", 0),
+    "frag": load("frag", 0),
     "awkn": 0,
+    "size": load("size", 0),
     "skill": 0
 };
 var setSlide, updateAdvent;
@@ -608,9 +609,10 @@ function initVisualization() {
     var setters = {
         "tree": setTree,
         "sort": setSort,
-        "size": setSize,
-        "awkn": setAwkn,
         "preview": setPreview,
+        "frag": setFrag,
+        "awkn": setAwkn,
+        "size": setSize,
         "skill": setSkill
     };
 
@@ -641,38 +643,6 @@ function initVisualization() {
         var tribes = ["mirage", "blazing", "glacier", "electric", "earth", "bright", "abyss"];
         var tribeComparison = tribes.indexOf(digi[a].tribe) - tribes.indexOf(digi[b].tribe);
         return tribeComparison ? tribeComparison : byAlphabet(a, b);
-    }
-
-    function setSize(n) {
-        var profiles = Array.from(document.getElementsByClassName("profile"));
-        profiles.push(blank);
-        var size = ["", "large", "small"][n];
-        profiles.forEach(function (profile) {
-            profile.classList.remove("large");
-            profile.classList.remove("small");
-            if (settings.size) {
-                profile.classList.add(size);
-            }
-        });
-        updateLines();
-    }
-
-    function setAwkn(n) {
-        var portraits = document.getElementsByClassName("portrait");
-        var awkn = n == 2 ? 1 : n;
-        for (var portrait of portraits) {
-            var mon = portrait.parentNode.parentNode.id;
-            if (mon == "blank") {
-                continue;
-            }
-            if (mon.endsWith("clone")) {
-                mon = mon.slice(0, -6);
-            }
-            if (awkn != 5 || digi[mon].v2) {
-                portrait.src = portrait.src.replace(/mon\/[01345]/, "mon/" + awkn);
-                portrait.alt = portrait.alt.replace(/\+[01345]/, "+" + awkn);
-            }
-        }
     }
 
     function setPreview(n) {
@@ -733,6 +703,50 @@ function initVisualization() {
         }
     }
 
+    function setFrag(n) {
+        var fragCounters = document.getElementsByClassName("frag-counter");
+        for (var fragCounter of fragCounters) {
+            if (n) {
+                show(fragCounter);
+            }
+            else {
+                hide(fragCounter);
+            }
+        }
+    }
+
+    function setAwkn(n) {
+        var portraits = document.getElementsByClassName("portrait");
+        var awkn = n == 2 ? 1 : n;
+        for (var portrait of portraits) {
+            var mon = portrait.parentNode.parentNode.id;
+            if (mon == "blank") {
+                continue;
+            }
+            if (mon.endsWith("clone")) {
+                mon = mon.slice(0, -6);
+            }
+            if (awkn != 5 || digi[mon].v2) {
+                portrait.src = portrait.src.replace(/mon\/[01345]/, "mon/" + awkn);
+                portrait.alt = portrait.alt.replace(/\+[01345]/, "+" + awkn);
+            }
+        }
+    }
+
+    function setSize(n) {
+        var profiles = Array.from(document.getElementsByClassName("profile"));
+        profiles.push(blank);
+        var size = ["", "large", "small"][n];
+        profiles.forEach(function (profile) {
+            profile.classList.remove("large");
+            profile.classList.remove("small");
+            if (settings.size) {
+                profile.classList.add(size);
+            }
+        });
+        updateLines();
+    }
+
     function setSkill(n) {
         var signatureSets = document.getElementsByClassName("signature-set");
         for (var signatureSet of signatureSets) {
@@ -778,6 +792,7 @@ function initVisualization() {
     function saveSettings() {
         save("sort", settings.sort);
         save("preview", settings.preview);
+        save("frag", settings.frag);
         save("size", settings.size);
     }
 
