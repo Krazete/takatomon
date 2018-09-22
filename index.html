@@ -225,14 +225,20 @@
 			<a href="https://reddit.com/u/krazete" target="_blank">Reddit</a>, or
 			<a href="https://github.com/Krazete/takatomon" target="_blank">GitHub</a>.
 		</div>
-		<div id="foot-planner">
-			<span class="toe">Import planner.</span>
+		<div id="foot-port">
+			<img class="hidden" id="inported">
+			<input type="file" class="hidden" id="inport">
+			<span class="toe" id="import">Load memblock</span> (import planner and fragments).
+			<br><br>
+			<span class="toe" id="export">Save memblock</span> (export planner and fragments).
+			<br><br>
+			<div id="tile-box">
+				<a target="_blank" download="memblock" id="toe-tile">
+					<canvas id="tile"></canvas>
+				</a>
+			</div>
 			<br>
-			<span class="toe">Export planner.</span>
-			<br>
-			<span class="toe">Enable planner.</span>
-			<br>
-			<span class="toe">Enable fragment counter.</span>
+			<span class="toe" id="deport">Reset everything</span> (clear selection, settings, planner, and fragments; also saves a memblock just in case).
 		</div>
 		<div id="foot-calculate"></div>
 		<div id="foot-close">
@@ -242,7 +248,7 @@
 		|
 		<span class="toe" id="toe-qa">Q&A</span>
 		|
-		<span class="toe" id="toe-planner">Planner</span>
+		<span class="toe" id="toe-port">Port</span>
 		|
 		<span class="toe" id="toe-calculate">Calculate (Beta)</span>
 	</div>

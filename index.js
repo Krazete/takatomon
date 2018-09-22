@@ -12,8 +12,9 @@ var selectedDigi = new Set();
 var gemel = new Gemel();
 var gemelCore = gemel.intersection();
 
-var planner = load("planner", []);
 var fragCount = load("fragCount", {});
+var planner = load("planner", []);
+var styleFragments, newPlan;
 
 var searchMode;
 var filters = { // only global because of advent
@@ -389,7 +390,7 @@ function initProfiles() {
         styleFragments(this);
     }
 
-    function styleFragments(element) {
+    styleFragments = function (element) { // NOTE: used in updatePlanFrag
         element.classList.remove("vii");
         element.classList.remove("xi");
         element.classList.remove("xiv");
@@ -825,7 +826,7 @@ function initPlanner() {
         return rank;
     }
 
-    function newPlan(n) {
+    newPlan = function (n) {
         var entry = document.createElement("div");
             entry.className = "plan";
             entry.dataset.n = n;
@@ -1030,14 +1031,23 @@ function initFooter() {
     var footAbout = document.getElementById("foot-about");
     var footQA = document.getElementById("foot-qa");
     var footCalculate = document.getElementById("foot-calculate");
-    var footPlanner = document.getElementById("foot-planner");
+    var footPort = document.getElementById("foot-port");
     var footClose = document.getElementById("foot-close");
     var timestamp = document.getElementById("timestamp");
     var toeAbout = document.getElementById("toe-about");
     var toeQA = document.getElementById("toe-qa");
     var toeCalculate = document.getElementById("toe-calculate");
-    var toePlanner = document.getElementById("toe-planner");
+    var toePort = document.getElementById("toe-port");
     var toeClose = document.getElementById("toe-close");
+    var inported = document.getElementById("inported");
+    var inport = document.getElementById("inport");
+    var importer = document.getElementById("import");
+    var exporter = document.getElementById("export");
+    var deporter = document.getElementById("deport");
+    var toeTile = document.getElementById("toe-tile");
+    var tile = document.getElementById("tile");
+    var context = tile.getContext("2d");
+    var reader = new FileReader();
 
     function initTimestamp() {
         var months = [
@@ -1197,59 +1207,12 @@ function initFooter() {
         footCalculate.innerHTML += "<br> and maybe some other stuff (this thing only calculates plugins, and it's inaccurate for multiple megas).";
     }
 
-    initTimestamp();
-    hide(footAbout);
-    hide(footQA);
-    hide(footPlanner);
-    hide(footCalculate);
-    hide(footClose);
-    addTapListener(toeAbout, function () {
-        show(footAbout);
-        hide(footQA);
-        hide(footCalculate);
-        hide(footPlanner);
-        show(footClose);
-        updateLines();
-    });
-    addTapListener(toeQA, function () {
-        hide(footAbout);
-        show(footQA);
-        hide(footCalculate);
-        hide(footPlanner);
-        show(footClose);
-        updateLines();
-    });
-    addTapListener(toeCalculate, function () {
-        costPlugins();
-        hide(footAbout);
-        hide(footQA);
-        show(footCalculate);
-        hide(footPlanner);
-        show(footClose);
-        updateLines();
-    });
-    addTapListener(toePlanner, function () {
-        hide(footAbout);
-        hide(footQA);
-        hide(footCalculate);
-        show(footPlanner);
-        show(footClose);
-        updateLines();
-    });
-    addTapListener(toeClose, function () {
-        hide(footAbout);
-        hide(footQA);
-        hide(footCalculate);
-        hide(footPlanner);
-        hide(footClose);
-        updateLines();
-    });
-
-    var canvas = document.createElement("canvas");
-    var context = canvas.getContext("2d");
-
-    function exportPlanner() {
-        var chars = localStorage.planner;
+    function exportPlanFrag() {
+        var planfrag = {
+            "planner": planner,
+            "fragCount": fragCount
+        };
+        var chars = JSON.stringify(planfrag);
         var codes = [];
         for (var i = 0; i < chars.length; i++) {
             var code = chars.charCodeAt(i);
@@ -1268,8 +1231,8 @@ function initFooter() {
         	codes.push(0);
         }
 
-        canvas.width = size;
-        canvas.height = size;
+        tile.width = size;
+        tile.height = size;
         var imageData = context.createImageData(size, size);
         var d = 0;
         for (var i = 0; i < Math.pow(size, 2) * 4; i++) {
@@ -1281,15 +1244,33 @@ function initFooter() {
         }
         context.putImageData(imageData, 0, 0);
 
-        return {codes:codes, chars:chars};
+        var dataURL = tile.toDataURL("image/png");
+        toeTile.href = dataURL;
+        toeTile.click();
     }
 
-    function importPlanner() {
-        function skipAlpha(value, index) {
-            return (index + 1) % 4;
-        }
+    function importPlanFrag0() {
+        inport.click();
+    }
 
-        var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    function importPlanFrag1() {
+        var file = this.files[0];
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+        inport.value = "";
+    }
+
+    function importPlanFrag2() {
+        inported.src = this.result;
+    }
+
+    function importPlanFrag3() {
+        this.ready = true;
+        tile.width = this.width;
+        tile.height = this.height;
+        context.drawImage(this, 0, 0, this.width, this.height);
+        var imageData = context.getImageData(0, 0, tile.width, tile.height);
         var data = Array.from(imageData.data);
         var codes = data.filter(skipAlpha);
         var chars = "";
@@ -1305,23 +1286,133 @@ function initFooter() {
                 i += 2;
             }
         }
-
-        return {codes:codes, chars:chars};
+        try {
+            var planfrag = JSON.parse(chars);
+            planner = planfrag.planner;
+            fragCount = planfrag.fragCount;
+            updatePlanFrag();
+        }
+        catch (e) {
+            console.log("Invalid memblock.");
+            console.log(e);
+            context.moveTo(0, 0);
+            context.lineTo(tile.width, tile.height);
+            context.moveTo(0, tile.height);
+            context.lineTo(tile.width, 0);
+            context.lineWidth = tile.width / 16;
+            context.strokeStyle = "#fff";
+            context.stroke();
+        }
     }
 
-    // var exported = exportPlanner();
-    // var imported = importPlanner();
-    //
-    // var k = [0, 0, 0, [], []];
-    // for (var i = 0; i < exported.codes.length; i++) {
-    //     if (exported.codes[i] != imported.codes[i]) {
-    //         k[i % 3] += 1;
-    //         k[3].push(getChar(exported.codes[i]));
-    //         k[4].push(getChar(imported.codes[i]));
-    //     }
-    // }
-    // console.log(k);
-    // console.log(exported.chars == imported.chars);
+    function skipAlpha(value, index) {
+        return (index + 1) % 4;
+    }
+
+    function deportLocalStorage() {
+        exportPlanFrag();
+
+        setSlide("tree", 0);
+        setSlide("sort", 0);
+        setSlide("preview", 0);
+        setSlide("size", 0);
+        setSlide("awkn", 0);
+        selectedDigi = new Set();
+        planner = [];
+        fragCount = {};
+        updatePlanFrag();
+
+        try {
+            localStorage.clear();
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    function updatePlanFrag() { // call after setting planner and fragCount
+        var planGroup = document.getElementById("plan-group");
+        var addPlan = document.getElementById("add-plan");
+        planGroup.innerHTML = "";
+        if (planner.length) {
+            for (var i = 0; i < planner.length; i++) {
+                newPlan(i);
+            }
+            addPlan.classList.remove("noplan");
+        }
+        else {
+            addPlan.classList.add("noplan");
+        }
+        update();
+        for (var mon in digi) {
+            if (digi[mon].fragments) {
+                var profile = document.getElementById(mon);
+                var fragCounter = profile.getElementsByClassName("frag-counter")[0];
+                if (fragCount[mon]) {
+                    fragCounter.value = fragCount[mon];
+                }
+                else {
+                    fragCounter.value = "";
+                }
+                styleFragments(fragCounter);
+            }
+        }
+    }
+
+    tile.id = "tile";
+    initTimestamp();
+    inported.addEventListener("load", importPlanFrag3);
+    reader.addEventListener("load", importPlanFrag2);
+    inport.addEventListener("input", importPlanFrag1);
+    addTapListener(importer, importPlanFrag0);
+    addTapListener(exporter, exportPlanFrag);
+    addTapListener(deporter, deportLocalStorage);
+    hide(footAbout);
+    hide(footQA);
+    hide(footPort);
+    hide(footCalculate);
+    hide(footClose);
+    addTapListener(toeAbout, function () {
+        show(footAbout);
+        hide(footQA);
+        hide(footCalculate);
+        hide(footPort);
+        show(footClose);
+        updateLines();
+    });
+    addTapListener(toeQA, function () {
+        hide(footAbout);
+        show(footQA);
+        hide(footCalculate);
+        hide(footPort);
+        show(footClose);
+        updateLines();
+    });
+    addTapListener(toeCalculate, function () {
+        costPlugins();
+        hide(footAbout);
+        hide(footQA);
+        show(footCalculate);
+        hide(footPort);
+        show(footClose);
+        updateLines();
+    });
+    addTapListener(toePort, function () {
+        hide(footAbout);
+        hide(footQA);
+        hide(footCalculate);
+        show(footPort);
+        show(footClose);
+        updateLines();
+    });
+    addTapListener(toeClose, function () {
+        hide(footAbout);
+        hide(footQA);
+        hide(footCalculate);
+        hide(footPort);
+        hide(footClose);
+        updateLines();
+    });
 }
 
 function initLineListeners() {

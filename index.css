@@ -423,7 +423,7 @@ body.drag { /* for planner */
 }
 
 .noplan {
-    background: #222;
+    background: linear-gradient(to right, #000, #222, #000);
     color: #888;
 }
 
@@ -636,6 +636,22 @@ body.drag { /* for planner */
     color: #fff;
     margin: 0;
     transition: none;
+}
+
+#tile-box {
+    width: max-content;
+    background: #fff;
+    padding: 4px;
+    border-radius: 4px;
+    margin: auto;
+}
+
+#tile {
+    width: 64px;
+    height: 64px;
+    background: #000;;
+    image-rendering: pixelated;
+    display: block;
 }
 
 .plugin {
