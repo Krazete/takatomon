@@ -1268,7 +1268,13 @@ function initFooter() {
         }
         var blob = new Blob([dataArray.buffer], {type: "image/png"});
         toeTile.href = window.URL.createObjectURL(blob);
+        addTapListener(toeTile, stay);
         toeTile.click();
+    }
+
+    function stay(e) {
+        console.log(e);
+        e.preventDefault();
     }
 
     function importPlanFrag0() {
@@ -1278,6 +1284,7 @@ function initFooter() {
         input.addEventListener("change", importPlanFrag1);
         document.body.appendChild(input); // because iOS can't click on elements outside of DOM
         input.click();
+        input.remove();
     }
 
     function importPlanFrag1() {
@@ -1299,20 +1306,22 @@ function initFooter() {
         tile.width = this.width;
         tile.height = this.height;
         context.drawImage(this, 0, 0, this.width, this.height);
-        var imageData = context.getImageData(0, 0, tile.width, tile.height);
-        var data = Array.from(imageData.data);
-        var codes = data.filter(skipAlpha);
-        var chars = "";
-        for (var i = 0; i < codes.length; i++) {
-            if (codes[i] < 255) {
-                if (codes[i] > 0) {
-                    chars += String.fromCharCode(codes[i]);
+        if (this.width == this.height || this.width < 2048) { // TODO: maybe decrease the size limit?
+            var imageData = context.getImageData(0, 0, tile.width, tile.height);
+            var data = Array.from(imageData.data);
+            var codes = data.filter(skipAlpha);
+            var chars = "";
+            for (var i = 0; i < codes.length; i++) {
+                if (codes[i] < 255) {
+                    if (codes[i] > 0) {
+                        chars += String.fromCharCode(codes[i]);
+                    }
                 }
-            }
-            else {
-                var code = 256 * codes[i + 1] + codes[i + 2];
-                chars += String.fromCharCode(code);
-                i += 2;
+                else {
+                    var code = 256 * codes[i + 1] + codes[i + 2];
+                    chars += String.fromCharCode(code);
+                    i += 2;
+                }
             }
         }
         try {
@@ -1328,11 +1337,10 @@ function initFooter() {
             context.lineTo(tile.width, tile.height);
             context.moveTo(0, tile.height);
             context.lineTo(tile.width, 0);
-            context.lineWidth = tile.width / 16;
+            context.lineWidth = Math.min(tile.width, tile.height) / 16;
             context.strokeStyle = "#fff";
             context.stroke();
         }
-        input.remove(); // remove from DOM so it doesn't outlive its usefulness
     }
 
     function skipAlpha(value, index) {
