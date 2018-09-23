@@ -1062,6 +1062,7 @@ function initFooter() {
     var tile = document.getElementById("tile");
     var context = tile.getContext("2d");
     var reader = new FileReader();
+    var input;
 
     function initTimestamp() {
         var months = [
@@ -1259,14 +1260,23 @@ function initFooter() {
         context.putImageData(imageData, 0, 0);
 
         var dataURL = tile.toDataURL("image/png");
-        toeTile.href = dataURL;
+        var dataString = dataURL.split(",")[1];
+        var data = atob(dataString);
+        var dataArray = new Uint8Array(data.length);
+        for (var i = 0; i < data.length; i++) {
+            dataArray[i] = data.charCodeAt(i);
+        }
+        var blob = new Blob([dataArray.buffer], {type: "image/png"});
+        toeTile.href = window.URL.createObjectURL(blob);
         toeTile.click();
     }
 
     function importPlanFrag0() {
-        var input = document.createElement("input");
+        input = document.createElement("input");
         input.type = "file";
+        input.accept = "image/png";
         input.addEventListener("change", importPlanFrag1);
+        document.body.appendChild(input); // because iOS can't click on elements outside of DOM
         input.click();
     }
 
@@ -1322,6 +1332,7 @@ function initFooter() {
             context.strokeStyle = "#fff";
             context.stroke();
         }
+        input.remove(); // remove from DOM so it doesn't outlive its usefulness
     }
 
     function skipAlpha(value, index) {
