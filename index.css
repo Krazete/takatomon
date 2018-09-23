@@ -310,7 +310,7 @@ body.drag { /* for planner */
     float: right;
 }
 
-.growlmon {
+.info {
     position: relative; /* to make z-index work */
     background: rgba(255, 128, 128, 0.5);
     background: #f888;
@@ -322,11 +322,11 @@ body.drag { /* for planner */
     z-index: 1;
     display: none;
 }
-.growlmon a {
+.info a {
     color: #800;
     text-decoration: none;
 }
-#selection .growlmon {
+#selection .info {
     display: block;
 }
 

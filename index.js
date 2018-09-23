@@ -356,14 +356,14 @@ function initProfiles() {
                     signatureSet.appendChild(signature);
                 });
             profile.appendChild(signatureSet);
-            var growlmon = document.createElement("div");
-                growlmon.className = "growlmon";
+            var info = document.createElement("div");
+                info.className = "info";
                 var anchor = document.createElement("a");
-                    anchor.href = "http://growlmon.net/digimon/" + mon;
+                    anchor.href = "https://chortos.selfip.net/digimonlinks/monsters/" + mon; // TODO: fix this
                     anchor.target = "_blank";
-                    anchor.innerHTML = "Growlmon.Net";
-                growlmon.appendChild(anchor);
-            profile.appendChild(growlmon);
+                    anchor.innerHTML = "More Info";
+                info.appendChild(anchor);
+            profile.appendChild(info);
         return profile;
     }
 
@@ -1055,8 +1055,6 @@ function initFooter() {
     var toeCalculate = document.getElementById("toe-calculate");
     var toePort = document.getElementById("toe-port");
     var toeClose = document.getElementById("toe-close");
-    var inported = document.getElementById("inported");
-    var inport = document.getElementById("inport");
     var importer = document.getElementById("import");
     var exporter = document.getElementById("export");
     var deporter = document.getElementById("deport");
@@ -1266,23 +1264,28 @@ function initFooter() {
     }
 
     function importPlanFrag0() {
-        inport.click();
+        var input = document.createElement("input");
+        input.type = "file";
+        input.addEventListener("change", importPlanFrag1);
+        input.click();
     }
 
     function importPlanFrag1() {
         var file = this.files[0];
         if (file) {
+            var reader = new FileReader();
+            reader.addEventListener("load", importPlanFrag2);
             reader.readAsDataURL(file);
         }
-        inport.value = "";
     }
 
     function importPlanFrag2() {
-        inported.src = this.result;
+        var image = new Image();
+        image.addEventListener("load", importPlanFrag3);
+        image.src = this.result;
     }
 
     function importPlanFrag3() {
-        this.ready = true;
         tile.width = this.width;
         tile.height = this.height;
         context.drawImage(this, 0, 0, this.width, this.height);
@@ -1377,9 +1380,6 @@ function initFooter() {
 
     tile.id = "tile";
     initTimestamp();
-    inported.addEventListener("load", importPlanFrag3);
-    reader.addEventListener("load", importPlanFrag2);
-    inport.addEventListener("input", importPlanFrag1);
     addTapListener(importer, importPlanFrag0);
     addTapListener(exporter, exportPlanFrag);
     addTapListener(deporter, deportLocalStorage);
