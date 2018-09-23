@@ -828,7 +828,7 @@ function initPlanner() {
         planner.push({
             "digi": Array.from(selectedDigi).sort(byEvol),
             "awkn": settings.awkn,
-            "deduct": true,
+            // "deduct": true,
             "note": ""
         });
         newPlan(planner.length - 1);
@@ -873,11 +873,11 @@ function initPlanner() {
                 }
                 addTapListener(viewer, viewEntry);
             entry.appendChild(viewer);
-            var deduct = document.createElement("div");
-                deduct.className = "deduct";
-                deduct.innerHTML = "Deducted";
-                addTapListener(deduct, toggleDeduction);
-            entry.appendChild(deduct);
+            // var deduct = document.createElement("div");
+            //     deduct.className = "deduct";
+            //     deduct.innerHTML = "Deducted";
+            //     addTapListener(deduct, toggleDeduction);
+            // entry.appendChild(deduct);
             var note = document.createElement("textarea");
                 note.className = "note";
                 note.placeholder = "Notes";
@@ -913,8 +913,8 @@ function initPlanner() {
         update();
     }
 
-    function toggleDeduction() { // TODO: this
-    }
+    // function toggleDeduction() { // TODO: this
+    // }
 
     function editNote() {
         var message = this.value;
