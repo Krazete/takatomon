@@ -1060,7 +1060,6 @@ function initFooter() {
     var deporter = document.getElementById("deport");
     var toeTile = document.getElementById("toe-tile");
     var tile = document.getElementById("tile");
-    var context = tile.getContext("2d");
     var reader = new FileReader();
     var input;
 
@@ -1246,8 +1245,10 @@ function initFooter() {
         	codes.push(0);
         }
 
-        tile.width = size;
-        tile.height = size;
+        var canvas = document.createElement("canvas");
+        var context = canvas.getContext("2d");
+        canvas.width = size;
+        canvas.height = size;
         var imageData = context.createImageData(size, size);
         var d = 0;
         for (var i = 0; i < Math.pow(size, 2) * 4; i++) {
@@ -1259,22 +1260,15 @@ function initFooter() {
         }
         context.putImageData(imageData, 0, 0);
 
-        var dataURL = tile.toDataURL("image/png");
-        var dataString = dataURL.split(",")[1];
-        var data = atob(dataString);
-        var dataArray = new Uint8Array(data.length);
-        for (var i = 0; i < data.length; i++) {
-            dataArray[i] = data.charCodeAt(i);
-        }
-        var blob = new Blob([dataArray.buffer], {type: "image/png"});
-        toeTile.href = window.URL.createObjectURL(blob);
-        addTapListener(toeTile, stay);
+        var blobURL = canvasToBlobURL(canvas);
+        tile.src = blobURL;
+        toeTile.href = blobURL;
         toeTile.click();
     }
 
     function stay(e) {
-        console.log(e);
         e.preventDefault();
+        toeTile.parentNode.classList.add("iOS-tile");
     }
 
     function importPlanFrag0() {
@@ -1303,11 +1297,13 @@ function initFooter() {
     }
 
     function importPlanFrag3() {
-        tile.width = this.width;
-        tile.height = this.height;
+        var canvas = document.createElement("canvas");
+        var context = canvas.getContext("2d");
+        canvas.width = this.width;
+        canvas.height = this.height;
         context.drawImage(this, 0, 0, this.width, this.height);
         if (this.width == this.height || this.width < 2048) { // TODO: maybe decrease the size limit?
-            var imageData = context.getImageData(0, 0, tile.width, tile.height);
+            var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
             var data = Array.from(imageData.data);
             var codes = data.filter(skipAlpha);
             var chars = "";
@@ -1334,13 +1330,28 @@ function initFooter() {
             console.log("Invalid memblock.");
             console.log(e);
             context.moveTo(0, 0);
-            context.lineTo(tile.width, tile.height);
-            context.moveTo(0, tile.height);
-            context.lineTo(tile.width, 0);
-            context.lineWidth = Math.min(tile.width, tile.height) / 16;
+            context.lineTo(canvas.width, canvas.height);
+            context.moveTo(0, canvas.height);
+            context.lineTo(canvas.width, 0);
+            context.lineWidth = Math.min(canvas.width, canvas.height) / 16;
             context.strokeStyle = "#fff";
             context.stroke();
         }
+        var blobURL = canvasToBlobURL(canvas);
+        tile.src = blobURL;
+    }
+
+    function canvasToBlobURL(canvas) {
+        var dataURL = canvas.toDataURL("image/png");
+        var dataString = dataURL.split(",")[1];
+        var data = atob(dataString);
+        var dataArray = new Uint8Array(data.length);
+        for (var i = 0; i < data.length; i++) {
+            dataArray[i] = data.charCodeAt(i);
+        }
+        var blob = new Blob([dataArray.buffer], {type: "image/png"});
+        var blobURL = window.URL.createObjectURL(blob);
+        return blobURL;
     }
 
     function skipAlpha(value, index) {
@@ -1399,6 +1410,9 @@ function initFooter() {
 
     tile.id = "tile";
     initTimestamp();
+    if (toeTile.download != "memblock") { // for iOS safari
+        addTapListener(toeTile, stay);
+    }
     addTapListener(importer, importPlanFrag0);
     addTapListener(exporter, exportPlanFrag);
     addTapListener(deporter, deportLocalStorage);

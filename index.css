@@ -639,11 +639,16 @@ body.drag { /* for planner */
 }
 
 #tile-box {
-    width: max-content;
+    width: 64px;
     background: #fff;
     padding: 4px;
     border-radius: 4px;
     margin: auto;
+}
+
+.iOS-tile:after {
+    content: "Long press to save.";
+    font-size: 10px;
 }
 
 #tile {
