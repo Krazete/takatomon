@@ -47,7 +47,7 @@ function addTapListener(e, f) {
 
 function getProfileGroup(id) {
     var section = document.getElementById(id);
-    var profileGroup = section.getElementsByClassName("profile-group")[0];
+    var profileGroup = Array.from(section.getElementsByClassName("profile-group"))[0];
     return profileGroup;
 }
 
@@ -130,7 +130,7 @@ function updateClones() {
             clone.classList.remove("preview");
             show(clone);
             clone.id = mon + "-clone";
-            var card = clone.getElementsByClassName("card")[0];
+            var card = Array.from(clone.getElementsByClassName("card"))[0];
             addTapListener(card, deselectProfile);
             selection.appendChild(clone);
         }
@@ -242,7 +242,7 @@ function drawEdge(edge, color, width) {
 
 function getPoint(mon, side) {
     var profile = document.getElementById(mon);
-    var card = profile.getElementsByClassName("card")[0];
+    var card = Array.from(profile.getElementsByClassName("card"))[0];
     var rect = card.getBoundingClientRect();
     var dy = {
         "top": 1,
@@ -428,8 +428,8 @@ function initProfiles() {
 
     for (var mon in digi) { // TODO: alphabetize first
         var profile = newProfile(mon);
-        var fragCounters = profile.getElementsByClassName("frag-counter");
-        var card = profile.getElementsByClassName("card")[0];
+        var fragCounters = Array.from(profile.getElementsByClassName("frag-counter"));
+        var card = Array.from(profile.getElementsByClassName("card"))[0];
         if (fragCounters.length) {
             var fragCounter = fragCounters[0];
             if (fragCount[mon]) {
@@ -486,7 +486,7 @@ function initEvolLabels() {
 
     function selectProfileGroup() {
         var section = this.parentNode.parentNode;
-        var profiles = section.getElementsByClassName("profile");
+        var profiles = Array.from(section.getElementsByClassName("profile"));
         selectedDigi.clear();
         for (var profile of profiles) {
             if (!profile.classList.contains("hidden")) {
@@ -512,7 +512,7 @@ function initFiltration() {
     var enterSearch = document.getElementById("enter-search");
     var exitSearch = document.getElementById("exit-search");
     var search = document.getElementById("search");
-    var switches = filtration.getElementsByClassName("switch");
+    var switches = Array.from(filtration.getElementsByClassName("switch"));
 
     function enterSearchMode() {
         hide(selection);
@@ -614,7 +614,7 @@ function initFiltration() {
 
 function initVisualization() {
     var visualization = document.getElementById("visualization");
-    var slideSets = visualization.getElementsByClassName("slide-set");
+    var slideSets = Array.from(visualization.getElementsByClassName("slide-set"));
     var setters = {
         "tree": setTree,
         "sort": setSort,
@@ -659,7 +659,7 @@ function initVisualization() {
     function setPreview(n) {
         for (var mon in digi) {
             var profile = document.getElementById(mon);
-            var card = profile.getElementsByClassName("card")[0];
+            var card = Array.from(profile.getElementsByClassName("card"))[0];
             if (n) {
                 card.addEventListener("mouseover", previewGemel);
                 card.addEventListener("touchstart", previewGemel);
@@ -684,7 +684,7 @@ function initVisualization() {
             for (var node of tree.nodes) {
                 var profile = document.getElementById(node);
                 profile.classList.add("preview");
-                var card = profile.getElementsByClassName("card")[0];
+                var card = Array.from(profile.getElementsByClassName("card"))[0];
                 var rect = card.getBoundingClientRect();
                 linecontext.clearRect(
                     rect.left + window.scrollX + 1,
@@ -773,7 +773,7 @@ function initVisualization() {
 
     setSlide = function (key, value) {
         var slideSet = document.getElementById(key);
-        var slides = slideSet.getElementsByClassName("slide");
+        var slides = Array.from(slideSet.getElementsByClassName("slide"));
         for (var slide of slides) {
             hide(slide);
             if (slide == slides[value]) {
@@ -786,7 +786,7 @@ function initVisualization() {
 
     function advanceSlide() {
         var key = this.id;
-        var slides = this.getElementsByClassName("slide");
+        var slides = Array.from(this.getElementsByClassName("slide"));
         var value = (settings[key] + 1) % slides.length;
         setSlide(key, value);
     }
@@ -977,7 +977,7 @@ function initPlanner() {
 
     function stopDrag() {
         var planGroup = document.getElementById("plan-group");
-        var plans = planGroup.getElementsByClassName("plan");
+        var plans = Array.from(planGroup.getElementsByClassName("plan"));
         var newPlanner = [];
         var d = 0;
         for (var i = 0; i < planner.length; i++) {
@@ -1406,7 +1406,7 @@ function initFooter() {
         for (var mon in digi) {
             if (digi[mon].fragments) {
                 var profile = document.getElementById(mon);
-                var fragCounter = profile.getElementsByClassName("frag-counter")[0];
+                var fragCounter = Array.from(profile.getElementsByClassName("frag-counter"))[0];
                 if (fragCount[mon]) {
                     fragCounter.value = fragCount[mon];
                 }
