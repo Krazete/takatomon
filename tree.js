@@ -10,7 +10,7 @@ function prev(mon) {
         digi[mon].prev = [];
         for (var prevmon in digi) {
             if (next(prevmon).includes(mon)) {
-                digi[mon].prev.push(prevmon);
+                digi[mon].prev.push(parseInt(prevmon));
             }
         }
     }
@@ -18,7 +18,7 @@ function prev(mon) {
 }
 
 function Gemel(roots) { // gemels are unions of trees
-    if (typeof roots == "string") { // single-root gemels are just trees
+    if (typeof roots == "string" || typeof roots == "number") { // single-root gemels are just trees
         if (typeof digi[roots].tree == "undefined") { // memoization
             roots = [roots];
         }
@@ -26,7 +26,13 @@ function Gemel(roots) { // gemels are unions of trees
             return digi[roots].tree;
         }
     }
-    this.roots = new Set(roots);
+    if (typeof roots != "undefined") {
+        var parsedRoots = [];
+        for (var root of roots) {
+            parsedRoots.push(parseInt(root));
+        }
+    }
+    this.roots = new Set(parsedRoots);
     this.nodes = new Set();
     this.JSONedges = new Set(); // stringify edges because [] != [] but "" == ""
 
@@ -59,7 +65,7 @@ function Gemel(roots) { // gemels are unions of trees
         var JSONedges = this.JSONedges;
         // initialization
         for (var root of roots) {
-            init(root, 0);
+            init(parseInt(root), 0);
         }
     }
     if (this.roots.size == 1) { // memoization

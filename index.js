@@ -92,12 +92,12 @@ function update() {
     gemelCore = gemel.intersection();
     updateClones(); // wanted to call updateLines on portrait load, but that creates new problems
     updateProfiles();
-    Array.from(profileGroups).forEach(function (profileGroup) { // for safari
+    for (var profileGroup of profileGroups) { // for safari
         var rect = profileGroup.getBoundingClientRect();
         if (rect.width < window.innerWidth) {
             profileGroup.parentNode.scrollTo(0, 0);
         }
-    });
+    }
     if (settings.sort == 2) {
         untangleProfiles();
     }
@@ -115,7 +115,7 @@ function updateClones() {
         update();
     }
     if (selectedDigi.size) {
-        Array.from(selectedDigi).forEach(function (mon) {
+        for (var mon of selectedDigi) {
             var profile = document.getElementById(mon);
             var clone = profile.cloneNode(true);
             clone.classList.remove("root");
@@ -127,7 +127,7 @@ function updateClones() {
             var card = clone.getElementsByClassName("card")[0];
             addTapListener(card, deselectProfile);
             selection.appendChild(clone);
-        });
+        }
     }
     else {
         selection.appendChild(blank);
@@ -142,13 +142,13 @@ function updateProfiles() {
         profile.classList.remove("node");
         show(profile);
         if (selectedDigi.size) {
-            if (gemel.roots.has(mon)) {
+            if (gemel.roots.has(parseInt(mon))) {
                 profile.classList.add("root");
             }
-            else if (gemelCore.nodes.has(mon)) {
+            else if (gemelCore.nodes.has(parseInt(mon))) {
                 profile.classList.add("core-node");
             }
-            else if (settings.tree && gemel.nodes.has(mon)) {
+            else if (settings.tree && gemel.nodes.has(parseInt(mon))) { // TODO: find a better way to handle these IDs
                 profile.classList.add("node");
             }
             else {
@@ -158,7 +158,7 @@ function updateProfiles() {
     }
 }
 
-function untangleProfiles() { // TODO: improve this algorithm
+function untangleProfiles() { // TODO: improve this algorithm // ALSO TODO: organize by alphabet secondarily
     var visited = new Set();
 
     function dfs(mon, d, repeat) {
@@ -166,15 +166,15 @@ function untangleProfiles() { // TODO: improve this algorithm
             var gem = [gemelCore, gemel][settings.tree];
             visited.add(mon);
             if (d <= 0) {
-                Array.from(prev(mon)).forEach(function (prevmon) {
-                    if (gem.nodes.has(prevmon)) {
+                for (var prevmon of prev(mon)) {
+                    if (gem.nodes.has(parseInt(prevmon))) {
                         dfs(prevmon, -1, false);
                     }
-                });
+                }
             }
             if (d >= 0) {
                 for (var nextmon of next(mon)) {
-                    if (gem.nodes.has(nextmon)) {
+                    if (gem.nodes.has(parseInt(nextmon))) {
                         dfs(nextmon, 1, false);
                     }
                 }
@@ -182,9 +182,9 @@ function untangleProfiles() { // TODO: improve this algorithm
         }
     }
 
-    Array.from(selectedDigi).forEach(function (mon) {
+    for (var mon of selectedDigi) {
         dfs(mon, 0, true);
-    });
+    }
     for (var mon in digi) {
         visited.add(mon);
     }
@@ -192,11 +192,11 @@ function untangleProfiles() { // TODO: improve this algorithm
 }
 
 function sortProfiles(sortedDigi) {
-    Array.from(sortedDigi).forEach(function (mon) {
+    for (var mon of sortedDigi) {
         var profileGroup = getProfileGroup(digi[mon].evol);
         var profile = document.getElementById(mon);
         profileGroup.appendChild(profile);
-    });
+    }
     updateLines();
 }
 
@@ -318,7 +318,8 @@ function initProfiles() {
                 card.className = "card";
                 var portrait = document.createElement("img");
                     portrait.className = "portrait";
-                    portrait.src = "img/mon/0/" + mon + ".png";
+                    if (typeof digi[mon].tempID == "undefined") console.log(mon);
+                    portrait.src = "img/mon/0/" + digi[mon].tempID + ".png";
                     if (mon == "birdramon") {
                         var r = Math.random();
                         if (r < 0.001) {
@@ -334,12 +335,12 @@ function initProfiles() {
                 card.appendChild(tribe);
                 var moniker = document.createElement("div");
                     moniker.className = "moniker";
-                    moniker.innerHTML = digi[mon].name.replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2");
+                    moniker.innerHTML = digi[mon].name.en.replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2");
                 card.appendChild(moniker);
             profile.appendChild(card);
             var signatureSet = document.createElement("div");
                 signatureSet.className = "signature-set";
-                Array.from(digi[mon].skills).forEach(function (skill) {
+                for (var skill of digi[mon].skills) {
                     var signature = document.createElement("div");
                         var rival = document.createElement("img");
                             rival.className = "rival";
@@ -354,7 +355,7 @@ function initProfiles() {
                             tier.innerHTML = skill.tier ? ("[" + skill.tier + "]") : "";
                         signature.appendChild(tier);
                     signatureSet.appendChild(signature);
-                });
+                }
             profile.appendChild(signatureSet);
             var info = document.createElement("div");
                 info.className = "info";
@@ -419,7 +420,7 @@ function initProfiles() {
         save("fragCount", fragCount);
     }
 
-    for (var mon in digi) { // skip sorting step, growlmon.js alphabetizes digi.js in preprocessing
+    for (var mon in digi) { // TODO: alphabetize first
         var profile = newProfile(mon);
         var fragCounters = profile.getElementsByClassName("frag-counter");
         var card = profile.getElementsByClassName("card")[0];
@@ -481,11 +482,11 @@ function initEvolLabels() {
         var section = this.parentNode.parentNode;
         var profiles = section.getElementsByClassName("profile");
         selectedDigi.clear();
-        Array.from(profiles).forEach(function (profile) {
+        for (var profile of profiles) {
             if (!profile.classList.contains("hidden")) {
                 selectedDigi.add(profile.id);
             }
-        });
+        }
         if (searchMode) {
             exitSearchMode();
         }
@@ -494,9 +495,9 @@ function initEvolLabels() {
         }
     }
 
-    Array.from(evolLabels).forEach(function (evolLabel) {
+    for (var evolLabel of evolLabels) {
         addTapListener(evolLabel, selectProfileGroup);
-    });
+    }
 }
 
 function initFiltration() {
@@ -520,9 +521,9 @@ function initFiltration() {
         show(selection);
         hide(filtration);
         search.value = "";
-        Array.from(switches).forEach(function (s) {
+        for (var s of switches) {
             s.classList.remove("selected");
-        });
+        }
         filters.query.clear();
         filters.tribe.clear();
         filters.rival.clear();
@@ -583,7 +584,7 @@ function initFiltration() {
             var okEffect = !filters.effect.size || filters.effect.has(effect);
             return okRival && okEffect;
         });
-        var okTree = !filters.special.has("tree") || [gemelCore, gemel][settings.tree].nodes.has(mon);
+        var okTree = !filters.special.has("tree") || [gemelCore, gemel][settings.tree].nodes.has(parseInt(mon));
         var okDNA2 = !filters.special.has("dna") || digi[mon].skills.length > 1;
         var okV2 = !filters.special.has("v2") || digi[mon].v2;
         var profile = document.getElementById(mon);
@@ -597,9 +598,9 @@ function initFiltration() {
     addTapListener(exitSearch, exitSearchMode);
     search.addEventListener("input", setQuery);
     search.addEventListener("keydown", enterBlur);
-    Array.from(switches).forEach(function (s) {
+    for (var s of switches) {
         addTapListener(s, flipSwitch);
-    });
+    }
 
     exitSearchMode();
 }
@@ -637,7 +638,9 @@ function initVisualization() {
     }
 
     function byAlphabet(a, b) {
-        return a < b ? -1 : a > b ? 1 : 0;
+        var aName = digi[a].name.en.toLowerCase();
+        var bName = digi[b].name.en.toLowerCase();
+        return aName < bName ? -1 : aName > bName ? 1 : 0;
     }
 
     function byTribe(a, b) {
@@ -671,7 +674,7 @@ function initVisualization() {
         }
         if (!searchMode) {
             var tree = new Gemel(this.parentNode.id);
-            Array.from(tree.nodes).forEach(function (node) {
+            for (var node of tree.nodes) {
                 var profile = document.getElementById(node);
                 profile.classList.add("preview");
                 var card = profile.getElementsByClassName("card")[0];
@@ -682,7 +685,7 @@ function initVisualization() {
                     rect.width - 2,
                     rect.height - 2
                 );
-            });
+            }
             tree.forEachEdge(function (edge, JSONedge) {
                 var profile0 = document.getElementById(edge[0]);
                 var profile1 = document.getElementById(edge[1]);
@@ -696,10 +699,10 @@ function initVisualization() {
     function deviewGemel() {
         if (!searchMode) {
             var tree = new Gemel(this.parentNode.id);
-            Array.from(tree.nodes).forEach(function (node) {
+            for (var node of tree.nodes) {
                 var profile = document.getElementById(node);
                 profile.classList.remove("preview");
-            });
+            }
             updateLines();
         }
     }
@@ -809,12 +812,12 @@ function initVisualization() {
     }
 
     hideUselessSettings();
-    Array.from(slideSets).forEach(function (slideSet) {
+    for (var slideSet of slideSets) {
         var key = slideSet.id;
         var value = settings[key];
         setSlide(key, value)
         addTapListener(slideSet, advanceSlide);
-    });
+    }
     window.addEventListener("beforeunload", saveSettings);
     deleteLegacyLocalStorage();
 }
@@ -864,10 +867,10 @@ function initPlanner() {
                 for (var mon of planner[n].digi) {
                     var photo = document.createElement("img");
                         if (planner[n].awkn != 5 || digi[mon].v2) {
-                            photo.src = "img/mon/" + [0, 1, 1, 3, 4, 5][planner[n].awkn] + "/" + mon + ".png";
+                            photo.src = "img/mon/" + [0, 1, 1, 3, 4, 5][planner[n].awkn] + "/" + digi[mon].tempID + ".png";
                         }
                         else {
-                            photo.src = "img/mon/" + [0, 1, 1, 3, 4, 4][planner[n].awkn] + "/" + mon + ".png";
+                            photo.src = "img/mon/" + [0, 1, 1, 3, 4, 4][planner[n].awkn] + "/" + digi[mon].tempID + ".png";
                         }
                     viewer.appendChild(photo);
                 }
@@ -1114,7 +1117,7 @@ function initFooter() {
         var oldestMon = "";
         var oldestMega = "";
 
-        Array.from(gem.roots).forEach(function (root) {
+        for (var root of gem.roots) {
             var evol = digi[root].evol;
             var evolIndex = evols.indexOf(evol);
             if (evolIndex < youngestIndex) {
@@ -1131,7 +1134,7 @@ function initFooter() {
                 }
                 else if (oldestMega != root) {
                     var oldestMegaTree = new Gemel(oldestMega);
-                    if (oldestMegaTree.nodes.has(root)) {
+                    if (oldestMegaTree.nodes.has(parseInt(root))) {
                         var rootTree = new Gemel(root);
                         if (rootTree.nodes.size > oldestMegaTree.nodes.size) {
                             oldestMega = root;
@@ -1143,13 +1146,13 @@ function initFooter() {
                     }
                 }
             }
-        });
+        }
         var selectedEvols = evols.slice(youngestIndex + 1, oldestIndex + 1);
         console.log(selectedEvols);
         var selectedMegas = oldestMega == "" ? [] : [oldestMega];
         for (var mega of selectedMegas) {
             for (var prevmon of prev(mega)) {
-                if (gem.nodes.has(prevmon) && !selectedMegas.includes(prevmon) && digi[prevmon].evol == "mega") {
+                if (gem.nodes.has(parseInt(prevmon)) && !selectedMegas.includes(parseInt(prevmon)) && digi[prevmon].evol == "mega") {
                     selectedMegas.push(prevmon);
                 }
             }
@@ -1167,7 +1170,7 @@ function initFooter() {
             "champion": "",
             "ultimate": ""
         };
-        Array.from(gem.nodes).forEach(function (node) {
+        for (var node of gem.nodes) {
             var evol = digi[node].evol;
             if (evol != "mega" && selectedEvols.includes(evol)) {
                 var tribe = digi[node].tribe;
@@ -1179,7 +1182,7 @@ function initFooter() {
                     return true;
                 }
             }
-        });
+        }
 
         var selectedPlugins = {
             "mirage": [0, 0, 0, 0],
@@ -1191,20 +1194,20 @@ function initFooter() {
             "abyss": [0, 0, 0, 0]
         };
         var pluginCosts = plugins[settings.awkn];
-        Array.from(selectedEvols).forEach(function (evol) {
+        for (var evol of selectedEvols) {
             if (evol != "mega" && evol in pluginCosts) {
                 for (var i = 0; i < 4; i++) {
                     selectedPlugins[selectedTribe[evol]][i] += pluginCosts[evol][i];
                 }
             }
-        });
+        }
         for (var mega of selectedMegas) {
             for (var i = 0; i < 4; i++) {
                 selectedPlugins[digi[mega].tribe][i] += pluginCosts.mega[i];
             }
         }
 
-        footCalculate.innerHTML = "This route (" + (digi[youngestMon].name) + " → " + (digi[oldestMega == "" ? oldestMon : oldestMega].name) + ") at awakening +" + settings.awkn + " costs<br>";
+        footCalculate.innerHTML = "This route (" + (digi[youngestMon].name.en) + " → " + (digi[oldestMega == "" ? oldestMon : oldestMega].name.en) + ") at awakening +" + settings.awkn + " costs<br>";
         for (var evol in selectedPlugins) {
             for (var i = 0; i < 4; i++) {
                 if (selectedPlugins[evol][i]) {
@@ -1466,10 +1469,10 @@ function initFooter() {
 
 function initLineListeners() {
     var profileGroups = document.getElementsByClassName("profile-group");
-    Array.from(profileGroups).forEach(function (profileGroup) {
+    for (var profileGroup of profileGroups) {
         var scroller = profileGroup.parentNode;
         scroller.addEventListener("scroll", updateLines);
-    });
+    }
     window.addEventListener("resize", updateLines);
 }
 

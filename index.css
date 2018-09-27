@@ -40,10 +40,7 @@ body.drag { /* for planner */
     background: radial-gradient(#ff4, #c90);
 }
 #mega {
-    background: radial-gradient(transparent, rgba(0, 0, 0, 0.25)),
-        linear-gradient(to top right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
-    background: radial-gradient(#0000, #0004),
-        linear-gradient(to top right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+    background: linear-gradient(to top right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
 }
 
 .scroller {
@@ -53,8 +50,7 @@ body.drag { /* for planner */
 }
 
 .bar-button {
-    background: linear-gradient(to right, rgba(160, 160, 160, 0.125), #aaa, rgba(160, 160, 160, 0.125));
-    background: linear-gradient(to right, #aaa2, #aaa, #aaa2);
+    background: linear-gradient(to right, transparent, #aaa, transparent);
     color: #222;
     text-align: center;
     padding: 4px;
@@ -84,8 +80,9 @@ body.drag { /* for planner */
     width: -webkit-max-content;
     width: -moz-max-content;
     width: max-content;
-    background: rgba(256, 256, 256, 0.5);
-    background: #fff8;
+    background: #fff8; /* NOTE: incompatible with old iOS */
+    text-shadow: 0 0 4px #fff;
+    box-shadow: inset 0 0 4px #fff;
     padding: 0 4px;
     border-radius: 4px;
     cursor: pointer;
@@ -110,7 +107,8 @@ body.drag { /* for planner */
     width: 24px;
     height: 12px;
     line-height: 12px;
-    background: #fff8;
+    background: #ccc;
+    background: #fff8; /* NOTE: incompatible with old iOS */
     font-size: 12px;
     text-align: right;
     border: 1px solid #000;
@@ -260,7 +258,6 @@ body.drag { /* for planner */
     position: relative; /* to make background work */
     width: 25%;
     background: radial-gradient(#000 55%, transparent 70%);
-    background: radial-gradient(#000 55%, #0000 70%);
     border-radius: 50%;
     margin: -100% 0 75% 0;
     display: block;
@@ -281,8 +278,8 @@ body.drag { /* for planner */
 .signature-set {
     position: relative; /* to make z-index work */
     width: 64px;
-    background: rgba(255, 255, 255, 0.5);
-    background: #fff8;
+    background: #eee;
+    background: #fff8; /* NOTE: incompatible with old iOS */
     text-shadow: 0 0 1px #fff;
     padding: 2px;
     border-radius: 4px;
@@ -312,10 +309,8 @@ body.drag { /* for planner */
 
 .info {
     position: relative; /* to make z-index work */
-    background: rgba(255, 128, 128, 0.5);
-    background: #f888;
+    background: #fcd;
     text-align: center;
-    text-shadow: 0 0 1px #f88;
     padding: 2px;
     border-radius: 4px;
     margin-top: 2px;
@@ -337,6 +332,8 @@ body.drag { /* for planner */
 }
 
 #plan-group {
+    width: -webkit-max-content;
+    width: -moz-max-content;
     width: max-content;
 }
 
@@ -384,7 +381,8 @@ body.drag { /* for planner */
     width: 100%;
     height: 32px;
     line-height: 32px;
-    background: linear-gradient(#0000, #0008);
+    background: linear-gradient(transparent, #000);
+    background: linear-gradient(transparent, #0008); /* NOTE: incompatible with old iOS */
     text-shadow: 0 0 8px #000;
     color: #fff;
     padding-top: 64px;
@@ -608,7 +606,7 @@ body.drag { /* for planner */
     position: relative; /* to make z-index work */
     background: none;
     padding: 0;
-    border: 1px solid #fff0;
+    border: 1px solid transparent;
     border-radius: 0;
     margin: 0;
     transition: all 10s linear;
@@ -617,7 +615,7 @@ body.drag { /* for planner */
 #paypal:after {
     content: ' ☹︎';
     white-space: pre;
-    color: #fff0;
+    color: transparent;
     width: 0;
     margin: 0 14px 0 -14px;
     display: inline-block;
