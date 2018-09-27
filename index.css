@@ -652,7 +652,7 @@ body.drag { /* for planner */
 #tile {
     width: 64px;
     height: 64px;
-    background: #000;;
+    background: #000;
     image-rendering: pixelated;
     display: block;
 }

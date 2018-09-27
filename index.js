@@ -92,7 +92,7 @@ function load(key, defaultValue) {
 /* Tree Visualization */
 
 function update() {
-    var profileGroups = document.getElementsByClassName("profile-group");
+    var profileGroups = Array.from(document.getElementsByClassName("profile-group"));
 
     gemel = new Gemel(selectedDigi);
     gemelCore = gemel.intersection();
@@ -482,7 +482,7 @@ function initAdvent() {
 }
 
 function initEvolLabels() {
-    var evolLabels = document.getElementsByClassName("evol-label");
+    var evolLabels = Array.from(document.getElementsByClassName("evol-label"));
 
     function selectProfileGroup() {
         var section = this.parentNode.parentNode;
@@ -715,7 +715,7 @@ function initVisualization() {
     }
 
     function setFrag(n) {
-        var fragCounters = document.getElementsByClassName("frag-counter");
+        var fragCounters = Array.from(document.getElementsByClassName("frag-counter"));
         for (var fragCounter of fragCounters) {
             if (n) {
                 show(fragCounter);
@@ -727,7 +727,7 @@ function initVisualization() {
     }
 
     function setAwkn(n) {
-        var portraits = document.getElementsByClassName("portrait");
+        var portraits = Array.from(document.getElementsByClassName("portrait"));
         var awkn = n == 2 ? 1 : n;
         for (var portrait of portraits) {
             var mon = portrait.parentNode.parentNode.id;
@@ -748,18 +748,18 @@ function initVisualization() {
         var profiles = Array.from(document.getElementsByClassName("profile"));
         profiles.push(blank);
         var size = ["", "large", "small"][n];
-        profiles.forEach(function (profile) {
+        for (var profile of profiles) {
             profile.classList.remove("large");
             profile.classList.remove("small");
             if (settings.size) {
                 profile.classList.add(size);
             }
-        });
+        }
         updateLines();
     }
 
     function setSkill(n) {
-        var signatureSets = document.getElementsByClassName("signature-set");
+        var signatureSets = Array.from(document.getElementsByClassName("signature-set"));
         for (var signatureSet of signatureSets) {
             if (n) {
                 signatureSet.style.display = "block";
@@ -793,11 +793,11 @@ function initVisualization() {
 
     function hideUselessSettings() {
         var uselessSettings = ["skill"];
-        uselessSettings.forEach(function (uselessSetting) {
+        for (var uselessSetting of uselessSettings) {
             var slideSet = document.getElementById(uselessSetting);
             var slidebox = slideSet.parentNode;
             hide(slidebox);
-        })
+        }
     }
 
     function saveSettings() {
@@ -905,7 +905,7 @@ function initPlanner() {
     function deleteEntry() {
         var n = parseInt(this.parentNode.dataset.n);
         planner = planner.slice(0, n).concat(planner.slice(n + 1));
-        for (var plan of document.getElementsByClassName("plan")) {
+        for (var plan of Array.from(document.getElementsByClassName("plan"))) {
             if (plan.dataset.n > n) {
                 plan.dataset.n -= 1;
             }
@@ -949,7 +949,7 @@ function initPlanner() {
         var x1 = getX(e);
         planA.style.transform = "translateX(" + (x1 - x0) + "px)";
 
-        var plans = document.getElementsByClassName("plan");
+        var plans = Array.from(document.getElementsByClassName("plan"));
         nB = nA;
         for (var planB of plans) {
             if (planA != planB) {
@@ -1475,7 +1475,7 @@ function initFooter() {
 }
 
 function initLineListeners() {
-    var profileGroups = document.getElementsByClassName("profile-group");
+    var profileGroups = Array.from(document.getElementsByClassName("profile-group"));
     for (var profileGroup of profileGroups) {
         var scroller = profileGroup.parentNode;
         scroller.addEventListener("scroll", updateLines);
