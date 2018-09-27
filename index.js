@@ -1006,7 +1006,7 @@ function initPlanner() {
         }
         planner = newPlanner;
 
-        for (var plan of plans) {
+        for (var plan of Array.from(plans)) {
             plan.removeAttribute("style");
         }
         planA.classList.remove("drag");
