@@ -72,7 +72,7 @@ function save(key, value) {
 function addUnloadListener(f) {
     window.addEventListener("beforeunload", f);
     window.addEventListener("pagehide", f);
-    window.addEventListener("visibilityChange", f);
+    window.addEventListener("visibilitychange", f);
 }
 
 function load(key, defaultValue) {
