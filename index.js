@@ -575,7 +575,8 @@ function initFiltration() {
 
     function okFilters(mon) {
         var okQuery = !filters.query.size || Array.from(filters.query).every(function (term) {
-            return mon.includes(term);
+            var name = digi[mon].name.en.toLowerCase().replace(/\W/, "-");
+            return name.includes(term);
         });
         var okTribe = !filters.tribe.size || filters.tribe.has(digi[mon].tribe);
         var okSkill = digi[mon].skills.some(function (skill) {
