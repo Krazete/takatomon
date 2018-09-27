@@ -70,9 +70,18 @@ function save(key, value) {
 }
 
 function addUnloadListener(f) {
-    window.addEventListener("beforeunload", f);
-    window.addEventListener("pagehide", f);
-    document.addEventListener("visibilitychange", f);
+    window.addEventListener("beforeunload", function () {
+        f();
+        return null;
+    });
+    window.addEventListener("pagehide", function () {
+        f();
+        return null;
+    });
+    document.addEventListener("visibilitychange", function () {
+        f();
+        return null;
+    });
 }
 
 function load(key, defaultValue) {
