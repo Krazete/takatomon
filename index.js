@@ -69,6 +69,12 @@ function save(key, value) {
     }
 }
 
+function addUnloadListener(f) {
+    window.addEventListener("beforeunload", f);
+    window.addEventListener("pagehide", f);
+    window.addEventListener("visibilityChange", f);
+}
+
 function load(key, defaultValue) {
     try {
         var valueJSON = window.localStorage.getItem(key);
@@ -435,7 +441,7 @@ function initProfiles() {
         addTapListener(card, selectProfile);
         getProfileGroup(digi[mon].evol).appendChild(profile);
     }
-    window.addEventListener("beforeunload", saveFragCount);
+    addUnloadListener(saveFragCount);
 }
 
 function initAdvent() {
@@ -819,7 +825,7 @@ function initVisualization() {
         setSlide(key, value)
         addTapListener(slideSet, advanceSlide);
     }
-    window.addEventListener("beforeunload", saveSettings);
+    addUnloadListener(saveSettings);
     deleteLegacyLocalStorage();
 }
 
@@ -1044,7 +1050,7 @@ function initPlanner() {
     }
     noplan();
     addTapListener(addPlan, addSelection);
-    window.addEventListener("beforeunload", savePlanner);
+    addUnloadListener(savePlanner);
 }
 
 function initFooter() {
