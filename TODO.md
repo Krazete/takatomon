@@ -1,11 +1,9 @@
 # TODO
-- check that growlmon.js works
 - use hina images somehow
 - improve untangling algorithm
 - complete plugin calculator
 - write meat, cluster, and fragment calculators
 - create image parser to allow fragment-based search
-- add a planner (saveable states)
 
 # DONT
 - minify code (readability is preferred)

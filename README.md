@@ -5,19 +5,19 @@ A digivolution tree viewer for [Digimon Links](https://digimonlinkz-en.bn-ent.ne
 
 ## Acknowledgements
 ### Data
-- [Growlmon.Net](https://growlmon.net) - Created by /u/ChasingRaccoons, Growlmon.Net is this project's main source of images and information.
+- [Chortos-2](https://chortos.selfip.net/digimonlinks/) - The current main source of this project's data.
+- [Growlmon.Net](https://growlmon.net) - Created by /u/ChasingRaccoons, Growlmon.Net was this project's original main source of images and information. Though Growlmon.Net has ended, its tier ranking list is still displayed on Takatomon.
 - [Online Fanatic](http://onlinefanatic.com/digimon-links-attribute-status-debuff-resistance-guide/) - For higher resolution tribe images.
 - [The Spriters Resource](https://spriters-resource.com/mobile/digimonlinks) - Only used for plugin images. None of the fragments or Hina sprites are used yet, but they are pretty nifty to have.
-- [Digimon Links](https://digimonlinkz-en.bn-ent.net) - The few assets that aren't available from the above are instead taken directly from the source.
 ### Ideas
 - /u/GrimmyTimmi - Initial Concept
 - /u/dinwitt - Search Box
 - /u/mviper13 - Links to Growlmon.Net
-- /u/tyger249 - Tribe Icons, Digimon Nametags
+- /u/tyger249 - Tribe Icons, Digimon Nametags, Saveable States
 - /u/imnotyouama - Tribe Filter
 - /u/gashunum - DNA2 Filter
 - /u/Noah040718 - Plugin Calculator
+- /u/Chortos-2 - URL Parameter Preselection
 ### Not-Yet-Implemented Ideas
-- /u/tyger249 - Saveable States
 - /u/mviper13 - Fragment Calculator
 - /u/JudgemasterCid - Mutant Inclusion

@@ -46,7 +46,7 @@
 - changed selection group to look like evol groups
 - normalized padding and border radius of evol group labels
 
-# [v3](https://github.com/Krazete/takatomon/tree/v3) (8/31/2018 -)
+# [v3](https://github.com/Krazete/takatomon/tree/v3) (8/31/2018 - 9/26/2018)
 ## Features
 - initialized search filters
 - - basic: tribe, skill element, skill effect
@@ -60,7 +60,7 @@
 - initialized footer
 - - added website description, contact information, and q&a
 - - moved github button to about section
-- replaced growlmon.net export button with individual growlmon.net buttons under each digimon card
+- replaced growlmon.net export button with individual growlmon.net links under each digimon card
 - initialized plugin calculator
 ## Design
 - increased scrollable area of selection group and evol groups
@@ -98,11 +98,33 @@
 - fixed some problems with safari and firefox
 - - #rgba, gradients, scrolling, and for-of loops were the main issues
 
-# [v4](https://github.com/Krazete/takatomon/tree/master) (-)
+# [v4](https://github.com/Krazete/takatomon/tree/master) (9/27/2018 - )
 ## Features
 - initialize planner
-- fix plugin calculator
-- initialize fragment calculator
+  - can add, delete, view, annotate, and rearrange plans
+  - stored in local storage
+- initialize fragment counter
+  - changed background based on count
+  - stored in local storage
+- added fragment counter toggle to settings bar
+- initialize importer
+- initialize exporter
+- initialize local storage resetter
+- initialize parameter preselection
+- changed growlmon.net links to chortos.selfip.net links
+## Design
+- renamed classes
+- generalized .toggle-search to .bar-button
+- moved settings bar to bottom
+- edited about description
+- edited faq
+
+# [v5](https://github.com/Krazete/takatomon/tree/master) ( - )
+## Features
+- nothing yet
+## Design
+- switched information database
+- switched image database
 
 _Changes are pushed incrementally, so all versions of Takatomon have overlapping timelines._  
 _The dates shown approximately mark when the defining changes were pushed and made available to the public._
