@@ -31,12 +31,14 @@ monTitles[285] = "KingSukamon";
 monTitles[294] = "Pandamon";
 monTitles[284] = "Jijimon";
 monTitles[384] = "Cranimon X";
+var jpTitles = {};
 for (var img of document.getElementsByTagName("img")) {
     var anchor = img.parentNode;
     var title = anchor.title;
     var hrefParts = anchor.href.split("/");
     var number = parseInt(hrefParts[hrefParts.length - 1]);
     if (number in monTitles) {
+        jpTitles[number] = anchor.title;
         anchor.title = monTitles[number];
     }
     else {
@@ -56,6 +58,10 @@ for (var img of document.getElementsByTagName("img")) {
         if (name in digi) {
             if (typeof digi[name].tempID == "undefined") {
                 digi[name].tempID = number;
+                digi[name].name = {
+                    "en": monTitles[number],
+                    "jp": jpTitles[number]
+                };
             }
             else {
                 // console.log("Duplicate Digimon " + name + " found with numbers " + digi[name].tempID + " and " + number + ".");

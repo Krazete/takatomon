@@ -977,7 +977,7 @@ function initPlanner() {
 
     function stopDrag() {
         var planGroup = document.getElementById("plan-group");
-        var plans = Array.from(planGroup.getElementsByClassName("plan"));
+        var plans = planGroup.getElementsByClassName("plan"); // TODO: fix how DOM plans are appended
         var newPlanner = [];
         var d = 0;
         for (var i = 0; i < planner.length; i++) {
