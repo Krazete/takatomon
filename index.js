@@ -101,7 +101,7 @@ function update() {
     for (var profileGroup of profileGroups) { // for safari
         var rect = profileGroup.getBoundingClientRect();
         if (rect.width < window.innerWidth) {
-            profileGroup.parentNode.scrollTo(0, 0);
+            profileGroup.parentNode.scroll(0, 0);
         }
     }
     if (settings.sort == 2) {
