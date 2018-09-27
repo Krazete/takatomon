@@ -770,12 +770,13 @@ function initVisualization() {
         var code = ["en", "jp"][n];
         for (var profile of profiles) {
             if (profile.id != "blank") {
+                var id = profile.id.replace("-clone", "");
                 var moniker = profile.getElementsByClassName("moniker")[0];
                 if (code == "en") {
-                    moniker.innerHTML = digi[profile.id].name.en.replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2")
+                    moniker.innerHTML = digi[id].name.en.replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2")
                 }
                 else if (code == "jp") {
-                    moniker.innerHTML = digi[profile.id].name.jp.replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2")
+                    moniker.innerHTML = digi[id].name.jp.replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2")
                 }
             }
         }
