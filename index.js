@@ -34,6 +34,7 @@ var settings = {
     "frag": load("frag", 0),
     "awkn": 0,
     "size": load("size", 0),
+    "lang": load("lang", 0),
     "skill": 0
 };
 var setSlide, updateAdvent;
@@ -47,7 +48,7 @@ function addTapListener(e, f) {
 
 function getProfileGroup(id) {
     var section = document.getElementById(id);
-    var profileGroup = Array.from(section.getElementsByClassName("profile-group"))[0];
+    var profileGroup = section.getElementsByClassName("profile-group")[0];
     return profileGroup;
 }
 
@@ -70,18 +71,13 @@ function save(key, value) {
 }
 
 function addUnloadListener(f) {
-    window.addEventListener("beforeunload", function () {
+    function fNull() {
         f();
         return null;
-    });
-    window.addEventListener("pagehide", function () {
-        f();
-        return null;
-    });
-    document.addEventListener("visibilitychange", function () {
-        f();
-        return null;
-    });
+    }
+    window.addEventListener("beforeunload", fNull);
+    window.addEventListener("pagehide", fNull);
+    document.addEventListener("visibilitychange", fNull);
 }
 
 function load(key, defaultValue) {
@@ -139,7 +135,7 @@ function updateClones() {
             clone.classList.remove("preview");
             show(clone);
             clone.id = mon + "-clone";
-            var card = Array.from(clone.getElementsByClassName("card"))[0];
+            var card = clone.getElementsByClassName("card")[0];
             addTapListener(card, deselectProfile);
             selection.appendChild(clone);
         }
@@ -251,7 +247,7 @@ function drawEdge(edge, color, width) {
 
 function getPoint(mon, side) {
     var profile = document.getElementById(mon);
-    var card = Array.from(profile.getElementsByClassName("card"))[0];
+    var card = profile.getElementsByClassName("card")[0];
     var rect = card.getBoundingClientRect();
     var dy = {
         "top": 1,
@@ -438,7 +434,7 @@ function initProfiles() {
     for (var mon in digi) { // TODO: alphabetize first
         var profile = newProfile(mon);
         var fragCounters = Array.from(profile.getElementsByClassName("frag-counter"));
-        var card = Array.from(profile.getElementsByClassName("card"))[0];
+        var card = profile.getElementsByClassName("card")[0];
         if (fragCounters.length) {
             var fragCounter = fragCounters[0];
             if (fragCount[mon]) {
@@ -631,6 +627,7 @@ function initVisualization() {
         "frag": setFrag,
         "awkn": setAwkn,
         "size": setSize,
+        "lang": setLang,
         "skill": setSkill
     };
 
@@ -668,7 +665,7 @@ function initVisualization() {
     function setPreview(n) {
         for (var mon in digi) {
             var profile = document.getElementById(mon);
-            var card = Array.from(profile.getElementsByClassName("card"))[0];
+            var card = profile.getElementsByClassName("card")[0];
             if (n) {
                 card.addEventListener("mouseover", previewGemel);
                 card.addEventListener("touchstart", previewGemel);
@@ -693,7 +690,7 @@ function initVisualization() {
             for (var node of tree.nodes) {
                 var profile = document.getElementById(node);
                 profile.classList.add("preview");
-                var card = Array.from(profile.getElementsByClassName("card"))[0];
+                var card = profile.getElementsByClassName("card")[0];
                 var rect = card.getBoundingClientRect();
                 linecontext.clearRect(
                     rect.left + window.scrollX + 1,
@@ -767,6 +764,24 @@ function initVisualization() {
         updateLines();
     }
 
+    function setLang(n) {
+        var profiles = Array.from(document.getElementsByClassName("profile"));
+        // TODO: find out what the word for "blank" is in Japanese
+        var code = ["en", "jp"][n];
+        for (var profile of profiles) {
+            if (profile.id != "blank") {
+                var moniker = profile.getElementsByClassName("moniker")[0];
+                if (code == "en") {
+                    moniker.innerHTML = digi[profile.id].name.en.replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2")
+                }
+                else if (code == "jp") {
+                    moniker.innerHTML = digi[profile.id].name.jp.replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2")
+                }
+            }
+        }
+        updateLines();
+    }
+
     function setSkill(n) {
         var signatureSets = Array.from(document.getElementsByClassName("signature-set"));
         for (var signatureSet of signatureSets) {
@@ -814,6 +829,7 @@ function initVisualization() {
         save("preview", settings.preview);
         save("frag", settings.frag);
         save("size", settings.size);
+        save("lang", settings.lang);
     }
 
     function deleteLegacyLocalStorage() { // TODO: delete this in the next version?
@@ -1415,7 +1431,7 @@ function initFooter() {
         for (var mon in digi) {
             if (digi[mon].fragments) {
                 var profile = document.getElementById(mon);
-                var fragCounter = Array.from(profile.getElementsByClassName("frag-counter"))[0];
+                var fragCounter = profile.getElementsByClassName("frag-counter")[0];
                 if (fragCount[mon]) {
                     fragCounter.value = fragCount[mon];
                 }

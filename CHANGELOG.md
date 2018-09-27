@@ -98,7 +98,7 @@
 - fixed some problems with safari and firefox
 - - #rgba, gradients, scrolling, and for-of loops were the main issues
 
-# [v4](https://github.com/Krazete/takatomon/tree/master) (9/27/2018 - )
+# [v4](https://github.com/Krazete/takatomon/tree/master) (9/24/2018 - )
 ## Features
 - initialize planner
   - can add, delete, view, annotate, and rearrange plans
@@ -121,10 +121,12 @@
 
 # [v5](https://github.com/Krazete/takatomon/tree/master) ( - )
 ## Features
-- nothing yet
+- initialized language option
 ## Design
 - switched information database
 - switched image database
+## Performance
+- fixed more compatibility issues
 
 _Changes are pushed incrementally, so all versions of Takatomon have overlapping timelines._  
 _The dates shown approximately mark when the defining changes were pushed and made available to the public._
