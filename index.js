@@ -1530,17 +1530,37 @@ function initLineListeners() {
 }
 
 function initParameter() { // fake ?key=value format
-    var paramSplit = window.decodeURIComponent(location.search).split("sd=");
-    if (paramSplit.length > 1) {
-        var paramString = paramSplit[1];
-        var mons = paramString.split(",");
-        for (var mon of mons) {
-            if (mon in digi) {
-                selectedDigi.add(mon);
+    var kvs = window.decodeURIComponent(location.search).split(/\?|\&/);
+    for (var kv of kvs) {
+        var kvSplit = kv.split("=");
+        var key = kvSplit[0];
+        var value = kvSplit[1];
+        if (key == "sd") {
+            var mons = value.split(",");
+            for (var mon of mons) {
+                if (mon in digi) {
+                    selectedDigi.add(mon);
+                }
+            }
+            update();
+        }
+        else if (key == "fc") {
+            var mcs = value.split(",");
+            for (var mc of mcs) {
+                var mcSplit = mc.split(":");
+                var mon = mcSplit[0];
+                var count = parseInt(mcSplit[1]);
+                var profile = document.getElementById(mon);
+                var fragCounter = profile.getElementsByClassName("frag-counter")[0];
+                if (typeof fragCounter != "undefined") {
+                    fragCount[mon] = count;
+                    fragCounter.value = count;
+                    styleFragments(fragCounter);
+                }
             }
         }
-        update();
     }
+    history.replaceState({}, document.title, "/");
 }
 
 window.addEventListener("DOMContentLoaded", init);

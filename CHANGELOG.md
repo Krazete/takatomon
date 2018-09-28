@@ -101,11 +101,11 @@
 # [v4](https://github.com/Krazete/takatomon/tree/master) (9/24/2018 - )
 ## Features
 - initialize planner
-  - can add, delete, view, annotate, and rearrange plans
-  - stored in local storage
+- - can add, delete, view, annotate, and rearrange plans
+- - stored in local storage
 - initialize fragment counter
-  - changed background based on count
-  - stored in local storage
+- - changed background based on count
+- - stored in local storage
 - added fragment counter toggle to settings bar
 - initialize importer
 - initialize exporter
@@ -122,6 +122,9 @@
 # [v5](https://github.com/Krazete/takatomon/tree/master) ( - )
 ## Features
 - initialized language option
+- initialized url parameters
+- - preselect digimon with sd key
+- - preset fragment counters with fc key
 ## Design
 - switched information database
 - switched image database
