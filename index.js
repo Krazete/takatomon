@@ -32,10 +32,10 @@ var settings = {
     "sort": load("sort", 0),
     "preview": load("preview", 0),
     "frag": load("frag", 0),
-    "awkn": 0,
+    "awkn": load("awkn", 0),
     "size": load("size", 0),
     "lang": load("lang", 0),
-    "skill": 0
+    "skill": load("skill", 0)
 };
 var setSlide, updateAdvent;
 
@@ -371,7 +371,7 @@ function initProfiles() {
             var info = document.createElement("div");
                 info.className = "info";
                 var anchor = document.createElement("a");
-                    anchor.href = "https://chortos.selfip.net/digimonlinks/monsters/" + mon; // TODO: fix this
+                    anchor.href = "https://chortos.selfip.net/digimonlinks/monsters/" + mon;
                     anchor.target = "_blank";
                     anchor.innerHTML = "More Info";
                 info.appendChild(anchor);
@@ -777,11 +777,15 @@ function initVisualization() {
             if (profile.id != "blank") {
                 var id = profile.id.replace("-clone", "");
                 var moniker = profile.getElementsByClassName("moniker")[0];
+                var info = profile.getElementsByClassName("info")[0];
+                var anchor = info.getElementsByTagName("a")[0];
                 if (code == "en") {
                     moniker.innerHTML = digi[id].name.en.replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2");
+                    anchor.href = anchor.href.replace(/digimonlink[s|z]/, "digimonlinks");
                 }
                 else if (code == "jp") {
                     moniker.innerHTML = digi[id].name.jp;
+                    anchor.href = anchor.href.replace(/digimonlink[s|z]/, "digimonlinkz");
                 }
             }
         }
@@ -834,8 +838,10 @@ function initVisualization() {
         save("sort", settings.sort);
         save("preview", settings.preview);
         save("frag", settings.frag);
+        save("awkn", settings.awkn);
         save("size", settings.size);
         save("lang", settings.lang);
+        save("skill", settings.skill);
     }
 
     function deleteLegacyLocalStorage() { // TODO: delete this in the next version?
