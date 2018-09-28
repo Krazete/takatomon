@@ -169,7 +169,7 @@ function updateProfiles() {
     }
 }
 
-function untangleProfiles() { // TODO: improve this algorithm // ALSO TODO: organize by alphabet secondarily
+function untangleProfiles() { // TODO: improve this algorithm
     var visited = new Set();
 
     function dfs(mon, d, repeat) {
@@ -435,7 +435,7 @@ function initProfiles() {
         save("fragCount", fragCount);
     }
 
-    for (var mon in digi) { // TODO: alphabetize first
+    for (var mon in digi) { // digi.js should already be sorted numerically
         var profile = newProfile(mon);
         var fragCounters = Array.from(profile.getElementsByClassName("frag-counter"));
         var card = profile.getElementsByClassName("card")[0];
@@ -648,7 +648,7 @@ function initVisualization() {
             untangleProfiles();
         }
         else {
-            var basis = n ? byTribe : byAlphabet;
+            var basis = n ? byAlphabet : byDefault;
             var keys = Object.keys(digi);
             keys.sort(basis);
             sortProfiles(keys);
@@ -661,11 +661,17 @@ function initVisualization() {
         return aName < bName ? -1 : aName > bName ? 1 : 0;
     }
 
-    function byTribe(a, b) {
-        var tribes = ["mirage", "blazing", "glacier", "electric", "earth", "bright", "abyss"];
-        var tribeComparison = tribes.indexOf(digi[a].tribe) - tribes.indexOf(digi[b].tribe);
-        return tribeComparison ? tribeComparison : byAlphabet(a, b);
+    function byDefault(a, b) {
+        var a = parseInt(a);
+        var b = parseInt(b);
+        return a - b;
     }
+
+    // function byTribe(a, b) { // TODO: delete this eventually
+    //     var tribes = ["mirage", "blazing", "glacier", "electric", "earth", "bright", "abyss"];
+    //     var tribeComparison = tribes.indexOf(digi[a].tribe) - tribes.indexOf(digi[b].tribe);
+    //     return tribeComparison ? tribeComparison : byAlphabet(a, b);
+    // }
 
     function setPreview(n) {
         for (var mon in digi) {
@@ -883,7 +889,7 @@ function initPlanner() {
         noplan();
     }
 
-    function byEvol(a, b) { // TODO: fix mega order and sort secondarily by alphabet
+    function byEvol(a, b) { // TODO: fix mega order and sort numerically secondarily
         var evols = ["in-training-i", "in-training-ii", "rookie", "champion", "ultimate", "mega"];
         var rank = evols.indexOf(digi[a].evol) - evols.indexOf(digi[b].evol);
         return rank;
