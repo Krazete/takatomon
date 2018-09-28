@@ -1549,12 +1549,13 @@ function initParameter() { // fake ?key=value format
             for (var mc of mcs) {
                 var mcSplit = mc.split(":");
                 var mon = mcSplit[0];
-                var count = parseInt(mcSplit[1]);
                 var profile = document.getElementById(mon);
                 var fragCounter = profile.getElementsByClassName("frag-counter")[0];
                 if (typeof fragCounter != "undefined") {
-                    fragCount[mon] = count;
-                    fragCounter.value = count;
+                    var count = parseInt(mcSplit[1]);
+                    var boundedCount = Math.max(0, Math.min(count, 999));
+                    fragCount[mon] = boundedCount;
+                    fragCounter.value = boundedCount;
                     styleFragments(fragCounter);
                 }
             }
