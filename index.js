@@ -546,7 +546,8 @@ function initFiltration() {
 
     function setQuery() {
         var lower = this.value.toLowerCase();
-        var parsed = lower.split(/[^a-z]+/);
+        var parsed = lower.split(/\s+/);
+        console.log(parsed);
         filters.query = new Set(parsed);
         filters.query.delete("");
         updateSearchResults();
@@ -586,8 +587,9 @@ function initFiltration() {
 
     function okFilters(mon) {
         var okQuery = !filters.query.size || Array.from(filters.query).every(function (term) {
-            var name = digi[mon].name.en.toLowerCase().replace(/\W/, "-");
-            return name.includes(term);
+            var en = digi[mon].name.en.toLowerCase().replace(/\W+/, "-");
+            var jp = digi[mon].name.jp.toLowerCase();
+            return en.includes(term) || jp.includes(term);
         });
         var okTribe = !filters.tribe.size || filters.tribe.has(digi[mon].tribe);
         var okSkill = digi[mon].skills.some(function (skill) {
@@ -773,10 +775,10 @@ function initVisualization() {
                 var id = profile.id.replace("-clone", "");
                 var moniker = profile.getElementsByClassName("moniker")[0];
                 if (code == "en") {
-                    moniker.innerHTML = digi[id].name.en.replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2")
+                    moniker.innerHTML = digi[id].name.en.replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2");
                 }
                 else if (code == "jp") {
-                    moniker.innerHTML = digi[id].name.jp.replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2")
+                    moniker.innerHTML = digi[id].name.jp;
                 }
             }
         }
