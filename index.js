@@ -547,7 +547,6 @@ function initFiltration() {
     function setQuery() {
         var lower = this.value.toLowerCase();
         var parsed = lower.split(/\s+/);
-        console.log(parsed);
         filters.query = new Set(parsed);
         filters.query.delete("");
         updateSearchResults();
@@ -1402,8 +1401,11 @@ function initFooter() {
         setSlide("tree", 0);
         setSlide("sort", 0);
         setSlide("preview", 0);
-        setSlide("size", 0);
+        setSlide("frag", 0);
         setSlide("awkn", 0);
+        setSlide("size", 0);
+        setSlide("lang", 0);
+        setSlide("skill", 0);
         selectedDigi = new Set();
         planner = [];
         fragCount = {};
