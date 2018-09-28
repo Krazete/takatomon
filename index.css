@@ -139,6 +139,9 @@ body.drag { /* for planner */
 .frag-counter::-webkit-inner-spin-button, .frag-counter::-webkit-outer-spin-button {
     -webkit-appearance: none;
 }
+.frag-counter.n {
+    background: #ddd;
+}
 .frag-counter.vii {
     background: #fff;
 }

@@ -405,6 +405,7 @@ function initProfiles() {
     }
 
     styleFragments = function (element) { // NOTE: used in updatePlanFrag
+        element.classList.remove("n");
         element.classList.remove("vii");
         element.classList.remove("xi");
         element.classList.remove("xiv");
@@ -424,6 +425,9 @@ function initProfiles() {
         }
         else if (element.value >= 7) {
             element.classList.add("vii");
+        }
+        else if (element.value >= 1) {
+            element.classList.add("n");
         }
     }
 
