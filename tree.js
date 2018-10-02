@@ -31,41 +31,53 @@ function Gemel(roots) { // gemels are unions of trees
         for (var root of roots) {
             parsedRoots.push(parseInt(root));
         }
+        roots = parsedRoots;
     }
-    this.roots = new Set(parsedRoots);
+    this.roots = new Set(roots);
     this.nodes = new Set();
     this.JSONedges = new Set(); // stringify edges because [] != [] but "" == ""
 
-    function init(mon, direction) {
+    // pointers for initialization
+    var nodes = this.nodes;
+    var JSONedges = this.JSONedges;
+    function edgeBack(mon, JSONedges) {
         nodes.add(mon);
-        if (direction < 1) {
-            for (var prevmon of prev(mon)) {
-                var edge = [prevmon, mon];
-                var JSONedge = JSON.stringify(edge);
-                if (!JSONedges.has(JSONedge)) {
-                    JSONedges.add(JSONedge);
-                    init(prevmon, -1);
-                }
-            }
-        }
-        if (direction > -1) {
-            for (var nextmon of next(mon)) {
-                var edge = [mon, nextmon];
-                var JSONedge = JSON.stringify(edge);
-                if (!JSONedges.has(JSONedge)) {
-                    JSONedges.add(JSONedge);
-                    init(nextmon, 1);
-                }
+        for (var prevmon of prev(mon)) {
+            var edge = [prevmon, mon];
+            var JSONedge = JSON.stringify(edge);
+            if (!JSONedges.has(JSONedge)) {
+                JSONedges.add(JSONedge);
+                edgeBack(prevmon, JSONedges)
             }
         }
     }
+    function edgeFore(mon, JSONedges) {
+        nodes.add(mon);
+        for (var nextmon of next(mon)) {
+            var edge = [mon, nextmon];
+            var JSONedge = JSON.stringify(edge);
+            if (!JSONedges.has(JSONedge)) {
+                JSONedges.add(JSONedge);
+                edgeFore(nextmon, JSONedges)
+            }
+        }
+    }
+    function initEdges(mon) {
+        var visitedBack = new Set();
+        var visitedFore = new Set();
+        edgeBack(mon, visitedBack);
+        edgeFore(mon, visitedFore);
+        for (var edge of visitedBack) {
+            JSONedges.add(edge);
+        }
+        for (var edge of visitedFore) {
+            JSONedges.add(edge);
+        }
+    }
     if (typeof roots == "object") {
-        // pointers for initialization
-        var nodes = this.nodes;
-        var JSONedges = this.JSONedges;
         // initialization
         for (var root of roots) {
-            init(parseInt(root), 0);
+            initEdges(parseInt(root));
         }
     }
     if (this.roots.size == 1) { // memoization
