@@ -2,6 +2,8 @@
 
 /* Globals */
 
+var evols = ["in-training-i", "in-training-ii", "rookie", "champion", "ultimate", "mega"];
+
 var lastUpdate = new Date("09-19-2018 04:07:47 UTC");
 
 var blank;
@@ -20,7 +22,7 @@ var searchMode;
 var filters = { // only global because of advent
     "query": new Set(),
     "tribe": new Set(),
-    "rival": new Set(),
+    "attribute": new Set(),
     "effect": new Set(),
     "special": new Set() // NOTE: used in updateAdvent
 };
@@ -204,7 +206,7 @@ function untangleProfiles() { // TODO: improve this algorithm
 
 function sortProfiles(sortedDigi) {
     for (var mon of sortedDigi) {
-        var profileGroup = getProfileGroup(digi[mon].evol);
+        var profileGroup = getProfileGroup(evols[digi[mon].evol]);
         var profile = document.getElementById(mon);
         profileGroup.appendChild(profile);
     }
@@ -329,8 +331,7 @@ function initProfiles() {
                 card.className = "card";
                 var portrait = document.createElement("img");
                     portrait.className = "portrait";
-                    if (typeof digi[mon].tempID == "undefined") console.log(mon);
-                    portrait.src = "img/mon/0/" + digi[mon].tempID + ".png";
+                    portrait.src = "img/mon/0/" + digi[mon].names.en.toLowerCase().replace(/\W+/g, " ").trim().replace(/\s+/g, "-") + ".png";
                     if (mon == "birdramon") {
                         var r = Math.random();
                         if (r < 0.001) {
@@ -346,18 +347,18 @@ function initProfiles() {
                 card.appendChild(tribe);
                 var moniker = document.createElement("div");
                     moniker.className = "moniker";
-                    moniker.innerHTML = digi[mon].name.en.replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2");
+                    moniker.innerHTML = digi[mon].names.en.replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2");
                 card.appendChild(moniker);
             profile.appendChild(card);
             var signatureSet = document.createElement("div");
                 signatureSet.className = "signature-set";
                 for (var skill of digi[mon].skills) {
                     var signature = document.createElement("div");
-                        var rival = document.createElement("img");
-                            rival.className = "rival";
-                            rival.src = "img/tribes/" + skill.rival + ".png";
-                            rival.alt = skill.rival;
-                        signature.appendChild(rival);
+                        var attribute = document.createElement("img");
+                            attribute.className = "attribute";
+                            attribute.src = "img/tribes/" + skill.attribute + ".png";
+                            attribute.alt = skill.attribute;
+                        signature.appendChild(attribute);
                         var effect = document.createElement("span");
                             effect.innerHTML = ["Support", "ST", "AoE"][skill.effect];
                         signature.appendChild(effect);
@@ -448,7 +449,7 @@ function initProfiles() {
             fragCounter.addEventListener("input", setFragments);
         }
         addTapListener(card, selectProfile);
-        getProfileGroup(digi[mon].evol).appendChild(profile);
+        getProfileGroup(evols[digi[mon].evol]).appendChild(profile);
     }
     addUnloadListener(saveFragCount);
 }
@@ -541,7 +542,7 @@ function initFiltration() {
         }
         filters.query.clear();
         filters.tribe.clear();
-        filters.rival.clear();
+        filters.attribute.clear();
         filters.effect.clear();
         filters.special.clear();
         searchMode = false;
@@ -590,16 +591,18 @@ function initFiltration() {
 
     function okFilters(mon) {
         var okQuery = !filters.query.size || Array.from(filters.query).every(function (term) {
-            var en = digi[mon].name.en.toLowerCase().replace(/\W+/, "-");
-            var jp = digi[mon].name.jp.toLowerCase();
-            return en.includes(term) || jp.includes(term);
+            var en = digi[mon].names.en.toLowerCase().replace(/\W+/g, " ").trim();
+            var jp = digi[mon].names.ja.toLowerCase();
+            var ko = digi[mon].names.ko.toLowerCase();
+            var zhTW = digi[mon].names["zh-TW"].toLowerCase();
+            return en.includes(term) || jp.includes(term) || ko.includes(term) || zhTW.includes(term);
         });
         var okTribe = !filters.tribe.size || filters.tribe.has(digi[mon].tribe);
         var okSkill = digi[mon].skills.some(function (skill) {
-            var okRival = !filters.rival.size || filters.rival.has(skill.rival);
+            var okAttribute = !filters.attribute.size || filters.attribute.has(skill.attribute);
             var effect = ["support", "st", "aoe"][skill.effect];
             var okEffect = !filters.effect.size || filters.effect.has(effect);
-            return okRival && okEffect;
+            return okAttribute && okEffect;
         });
         var okTree = !filters.special.has("tree") || [gemelCore, gemel][settings.tree].nodes.has(parseInt(mon));
         var okDNA2 = !filters.special.has("dna") || digi[mon].skills.length > 1;
@@ -656,8 +659,8 @@ function initVisualization() {
     }
 
     function byAlphabet(a, b) {
-        var aName = digi[a].name.en.toLowerCase();
-        var bName = digi[b].name.en.toLowerCase();
+        var aName = digi[a].names.en.toLowerCase();
+        var bName = digi[b].names.en.toLowerCase();
         return aName < bName ? -1 : aName > bName ? 1 : 0;
     }
 
@@ -778,21 +781,19 @@ function initVisualization() {
     function setLang(n) {
         var profiles = Array.from(document.getElementsByClassName("profile"));
         // TODO: find out what the word for "blank" is in Japanese
-        var code = ["en", "jp"][n];
+        var codes = ["en", "ja", "ko", "zh-TW"];
         for (var profile of profiles) {
             if (profile.id != "blank") {
                 var id = profile.id.replace("-clone", "");
                 var moniker = profile.getElementsByClassName("moniker")[0];
                 var info = profile.getElementsByClassName("info")[0];
                 var anchor = info.getElementsByTagName("a")[0];
-                if (code == "en") {
-                    moniker.innerHTML = digi[id].name.en.replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2");
-                    anchor.href = anchor.href.replace(/digimonlink[s|z]/, "digimonlinks");
+                var code = codes[n];
+                if (typeof digi[id].names[code] == "undefined") {
+                    code = "en";
                 }
-                else if (code == "jp") {
-                    moniker.innerHTML = digi[id].name.jp;
-                    anchor.href = anchor.href.replace(/digimonlink[s|z]/, "digimonlinkz");
-                }
+                moniker.innerHTML = digi[id].names[code].replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2");
+                anchor.href = anchor.href.replace(/digimonlink[s|z]/, code == "en" ? "digimonlinks" : "digimonlinkz");
             }
         }
         updateLines();
@@ -917,10 +918,10 @@ function initPlanner() {
                 for (var mon of planner[n].digi) {
                     var photo = document.createElement("img");
                         if (planner[n].awkn != 5 || digi[mon].v2) {
-                            photo.src = "img/mon/" + [0, 1, 1, 3, 4, 5][planner[n].awkn] + "/" + digi[mon].tempID + ".png";
+                            photo.src = "img/mon/" + [0, 1, 1, 3, 4, 5][planner[n].awkn] + "/" + digi[mon].names.en.toLowerCase().replace(/\W+/g, " ").trim().replace(/\s+/g, "-") + ".png";
                         }
                         else {
-                            photo.src = "img/mon/" + [0, 1, 1, 3, 4, 4][planner[n].awkn] + "/" + digi[mon].tempID + ".png";
+                            photo.src = "img/mon/" + [0, 1, 1, 3, 4, 4][planner[n].awkn] + "/" + digi[mon].names.en.toLowerCase().replace(/\W+/g, " ").trim().replace(/\s+/g, "-") + ".png";
                         }
                     viewer.appendChild(photo);
                 }
@@ -1257,7 +1258,7 @@ function initFooter() {
             }
         }
 
-        footCalculate.innerHTML = "This route (" + (digi[youngestMon].name.en) + " → " + (digi[oldestMega == "" ? oldestMon : oldestMega].name.en) + ") at awakening +" + settings.awkn + " costs<br>";
+        footCalculate.innerHTML = "This route (" + (digi[youngestMon].names.en) + " → " + (digi[oldestMega == "" ? oldestMon : oldestMega].names.en) + ") at awakening +" + settings.awkn + " costs<br>";
         for (var evol in selectedPlugins) {
             for (var i = 0; i < 4; i++) {
                 if (selectedPlugins[evol][i]) {

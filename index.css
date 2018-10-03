@@ -303,7 +303,7 @@ body.drag { /* for planner */
     display: block;
 }
 
-.rival {
+.attribute {
     width: 20%;
     vertical-align: bottom;
     filter: brightness(0);
