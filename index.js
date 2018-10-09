@@ -1096,11 +1096,11 @@ function initPlanner() {
 
 function initFooter() {
     var footAbout = document.getElementById("foot-about");
-    var footQA = document.getElementById("foot-qa");
+    var footFAQ = document.getElementById("foot-faq");
     var footPort = document.getElementById("foot-port");
     var footClose = document.getElementById("foot-close");
     var toeAbout = document.getElementById("toe-about");
-    var toeQA = document.getElementById("toe-qa");
+    var toeFAQ = document.getElementById("toe-faq");
     var toePort = document.getElementById("toe-port");
     var toeClose = document.getElementById("toe-close");
     var importer = document.getElementById("import");
@@ -1309,33 +1309,33 @@ function initFooter() {
     addTapListener(exporter, exportPlanFrag);
     addTapListener(deporter, deportLocalStorage);
     hide(footAbout);
-    hide(footQA);
+    hide(footFAQ);
     hide(footPort);
     hide(footClose);
     addTapListener(toeAbout, function () {
         show(footAbout);
-        hide(footQA);
+        hide(footFAQ);
         hide(footPort);
         show(footClose);
         updateLines();
     });
-    addTapListener(toeQA, function () {
+    addTapListener(toeFAQ, function () {
         hide(footAbout);
-        show(footQA);
+        show(footFAQ);
         hide(footPort);
         show(footClose);
         updateLines();
     });
     addTapListener(toePort, function () {
         hide(footAbout);
-        hide(footQA);
+        hide(footFAQ);
         show(footPort);
         show(footClose);
         updateLines();
     });
     addTapListener(toeClose, function () {
         hide(footAbout);
-        hide(footQA);
+        hide(footFAQ);
         hide(footPort);
         hide(footClose);
         updateLines();
