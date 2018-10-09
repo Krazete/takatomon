@@ -130,6 +130,7 @@
 - switched image database
 ## Performance
 - fixed more compatibility issues
+- - fixed advent time format
 
 _Changes are pushed incrementally, so all versions of Takatomon have overlapping timelines._  
 _The dates shown approximately mark when the defining changes were pushed and made available to the public._

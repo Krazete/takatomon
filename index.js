@@ -2,8 +2,6 @@
 
 /* Globals */
 
-var lastUpdate = new Date("09-19-2018 04:07:47 UTC");
-
 var blank;
 var linelayer;
 var linecontext;
@@ -1099,13 +1097,10 @@ function initPlanner() {
 function initFooter() {
     var footAbout = document.getElementById("foot-about");
     var footQA = document.getElementById("foot-qa");
-    var footCalculate = document.getElementById("foot-calculate");
     var footPort = document.getElementById("foot-port");
     var footClose = document.getElementById("foot-close");
-    var timestamp = document.getElementById("timestamp");
     var toeAbout = document.getElementById("toe-about");
     var toeQA = document.getElementById("toe-qa");
-    var toeCalculate = document.getElementById("toe-calculate");
     var toePort = document.getElementById("toe-port");
     var toeClose = document.getElementById("toe-close");
     var importer = document.getElementById("import");
@@ -1115,164 +1110,6 @@ function initFooter() {
     var tile = document.getElementById("tile");
     var reader = new FileReader();
     var input;
-
-    function initTimestamp() {
-        var months = [
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        ];
-        var month = months[lastUpdate.getMonth()];
-        var date = lastUpdate.getDate();
-        var year = lastUpdate.getFullYear();
-        timestamp.innerHTML = month + " " + date + ", " + year;
-    }
-
-    function costPlugins() {
-        var plugins = [
-            {
-                "champion": [8, 3, 0, 0],
-                "ultimate": [24, 20, 7, 6],
-                "mega": [0, 0, 20, 17]
-            },
-            {
-                "champion": [12, 5, 0, 0],
-                "ultimate": [36, 30, 11, 9],
-                "mega": [0, 0, 30, 26]
-            },
-            {
-                "champion": [16, 6, 0, 0],
-                "ultimate": [48, 40, 14, 12],
-                "mega": [0, 0, 40, 34]
-            },
-            {
-                "champion": [24, 9, 0, 0],
-                "ultimate": [72, 60, 21, 18],
-                "mega": [0, 0, 60, 51]
-            },
-            {
-                "champion": [24, 9, 0, 0],
-                "ultimate": [72, 60, 21, 18],
-                "mega": [0, 0, 60, 51]
-            },
-            {
-                "mega": [0, 0, 100, 85]
-            }
-        ];
-
-        var gem = [gemelCore, gemel][settings.tree];
-        var evols = ["in-training-i", "in-training-ii", "rookie", "champion", "ultimate", "mega"];
-        var youngestIndex = 6;
-        var oldestIndex = -1;
-        var youngestMon = "";
-        var oldestMon = "";
-        var oldestMega = "";
-
-        for (var root of gem.roots) {
-            var evol = digi[root].evol;
-            var evolIndex = evols.indexOf(evol);
-            if (evolIndex < youngestIndex) {
-                youngestIndex = evolIndex;
-                youngestMon = root;
-            }
-            if (evolIndex > oldestIndex) {
-                oldestIndex = evolIndex;
-                oldestMon = root;
-            }
-            if (evol == "mega") {
-                if (oldestMega == "") {
-                    oldestMega = root;
-                }
-                else if (oldestMega != root) {
-                    var oldestMegaTree = new Gemel(oldestMega);
-                    if (oldestMegaTree.nodes.has(parseInt(root))) {
-                        var rootTree = new Gemel(root);
-                        if (rootTree.nodes.size > oldestMegaTree.nodes.size) {
-                            oldestMega = root;
-                        }
-                    }
-                    else {
-                        footCalculate.innerHTML = "Please narrow your selection to eliminate conflicting megas.";
-                        return true;
-                    }
-                }
-            }
-        }
-        var selectedEvols = evols.slice(youngestIndex + 1, oldestIndex + 1);
-        console.log(selectedEvols);
-        var selectedMegas = oldestMega == "" ? [] : [oldestMega];
-        for (var mega of selectedMegas) {
-            for (var prevmon of prev(mega)) {
-                if (gem.nodes.has(parseInt(prevmon)) && !selectedMegas.includes(parseInt(prevmon)) && digi[prevmon].evol == "mega") {
-                    selectedMegas.push(prevmon);
-                }
-            }
-        }
-        console.log(selectedMegas);
-        if (selectedEvols.length == 0 && selectedMegas.length < 2) {
-            footCalculate.innerHTML = "Please selected at least two Digimon.";
-            return true;
-        }
-
-        var selectedTribe = {
-            "in-training-i": "",
-            "in-training-ii": "",
-            "rookie": "",
-            "champion": "",
-            "ultimate": ""
-        };
-        for (var node of gem.nodes) {
-            var evol = digi[node].evol;
-            if (evol != "mega" && selectedEvols.includes(evol)) {
-                var tribe = digi[node].tribe;
-                if (selectedTribe[evol] == "") {
-                    selectedTribe[evol] = tribe;
-                }
-                else if (selectedTribe[evol] != tribe) {
-                    footCalculate.innerHTML = "Please narrow your selection to eliminate conflicting tribes.";
-                    return true;
-                }
-            }
-        }
-
-        var selectedPlugins = {
-            "mirage": [0, 0, 0, 0],
-            "blazing": [0, 0, 0, 0],
-            "glacier": [0, 0, 0, 0],
-            "electric": [0, 0, 0, 0],
-            "earth": [0, 0, 0, 0],
-            "bright": [0, 0, 0, 0],
-            "abyss": [0, 0, 0, 0]
-        };
-        var pluginCosts = plugins[settings.awkn];
-        for (var evol of selectedEvols) {
-            if (evol != "mega" && evol in pluginCosts) {
-                for (var i = 0; i < 4; i++) {
-                    selectedPlugins[selectedTribe[evol]][i] += pluginCosts[evol][i];
-                }
-            }
-        }
-        for (var mega of selectedMegas) {
-            for (var i = 0; i < 4; i++) {
-                selectedPlugins[digi[mega].tribe][i] += pluginCosts.mega[i];
-            }
-        }
-
-        footCalculate.innerHTML = "This route (" + (digi[youngestMon].name.en) + " → " + (digi[oldestMega == "" ? oldestMon : oldestMega].name.en) + ") at awakening +" + settings.awkn + " costs<br>";
-        for (var evol in selectedPlugins) {
-            for (var i = 0; i < 4; i++) {
-                if (selectedPlugins[evol][i]) {
-                    var img = document.createElement("img");
-                    img.className = "plugin";
-                    img.src = "img/plugins/" + (i + 1) + "/" + evol + ".png";
-                    img.alt = evol + (i + 1) + ".0";
-                    footCalculate.innerHTML += selectedPlugins[evol][i] + " ";
-                    footCalculate.appendChild(img);
-                    footCalculate.innerHTML += ", ";
-                }
-            }
-        }
-        footCalculate.innerHTML += "<br> and maybe some other stuff (this thing only calculates plugins, and it's inaccurate for multiple megas).";
-    }
 
     function exportPlanFrag() {
         var planfrag = {
@@ -1465,7 +1302,6 @@ function initFooter() {
     }
 
     tile.id = "tile";
-    initTimestamp();
     if (toeTile.download != "memblock") { // for iOS safari
         addTapListener(toeTile, stay);
     }
@@ -1475,12 +1311,10 @@ function initFooter() {
     hide(footAbout);
     hide(footQA);
     hide(footPort);
-    hide(footCalculate);
     hide(footClose);
     addTapListener(toeAbout, function () {
         show(footAbout);
         hide(footQA);
-        hide(footCalculate);
         hide(footPort);
         show(footClose);
         updateLines();
@@ -1488,16 +1322,6 @@ function initFooter() {
     addTapListener(toeQA, function () {
         hide(footAbout);
         show(footQA);
-        hide(footCalculate);
-        hide(footPort);
-        show(footClose);
-        updateLines();
-    });
-    addTapListener(toeCalculate, function () {
-        costPlugins();
-        hide(footAbout);
-        hide(footQA);
-        show(footCalculate);
         hide(footPort);
         show(footClose);
         updateLines();
@@ -1505,7 +1329,6 @@ function initFooter() {
     addTapListener(toePort, function () {
         hide(footAbout);
         hide(footQA);
-        hide(footCalculate);
         show(footPort);
         show(footClose);
         updateLines();
@@ -1513,7 +1336,6 @@ function initFooter() {
     addTapListener(toeClose, function () {
         hide(footAbout);
         hide(footQA);
-        hide(footCalculate);
         hide(footPort);
         hide(footClose);
         updateLines();
