@@ -188,10 +188,10 @@ function untangleProfiles() { // TODO: improve this algorithm
     }
 
     for (var mon of selectedDigi) {
-        dfs(mon, 0, true);
+        dfs(parseInt(mon), 0, true);
     }
     for (var mon in digi) {
-        visited.add(mon);
+        visited.add(parseInt(mon));
     }
     sortProfiles(visited);
 }
