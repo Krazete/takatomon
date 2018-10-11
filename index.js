@@ -812,16 +812,16 @@ function initVisualization() {
                 if (code in digi[id].name) {
                     if (code == "en") {
                         moniker.innerHTML = digi[id].name[code].replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2");
-                        anchor.href = anchor.href.replace(/digimonlink[s|z]/, "digimonlinks");
+                        anchor.href = anchor.href.replace(/digimonlink[sz]/, "digimonlinks");
                     }
                     else {
                         moniker.innerHTML = digi[id].name[code];
-                        anchor.href = anchor.href.replace(/digimonlink[s|z]/, "digimonlinkz");
+                        anchor.href = anchor.href.replace(/digimonlink[sz]/, "digimonlinkz");
                     }
                 }
                 else {
                     moniker.innerHTML = "???";
-                    anchor.href = anchor.href.replace(/digimonlink[s|z]/, "digimonlinkz");
+                    anchor.href = anchor.href.replace(/digimonlink[sz]/, "digimonlinkz");
                 }
             }
         }
@@ -1214,6 +1214,7 @@ function initFooter() {
         context.putImageData(imageData, 0, 0);
 
         var blobURL = canvasToBlobURL(canvas);
+        tile.classList.add("nonon"); // render exports pixelated
         tile.src = blobURL;
         toeTile.href = blobURL;
         toeTile.click();
@@ -1274,12 +1275,14 @@ function initFooter() {
             }
         }
         try {
+            tile.classList.add("nonon"); // render valid imports pixelated
             var planfrag = JSON.parse(chars);
             planner = planfrag.planner;
             fragCount = planfrag.fragCount;
             updatePlanFrag();
         }
         catch (e) {
+            tile.classList.remove("nonon"); // render invalid imports normally
             console.log("Invalid memblock.");
             console.log(e);
             context.moveTo(0, 0);

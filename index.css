@@ -683,10 +683,12 @@ body.drag { /* for planner */
     width: 64px;
     height: 64px;
     background: #000;
+    display: block;
+}
+#tile.nonon {
     -ms-interpolation-mode: nearest-neighbor;
     -moz-image-rendering: crisp-edges;
     image-rendering: pixelated;
-    display: block;
 }
 
 .plugin {
