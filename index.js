@@ -588,7 +588,7 @@ function initFiltration() {
     function flipSwitch() {
         var splitId = this.id.split("-");
         var key = splitId[0];
-        var value = parseInt(splitId[1]);
+        var value = key == "special" ? splitId[1] : parseInt(splitId[1]);
         if (this.classList.contains("selected")) {
             this.classList.remove("selected");
             filters[key].delete(value);
