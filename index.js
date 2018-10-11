@@ -771,7 +771,6 @@ function initVisualization() {
 
     function setAwkn(n) {
         var portraits = Array.from(document.getElementsByClassName("portrait"));
-        var awkn = n == 2 ? 1 : n;
         for (var portrait of portraits) {
             var mon = portrait.parentNode.parentNode.parentNode.id;
             if (mon == "blank") {
@@ -780,9 +779,9 @@ function initVisualization() {
             if (mon.endsWith("clone")) {
                 mon = mon.slice(0, -6);
             }
-            if (awkn < 5 || digi[mon].v2) {
-                portrait.src = portrait.src.replace(/mon\/[01345]/, "mon/" + awkn);
-                portrait.alt = portrait.alt.replace(/\+[01345]/, "+" + awkn);
+            if (n < 5 || digi[mon].v2) {
+                portrait.src = "img/portrait/" + digi[mon].images[n] + ".png";
+                portrait.alt = mon + "+" + n;
             }
         }
     }
@@ -912,7 +911,6 @@ function initPlanner() {
         planner.push({
             "digi": Array.from(selectedDigi).sort(byEvol),
             "awkn": settings.awkn,
-            // "deduct": true,
             "note": ""
         });
         newPlan(planner.length - 1);
