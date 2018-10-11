@@ -1,7 +1,7 @@
 # Takatomon
 A digivolution tree viewer for [Digimon Links](https://digimonlinkz-en.bn-ent.net).
 
-<img alt="hina" src="img/hina/default/mirage.png" align="right">
+<img alt="hina" src="img/hina.png" align="right">
 
 ## Acknowledgements
 ### Data
