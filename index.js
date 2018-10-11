@@ -1129,6 +1129,7 @@ function initPlanner() {
 function initFooter() {
     var footAbout = document.getElementById("foot-about");
     var footFAQ = document.getElementById("foot-faq");
+    var footTiers = document.getElementById("foot-tiers");
     var footPort = document.getElementById("foot-port");
     var footClose = document.getElementById("foot-close");
     var toeAbout = document.getElementById("toe-about");
@@ -1365,6 +1366,7 @@ function initFooter() {
         }
     }
 
+    addTapListener(toeTiers, showTiers);
     if (toeTile.download != "memblock") { // for iOS safari
         addTapListener(toeTile, stay);
     }
@@ -1374,11 +1376,13 @@ function initFooter() {
 
     hide(footAbout);
     hide(footFAQ);
+    hide(footTiers);
     hide(footPort);
     hide(footClose);
     addTapListener(toeAbout, function () {
         show(footAbout);
         hide(footFAQ);
+        hide(footTiers);
         hide(footPort);
         show(footClose);
         updateLines();
@@ -1386,14 +1390,23 @@ function initFooter() {
     addTapListener(toeFAQ, function () {
         hide(footAbout);
         show(footFAQ);
+        hide(footTiers);
         hide(footPort);
         show(footClose);
         updateLines();
     });
-    addTapListener(toeTiers, showTiers);
+    addTapListener(toeTiers, function () {
+        hide(footAbout);
+        hide(footFAQ);
+        show(footTiers);
+        hide(footPort);
+        show(footClose);
+        updateLines();
+    });
     addTapListener(toePort, function () {
         hide(footAbout);
         hide(footFAQ);
+        hide(footTiers);
         show(footPort);
         show(footClose);
         updateLines();
@@ -1401,6 +1414,7 @@ function initFooter() {
     addTapListener(toeClose, function () {
         hide(footAbout);
         hide(footFAQ);
+        hide(footTiers);
         hide(footPort);
         hide(footClose);
         updateLines();
