@@ -5,10 +5,10 @@ A digivolution tree viewer for [Digimon Links](https://digimonlinkz-en.bn-ent.ne
 
 ## Acknowledgements
 ### Data
-- [Chortos-2](https://chortos.selfip.net/digimonlinks/) - The current main source of this project's data and optimized assets.
-- [Growlmon.Net](https://growlmon.net) - Created by /u/ChasingRaccoons, Growlmon.Net was this project's original source of data and assets. All have been replaced by Chortos-2 as of v5, except for its old tier list.
-- [Online Fanatic](http://onlinefanatic.com/digimon-links-attribute-status-debuff-resistance-guide/) - Used for higher resolution tribe images.
-- [The Spriters Resource](https://spriters-resource.com/mobile/digimonlinks) - Only used for the Hina sprite in this README.md file.
+- [Chortos-2](https://chortos.selfip.net/digimonlinks/) - The current main source of this project's data.
+- [Growlmon.Net](https://growlmon.net) - Created by /u/ChasingRaccoons, Growlmon.Net was this project's original main source of images and information. Though Growlmon.Net has ended, its tier ranking list is still displayed on Takatomon.
+- [Online Fanatic](http://onlinefanatic.com/digimon-links-attribute-status-debuff-resistance-guide/) - For higher resolution tribe images.
+- [The Spriters Resource](https://spriters-resource.com/mobile/digimonlinks) - Only used for plugin images. None of the fragments or Hina sprites are used yet, but they are pretty nifty to have.
 ### Ideas
 - /u/GrimmyTimmi - Initial Concept
 - /u/dinwitt - Search Box
