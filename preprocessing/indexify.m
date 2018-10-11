@@ -1,39 +1,31 @@
 % run in 'preprocessing' directory
-% change subdir and rerun for 'icons/', 'mon/', and all 'mon/*/'
+% for 'favicon', 'birdramon', and 'hina' bases
 
 imdir = 'img/';
 newimdir = '../img/';
-subdir = 'mon/';
+base = 'favicon';
 
-colors = 64;
-dither_option = 'nodither';
+if strcmp(base, 'birdramon') || strcmp(base, 'hina')
+    colors = 64;
+else
+    colors = 4;
+end
+dither_opt = 'nodither';
 
-mkdir([newimdir, subdir]);
+mkdir('../img');
 
-files = dir([imdir, subdir]);
-N = length(files);
-for n = 1:N
-    file = files(n);
-    if contains(file.name, '.png')
-        [im, map] = imread([imdir, subdir, file.name]);
-        newname = [newimdir, subdir, file.name];
-        if strcmp(subdir, 'icons/') || strcmp([subdir, file.name], 'mon/none.png')
-            [newim, newmap] = im2ind(im, map, 8, dither_option);
-        else
-            [newim, newmap] = im2ind(im, map, colors, dither_option);
-        end
-        if strcmp([subdir, file.name], 'mon/birdramon.png')
-            imwrite(newim, newmap, newname, 'Transparency', 0);
-        else
-            imwrite(newim, newmap, newname);
-        end
-    end
+[im, map] = imread(['img/', base, '.png']);
+[newim, newmap] = im2ind(im, map, colors, dither_opt);
+if strcmp(base, 'birdramon') || strcmp(base, 'hina')
+    imwrite(newim, newmap, ['../img/', base, '.png'], 'Transparency', 0);
+else
+    imwrite(newim, newmap, ['../img/', base, '.png']);
 end
 
-function [newim, newmap] = im2ind(im, map, n, dither_option)
+function [newim, newmap] = im2ind(im, map, n, dither_opt)
     if size(map) > 0
-        [newim, newmap] = imapprox(im, map, n, dither_option);
+        [newim, newmap] = imapprox(im, map, n, dither_opt);
     else
-        [newim, newmap] = rgb2ind(im, n, dither_option);
+        [newim, newmap] = rgb2ind(im, n, dither_opt);
     end
 end
