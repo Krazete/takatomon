@@ -613,9 +613,13 @@ function initFiltration() {
 
     function okFilters(mon) {
         var okQuery = !filters.query.size || Array.from(filters.query).every(function (term) {
-            var en = digi[mon].name.en.toLowerCase().replace(/\W+/, "-");
-            var jp = digi[mon].name.jp.toLowerCase();
-            return en.includes(term) || jp.includes(term);
+            var codes = ["en", "ja", "ko", "zh-TW"];
+            var okCodes = codes.some(function (code) {
+                if (code in digi[mon].name) { // else return undefined
+                    return digi[mon].name[code].toLowerCase().includes(term);
+                }
+            });
+            return okCodes;
         });
         var okTribe = !filters.tribe.size || filters.tribe.has(digi[mon].tribe);
         var okSkill = digi[mon].skills.some(function (skill) {
@@ -799,20 +803,25 @@ function initVisualization() {
 
     function setLang(n) {
         var profiles = Array.from(document.getElementsByClassName("profile"));
-        // TODO: find out what the word for "blank" is in Japanese
-        var code = ["en", "jp"][n];
+        var code = ["en", "ja", "ko", "zh-TW"][n];
         for (var profile of profiles) {
             if (profile.id != "blank") {
                 var id = profile.id.replace("-clone", "");
                 var moniker = profile.getElementsByClassName("moniker")[0];
                 var info = profile.getElementsByClassName("info")[0];
                 var anchor = info.getElementsByTagName("a")[0];
-                if (code == "en") {
-                    moniker.innerHTML = digi[id].name.en.replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2");
-                    anchor.href = anchor.href.replace(/digimonlink[s|z]/, "digimonlinks");
+                if (code in digi[id].name) {
+                    if (code == "en") {
+                        moniker.innerHTML = digi[id].name[code].replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2");
+                        anchor.href = anchor.href.replace(/digimonlink[s|z]/, "digimonlinks");
+                    }
+                    else {
+                        moniker.innerHTML = digi[id].name[code];
+                        anchor.href = anchor.href.replace(/digimonlink[s|z]/, "digimonlinkz");
+                    }
                 }
-                else if (code == "jp") {
-                    moniker.innerHTML = digi[id].name.jp;
+                else {
+                    moniker.innerHTML = "???";
                     anchor.href = anchor.href.replace(/digimonlink[s|z]/, "digimonlinkz");
                 }
             }
@@ -1136,6 +1145,9 @@ function initFooter() {
     var input;
 
     function showTiers() {
+        toeTiers.removeEventListener("click", showTiers);
+        toeTiers.removeEventListener("touchstart", showTiers);
+
         var xhr = new XMLHttpRequest();
         xhr.open("GET", "Desktop/tiers.json", true);
         xhr.onreadystatechange = function () {
