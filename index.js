@@ -3,6 +3,8 @@
 /* Globals */
 
 var evols = ["in-training-i", "in-training-ii", "rookie", "champion", "ultimate", "mega", "selection"]; // TODO: add egg in the future?
+var langs = ["en", "ko", "zh-TW", "ja"];
+
 var blank;
 var linelayer;
 var linecontext;
@@ -613,13 +615,12 @@ function initFiltration() {
 
     function okFilters(mon) {
         var okQuery = !filters.query.size || Array.from(filters.query).every(function (term) {
-            var codes = ["en", "ja", "ko", "zh-TW"];
-            var okCodes = codes.some(function (code) {
-                if (code in digi[mon].name) { // else return undefined
-                    return digi[mon].name[code].toLowerCase().includes(term);
+            var okTerm = langs.some(function (lang) {
+                if (lang in digi[mon].name) { // else return undefined
+                    return digi[mon].name[lang].toLowerCase().includes(term);
                 }
             });
-            return okCodes;
+            return okTerm;
         });
         var okTribe = !filters.tribe.size || filters.tribe.has(digi[mon].tribe);
         var okSkill = digi[mon].skills.some(function (skill) {
@@ -804,26 +805,29 @@ function initVisualization() {
 
     function setLang(n) {
         var profiles = Array.from(document.getElementsByClassName("profile"));
-        var code = ["en", "ja", "ko", "zh-TW"][n];
+        var lang = langs[n];
         for (var profile of profiles) {
             if (profile.id != "blank") {
                 var id = profile.id.replace("-clone", "");
                 var moniker = profile.getElementsByClassName("moniker")[0];
                 var info = profile.getElementsByClassName("info")[0];
                 var anchor = info.getElementsByTagName("a")[0];
-                if (code in digi[id].name) {
-                    if (code == "en") {
-                        moniker.innerHTML = digi[id].name[code].replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2");
-                        anchor.href = anchor.href.replace(/digimonlink[sz]/, "digimonlinks");
+                if (lang in digi[id].name) {
+                    if (lang == "en") {
+                        moniker.innerHTML = digi[id].name[lang].replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2");
                     }
                     else {
-                        moniker.innerHTML = digi[id].name[code];
+                        moniker.innerHTML = digi[id].name[lang];
+                    }
+                    if (lang == "ja") {
                         anchor.href = anchor.href.replace(/digimonlink[sz]/, "digimonlinkz");
+                    }
+                    else {
+                        anchor.href = anchor.href.replace(/digimonlink[sz]/, "digimonlinks");
                     }
                 }
                 else {
                     moniker.innerHTML = "???";
-                    anchor.href = anchor.href.replace(/digimonlink[sz]/, "digimonlinkz");
                 }
             }
         }
