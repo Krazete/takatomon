@@ -323,10 +323,6 @@ body.drag { /* for planner */
     filter: brightness(0);
 }
 
-.tier {
-    float: right;
-}
-
 .info {
     position: relative; /* to make z-index work */
     background: #fcd;

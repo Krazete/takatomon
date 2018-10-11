@@ -413,10 +413,6 @@ function initProfiles() {
                         var effect = document.createElement("span");
                             effect.innerHTML = ["Support", "ST", "AoE"][skill.effect];
                         signature.appendChild(effect);
-                        var tier = document.createElement("span");
-                            tier.className = "tier";
-                            tier.innerHTML = skill.tier ? ("[" + skill.tier + "]") : "";
-                        signature.appendChild(tier);
                     signatureSet.appendChild(signature);
                 }
             profile.appendChild(signatureSet);
@@ -1128,6 +1124,7 @@ function initFooter() {
     var footClose = document.getElementById("foot-close");
     var toeAbout = document.getElementById("toe-about");
     var toeFAQ = document.getElementById("toe-faq");
+    var toeTiers = document.getElementById("toe-tiers");
     var toePort = document.getElementById("toe-port");
     var toeClose = document.getElementById("toe-close");
     var importer = document.getElementById("import");
@@ -1137,6 +1134,34 @@ function initFooter() {
     var tile = document.getElementById("tile");
     var reader = new FileReader();
     var input;
+
+    function showTiers() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "Desktop/tiers.json", true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                var tiers = JSON.parse(this.response);
+                for (var mon in tiers) {
+                    var profile = document.getElementById(mon);
+                    var signatures = profile.getElementsByClassName("signature-set")[0].children;
+                    for (var i = 0; i < tiers[mon].length; i++) {
+                        var tierBadge = document.createElement("span");
+                        tierBadge.style.float = "right";
+                        tierBadge.innerHTML = tiers[mon][i];
+                        signatures[i].appendChild(tierBadge);
+                    }
+
+                }
+    			var div = document.createElement("div");
+    			div.innerHTML = this.response;
+    			var message = div.getElementsByClassName("message")[0];
+    			message.style.fontSize = "12px";
+    			discussion.appendChild(message);
+    			discussion.addEventListener("click", collapseDiscussion);
+    		}
+    	};
+    	xhr.send();
+    }
 
     function exportPlanFrag() {
         var planfrag = {
@@ -1328,13 +1353,13 @@ function initFooter() {
         }
     }
 
-    tile.id = "tile";
     if (toeTile.download != "memblock") { // for iOS safari
         addTapListener(toeTile, stay);
     }
     addTapListener(importer, importPlanFrag0);
     addTapListener(exporter, exportPlanFrag);
     addTapListener(deporter, deportLocalStorage);
+
     hide(footAbout);
     hide(footFAQ);
     hide(footPort);
@@ -1353,6 +1378,7 @@ function initFooter() {
         show(footClose);
         updateLines();
     });
+    addTapListener(toeTiers, showTiers);
     addTapListener(toePort, function () {
         hide(footAbout);
         hide(footFAQ);
