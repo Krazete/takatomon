@@ -98,7 +98,7 @@
 - fixed some problems with safari and firefox
 - - #rgba, gradients, scrolling, and for-of loops were the main issues
 
-# [v4](https://github.com/Krazete/takatomon/tree/master) (9/24/2018 - )
+# [v4](https://github.com/Krazete/takatomon/tree/v4) (9/24/2018 - )
 ## Features
 - initialize planner
 - - can add, delete, view, annotate, and rearrange plans
@@ -119,17 +119,23 @@
 - edited about description
 - edited faq
 
-# [v5](https://github.com/Krazete/takatomon/tree/master) ( - )
+# [v5](https://github.com/Krazete/takatomon/tree/v5) ( - )
 ## Features
 - initialized language option
 - initialized url parameters
 - - preselect digimon with sd key
 - - preset fragment counters with fc key
+- removed tiers from skillsets
+- - added a separate tier list page
+- added magical and physical indicators to skillsets
 ## Design
 - switched information database
 - switched image database
+- changed image generation code
+- edited faq
 ## Performance
 - fixed more compatibility issues
+- - fixed advent time format
 
 _Changes are pushed incrementally, so all versions of Takatomon have overlapping timelines._  
 _The dates shown approximately mark when the defining changes were pushed and made available to the public._

@@ -15,11 +15,11 @@
 	<meta name="description" content="A digivolution tree viewer and awakening path planner for Digimon Links.">
 	<title>Takatomon - Awakening Helper</title>
 	<link rel="shortcut icon" type="image/png" href="img/favicon.png">
-	<link href="index.css" rel="stylesheet" type="text/css">
-	<script src="digi.js"></script>
-	<script src="tree.js"></script>
-	<script src="advent.js"></script>
-	<script src="index.js"></script>
+	<link href="index.css?" rel="stylesheet" type="text/css">
+	<script src="digi.js?"></script>
+	<script src="advent.js?"></script>
+	<script src="tree.js?"></script>
+	<script src="index.js?"></script>
 </head>
 <body>
 	<div class="section" id="planner">
@@ -33,7 +33,10 @@
 			<div class="profile-group">
 				<div class="profile" id="blank">
 					<div class="card">
-						<img class="portrait" src="img/mon/empty.png" alt="empty">
+						<div class="portraiture">
+							<img class="backing" src="img/backing/empty.png" alt="empty">
+							<img class="frame" src="img/frame/empty.png" alt="empty">
+						</div>
 						<div class="moniker">Empty</div>
 					</div>
 				</div>
@@ -58,25 +61,25 @@
 			<div class="switchbox">
 				<div class="switchbox-label">Filter Tribe</div>
 				<div class="switch-set">
-					<img src="img/tribes/1.png" alt="mirage" class="switch mirage" id="tribe-mirage">
-					<img src="img/tribes/2.png" alt="blazing" class="switch blazing" id="tribe-blazing">
-					<img src="img/tribes/3.png" alt="glacier" class="switch glacier" id="tribe-glacier">
-					<img src="img/tribes/4.png" alt="electric" class="switch electric" id="tribe-electric">
-					<img src="img/tribes/5.png" alt="earth" class="switch earth" id="tribe-earth">
-					<img src="img/tribes/6.png" alt="bright" class="switch bright" id="tribe-bright">
-					<img src="img/tribes/7.png" alt="abyss" class="switch abyss" id="tribe-abyss">
+					<img src="img/tribe/1.png" alt="mirage" class="switch mirage" id="tribe-1">
+					<img src="img/tribe/2.png" alt="blazing" class="switch blazing" id="tribe-2">
+					<img src="img/tribe/3.png" alt="glacier" class="switch glacier" id="tribe-3">
+					<img src="img/tribe/4.png" alt="electric" class="switch electric" id="tribe-4">
+					<img src="img/tribe/5.png" alt="earth" class="switch earth" id="tribe-5">
+					<img src="img/tribe/6.png" alt="bright" class="switch bright" id="tribe-6">
+					<img src="img/tribe/7.png" alt="abyss" class="switch abyss" id="tribe-7">
 				</div>
 			</div>
 			<div class="switchbox">
 				<div class="switchbox-label">Filter Skill</div>
 				<div class="switch-set">
-					<img src="img/tribes/1.png" alt="mirage" class="switch mirage" id="rival-mirage">
-					<img src="img/tribes/2.png" alt="blazing" class="switch blazing" id="rival-blazing">
-					<img src="img/tribes/3.png" alt="glacier" class="switch glacier" id="rival-glacier">
-					<img src="img/tribes/4.png" alt="electric" class="switch electric" id="rival-electric">
-					<img src="img/tribes/5.png" alt="earth" class="switch earth" id="rival-earth">
-					<img src="img/tribes/6.png" alt="bright" class="switch bright" id="rival-bright">
-					<img src="img/tribes/7.png" alt="abyss" class="switch abyss" id="rival-abyss">
+					<img src="img/tribe/1.png" alt="mirage" class="switch mirage" id="attribute-1">
+					<img src="img/tribe/2.png" alt="blazing" class="switch blazing" id="attribute-2">
+					<img src="img/tribe/3.png" alt="glacier" class="switch glacier" id="attribute-3">
+					<img src="img/tribe/4.png" alt="electric" class="switch electric" id="attribute-4">
+					<img src="img/tribe/5.png" alt="earth" class="switch earth" id="attribute-5">
+					<img src="img/tribe/6.png" alt="bright" class="switch bright" id="attribute-6">
+					<img src="img/tribe/7.png" alt="abyss" class="switch abyss" id="attribute-7">
 					<div class="switch" id="effect-aoe">AoE</div>
 					<div class="switch" id="effect-st">ST</div>
 					<div class="switch" id="effect-support">Support</div>
@@ -177,8 +180,6 @@
 				<div class="slide-set" id="lang">
 					<div class="slide">English</div>
 					<div class="slide">Japanese</div>
-					<div class="slide">Korean</div>
-					<div class="slide">Chinese (Traditional)</div>
 				</div>
 				<div class="slidebox-label">Language</div>
 			</div>
@@ -196,51 +197,47 @@
 			This website was created for the mobile game
 			<i><a href="https://digimonlinkz-en.bn-ent.net" target="_blank">Digimon Links</a></i>
 			to ease the viewing of digivolution lines and to assist with the awakening process.
-			<br><br>
-			Data and assets are intermittently gathered from
-			<a href="https://growlmon.net" target="_blank">Growlmon.Net</a>,
-			so this website may contain slightly outdated information.
 			<br>
-			The last database update was on <span id="timestamp">a Tuesday</span>.
+			Data and assets are automatically gathered every month thanks to
+			<a href="https://chortos.selfip.net/~astiob/">Chortos-2</a>,
+			so this website is always up-to-date.
 			<br><br>
 			To see the latest updates or send a bug report, visit this project's
 			<a href="https://github.com/Krazete/takatomon" target="_blank">GitHub repository</a>.
-			<br><br>
+			<br>
 			You can also send me a message through
 			<a href="mailto:krazete@gmail.com">krazete@gmail.com</a>,
 			<a href="https://reddit.com/u/krazete" target="_blank">Reddit</a>, or
 			<a href="https://paypal.me/krazete" target="_blank" id="paypal">PayPal</a>.
 		</div>
-		<div id="foot-qa">
-			Q&A
+		<div id="foot-faq">
+			<b><i>
+			Found a bug? Report it through
+			<a href="mailto:krazete@gmail.com">krazete@gmail.com</a>,
+			<a href="https://reddit.com/u/krazete" target="_blank">Reddit</a>, or
+			<a href="https://github.com/Krazete/takatomon/issues" target="_blank">GitHub</a>
+			and mention which browser you're using.
+			</i></b>
 			<br><br>
-			Q: What is that circled exclamation mark in the corner of some Digimon cards?
+			Q: What's that circled "<i>!</i>" in the corner of some Digimon cards?
 			<br>
-			A: This indicates the Digimon is currently available in Advent Quests (or will be within 12 hours).
+			A: That Digimon is currently available in Advent Quests (or will be within 12 hours).
 			<br><br>
 			Q: What does the <i>Tree</i> option in the <i>Special</i> search filter do?
 			<br>
-			A: Enabled this if you want the search results to display only Digimon of your currently selected digivolution tree.
+			A: Enable this if you want the search results to display only Digimon of your currently selected digivolution tree.
 			<br><br>
-			Q: Isn't the <i>Untangled (Beta)</i> sort basis supposed to untangle the lines? It doesn't work too well.
+			Q: Why doesn't the <i>Untangled (Beta)</i> sort option untangle the lines fully?
 			<br>
 			A: Sorry, I don't know how to improve it. A greedy algorithm is the best I can do for now.
-			<br><br>
-			Q: What does the <i>Preview</i> option do?
-			<br>
-			A: With this enabled, hovering your cursor over a Digimon card will show that single Digimon's digivolution tree within the context of your currently selected digivolution tree.
 			<br><br>
 			Q: Why can't I use the <i>Preview</i> feature in search mode?
 			<br>
 			A: For clarity. Viewing digivolution lines in search mode would present an incomplete and misleading tree.
 			<br><br>
-			Q: I found a bug. Where can I report it?
+			Q: Why aren't my settings/planner/fragments being automatically saved?
 			<br>
-			A: Please send a report through
-			<a href="mailto:krazete@gmail.com">krazete@gmail.com</a>,
-			<a href="https://reddit.com/u/krazete" target="_blank">Reddit</a>, or
-			<a href="https://github.com/Krazete/takatomon" target="_blank">GitHub</a>
-			and be sure to mention the browser in which you experienced the bug.
+			A: This is a known bug. Autosaving happens when the page is closed, which is difficult to detect on mobile devices.
 		</div>
 		<div id="foot-port">
 			<span class="toe" id="import">Load memblock</span> (import planner and fragments).
@@ -249,23 +246,20 @@
 			<br><br>
 			<div id="tile-box">
 				<a download="memblock" id="toe-tile">
-					<img src="img/mon/none.png" alt="memblock" id="tile"></img>
+					<img src="img/backing/empty.png" alt="memblock" id="tile"></img>
 				</a>
 			</div>
 			<br>
 			<span class="toe" id="deport">Reset everything</span> (clear selection, settings, planner, and fragments; also saves a memblock just in case).
 		</div>
-		<div id="foot-calculate"></div>
 		<div id="foot-close">
 			<div class="bar-button" id="toe-close">Close</div>
 		</div>
 		<span class="toe" id="toe-about">About</span>
 		|
-		<span class="toe" id="toe-qa">Q&A</span>
+		<span class="toe" id="toe-faq">Help</span>
 		|
 		<span class="toe" id="toe-port">Port</span>
-		|
-		<span class="toe" id="toe-calculate">Calculate (Beta)</span>
 	</div>
 	<canvas id="linelayer"></canvas>
 </body>
