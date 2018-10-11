@@ -1167,10 +1167,6 @@ function initFooter() {
                 }
     			var div = document.createElement("div");
     			div.innerHTML = this.response;
-    			var message = div.getElementsByClassName("message")[0];
-    			message.style.fontSize = "12px";
-    			discussion.appendChild(message);
-    			discussion.addEventListener("click", collapseDiscussion);
     		}
     	};
     	xhr.send();
