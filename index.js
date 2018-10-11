@@ -363,9 +363,9 @@ function initProfiles() {
                     var portrait = document.createElement("img");
                         portrait.className = "portrait";
                         portrait.src = "img/portrait/" + digi[mon].images[0] + ".png";
-                        if (mon == 97) {
+                        if (parseInt(mon) == 97) {
                             var r = Math.random();
-                            if (r < 0.001) {
+                            if (r < 0.01) {
                                 portrait.src = "img/birdramon.png";
                             }
                         }
@@ -780,7 +780,9 @@ function initVisualization() {
                 mon = mon.slice(0, -6);
             }
             if (n < 5 || digi[mon].v2) {
-                portrait.src = "img/portrait/" + digi[mon].images[n] + ".png";
+                if (!portrait.src.includes("birdramon")) {
+                    portrait.src = "img/portrait/" + digi[mon].images[n] + ".png";
+                }
                 portrait.alt = mon + "+" + n;
             }
         }
