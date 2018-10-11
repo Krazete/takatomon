@@ -1150,7 +1150,7 @@ function initFooter() {
         toeTiers.removeEventListener("touchstart", showTiers);
 
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "Desktop/tiers.json", true);
+        xhr.open("GET", "tiers.json", true);
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 var tiers = JSON.parse(this.response);
