@@ -125,6 +125,9 @@
 - initialized url parameters
 - - preselect digimon with sd key
 - - preset fragment counters with fc key
+- removed tiers from skillsets
+- - added a separate tier list page
+- added magical and physical indicators to skillsets
 ## Design
 - switched information database
 - switched image database

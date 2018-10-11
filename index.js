@@ -2,9 +2,11 @@
 
 /* Globals */
 
+var evols = ["in-training-i", "in-training-ii", "rookie", "champion", "ultimate", "mega", "selection"]; // TODO: add egg in the future?
 var blank;
 var linelayer;
 var linecontext;
+var profileGroups;
 
 var selectedDigi = new Set();
 var gemel = new Gemel();
@@ -18,7 +20,7 @@ var searchMode;
 var filters = { // only global because of advent
     "query": new Set(),
     "tribe": new Set(),
-    "rival": new Set(),
+    "attribute": new Set(),
     "effect": new Set(),
     "special": new Set() // NOTE: used in updateAdvent
 };
@@ -42,12 +44,6 @@ var setSlide, updateAdvent;
 function addTapListener(e, f) {
     e.addEventListener("click", f);
     e.addEventListener("touchstart", function () {}); // somehow enables mobile responsiveness (no double tap)
-}
-
-function getProfileGroup(id) {
-    var section = document.getElementById(id);
-    var profileGroup = section.getElementsByClassName("profile-group")[0];
-    return profileGroup;
 }
 
 function hide(element) {
@@ -116,7 +112,7 @@ function update() {
 }
 
 function updateClones() {
-    var selection = getProfileGroup("selection");
+    var selection = profileGroups[6];
     selection.innerHTML = "";
 
     function deselectProfile() {
@@ -192,17 +188,17 @@ function untangleProfiles() { // TODO: improve this algorithm
     }
 
     for (var mon of selectedDigi) {
-        dfs(mon, 0, true);
+        dfs(parseInt(mon), 0, true);
     }
     for (var mon in digi) {
-        visited.add(mon);
+        visited.add(parseInt(mon));
     }
     sortProfiles(visited);
 }
 
 function sortProfiles(sortedDigi) {
     for (var mon of sortedDigi) {
-        var profileGroup = getProfileGroup(digi[mon].evol);
+        var profileGroup = profileGroups[digi[mon].evol];
         var profile = document.getElementById(mon);
         profileGroup.appendChild(profile);
     }
@@ -298,15 +294,46 @@ function init() {
     blank = document.getElementById("blank");
     linelayer = document.getElementById("linelayer");
     linecontext = linelayer.getContext("2d");
+    initProfileGroups();
     initProfiles();
     initAdvent();
-    initEvolLabels();
     initFiltration();
     initVisualization();
     initPlanner();
     initFooter();
     initLineListeners();
     initParameter();
+}
+
+function initProfileGroups() {
+    profileGroups = [];
+
+    function selectProfileGroup() {
+        var section = this.parentNode.parentNode;
+        var profiles = Array.from(section.getElementsByClassName("profile"));
+        selectedDigi.clear();
+        for (var profile of profiles) {
+            if (!profile.classList.contains("hidden")) {
+                selectedDigi.add(profile.id);
+            }
+        }
+        if (searchMode) {
+            exitSearchMode();
+        }
+        else {
+            update();
+        }
+    }
+
+    for (var evol of evols) {
+        var section = document.getElementById(evol);
+        var evolLabel = section.getElementsByClassName("evol-label")[0];
+        var profileGroup = section.getElementsByClassName("profile-group")[0];
+        if (evolLabel) {
+            addTapListener(evolLabel, selectProfileGroup);
+        }
+        profileGroups.push(profileGroup);
+    }
 }
 
 function initProfiles() {
@@ -325,21 +352,34 @@ function initProfiles() {
             }
             var card = document.createElement("div");
                 card.className = "card";
-                var portrait = document.createElement("img");
-                    portrait.className = "portrait";
-                    if (typeof digi[mon].tempID == "undefined") console.log(mon);
-                    portrait.src = "img/mon/0/" + digi[mon].tempID + ".png";
-                    if (mon == "birdramon") {
-                        var r = Math.random();
-                        if (r < 0.001) {
-                            portrait.src = "img/mon/birdramon.png";
+                var portraiture = document.createElement("div");
+                    portraiture.className = "portraiture";
+                    var evol = Math.max(1, digi[mon].evol);
+                    var backing = document.createElement("img");
+                        backing.className = "backing";
+                        backing.src = "img/backing/" + evol + ".png";
+                        backing.alt = "backing-" + evol;
+                    portraiture.appendChild(backing);
+                    var portrait = document.createElement("img");
+                        portrait.className = "portrait";
+                        portrait.src = "img/portrait/" + digi[mon].images[0] + ".png";
+                        if (parseInt(mon) == 97) {
+                            var r = Math.random();
+                            if (r < 0.01) {
+                                portrait.src = "img/birdramon.png";
+                            }
                         }
-                    }
-                    portrait.alt = mon + "+0";
-                card.appendChild(portrait);
+                        portrait.alt = mon + "+0";
+                    portraiture.append(portrait);
+                    var frame = document.createElement("img");
+                        frame.className = "frame";
+                        frame.src = "img/frame/" + evol + ".png";
+                        frame.alt = "frame-" + evol;
+                    portraiture.appendChild(frame);
+                card.appendChild(portraiture);
                 var tribe = document.createElement("img");
                     tribe.className = "tribe";
-                    tribe.src = "img/tribes/" + digi[mon].tribe + ".png";
+                    tribe.src = "img/tribe/" + digi[mon].tribe + ".png";
                     tribe.alt = digi[mon].tribe;
                 card.appendChild(tribe);
                 var moniker = document.createElement("div");
@@ -351,18 +391,28 @@ function initProfiles() {
                 signatureSet.className = "signature-set";
                 for (var skill of digi[mon].skills) {
                     var signature = document.createElement("div");
-                        var rival = document.createElement("img");
-                            rival.className = "rival";
-                            rival.src = "img/tribes/" + skill.rival + ".png";
-                            rival.alt = skill.rival;
-                        signature.appendChild(rival);
+                        var attribute = document.createElement("img");
+                            attribute.className = "skill-icon";
+                            attribute.src = "img/tribe/" + skill.attribute + ".png";
+                            attribute.alt = skill.attribute;
+                        signature.appendChild(attribute);
+                        if (skill.physical) {
+                            var physical = document.createElement("img");
+                            physical.className = "skill-icon";
+                            physical.src = "img/skill/physical.png";
+                            physical.alt = "atk";
+                            signature.appendChild(physical);
+                        }
+                        if (skill.magical) {
+                            var magical = document.createElement("img");
+                            magical.className = "skill-icon";
+                            magical.src = "img/skill/magical.png";
+                            magical.alt = "s-atk";
+                            signature.appendChild(magical);
+                        }
                         var effect = document.createElement("span");
                             effect.innerHTML = ["Support", "ST", "AoE"][skill.effect];
                         signature.appendChild(effect);
-                        var tier = document.createElement("span");
-                            tier.className = "tier";
-                            tier.innerHTML = skill.tier ? ("[" + skill.tier + "]") : "";
-                        signature.appendChild(tier);
                     signatureSet.appendChild(signature);
                 }
             profile.appendChild(signatureSet);
@@ -446,7 +496,7 @@ function initProfiles() {
             fragCounter.addEventListener("input", setFragments);
         }
         addTapListener(card, selectProfile);
-        getProfileGroup(digi[mon].evol).appendChild(profile);
+        profileGroups[digi[mon].evol].appendChild(profile);
     }
     addUnloadListener(saveFragCount);
 }
@@ -488,31 +538,6 @@ function initAdvent() {
     updateAdvent(true);
 }
 
-function initEvolLabels() {
-    var evolLabels = Array.from(document.getElementsByClassName("evol-label"));
-
-    function selectProfileGroup() {
-        var section = this.parentNode.parentNode;
-        var profiles = Array.from(section.getElementsByClassName("profile"));
-        selectedDigi.clear();
-        for (var profile of profiles) {
-            if (!profile.classList.contains("hidden")) {
-                selectedDigi.add(profile.id);
-            }
-        }
-        if (searchMode) {
-            exitSearchMode();
-        }
-        else {
-            update();
-        }
-    }
-
-    for (var evolLabel of evolLabels) {
-        addTapListener(evolLabel, selectProfileGroup);
-    }
-}
-
 function initFiltration() {
     var selection = document.getElementById("selection");
     var filtration = document.getElementById("filtration");
@@ -539,7 +564,7 @@ function initFiltration() {
         }
         filters.query.clear();
         filters.tribe.clear();
-        filters.rival.clear();
+        filters.attribute.clear();
         filters.effect.clear();
         filters.special.clear();
         searchMode = false;
@@ -563,7 +588,7 @@ function initFiltration() {
     function flipSwitch() {
         var splitId = this.id.split("-");
         var key = splitId[0];
-        var value = splitId[1];
+        var value = key == "special" ? splitId[1] : parseInt(splitId[1]);
         if (this.classList.contains("selected")) {
             this.classList.remove("selected");
             filters[key].delete(value);
@@ -588,16 +613,20 @@ function initFiltration() {
 
     function okFilters(mon) {
         var okQuery = !filters.query.size || Array.from(filters.query).every(function (term) {
-            var en = digi[mon].name.en.toLowerCase().replace(/\W+/, "-");
-            var jp = digi[mon].name.jp.toLowerCase();
-            return en.includes(term) || jp.includes(term);
+            var codes = ["en", "ja", "ko", "zh-TW"];
+            var okCodes = codes.some(function (code) {
+                if (code in digi[mon].name) { // else return undefined
+                    return digi[mon].name[code].toLowerCase().includes(term);
+                }
+            });
+            return okCodes;
         });
         var okTribe = !filters.tribe.size || filters.tribe.has(digi[mon].tribe);
         var okSkill = digi[mon].skills.some(function (skill) {
-            var okRival = !filters.rival.size || filters.rival.has(skill.rival);
+            var okAttribute = !filters.attribute.size || filters.attribute.has(skill.attribute);
             var effect = ["support", "st", "aoe"][skill.effect];
             var okEffect = !filters.effect.size || filters.effect.has(effect);
-            return okRival && okEffect;
+            return okAttribute && okEffect;
         });
         var okTree = !filters.special.has("tree") || [gemelCore, gemel][settings.tree].nodes.has(parseInt(mon));
         var okDNA2 = !filters.special.has("dna") || digi[mon].skills.length > 1;
@@ -666,8 +695,7 @@ function initVisualization() {
     }
 
     // function byTribe(a, b) { // TODO: delete this eventually
-    //     var tribes = ["mirage", "blazing", "glacier", "electric", "earth", "bright", "abyss"];
-    //     var tribeComparison = tribes.indexOf(digi[a].tribe) - tribes.indexOf(digi[b].tribe);
+    //     var tribeComparison = digi[a].tribe - digi[b].tribe;
     //     return tribeComparison ? tribeComparison : byAlphabet(a, b);
     // }
 
@@ -743,18 +771,19 @@ function initVisualization() {
 
     function setAwkn(n) {
         var portraits = Array.from(document.getElementsByClassName("portrait"));
-        var awkn = n == 2 ? 1 : n;
         for (var portrait of portraits) {
-            var mon = portrait.parentNode.parentNode.id;
+            var mon = portrait.parentNode.parentNode.parentNode.id;
             if (mon == "blank") {
                 continue;
             }
             if (mon.endsWith("clone")) {
                 mon = mon.slice(0, -6);
             }
-            if (awkn != 5 || digi[mon].v2) {
-                portrait.src = portrait.src.replace(/mon\/[01345]/, "mon/" + awkn);
-                portrait.alt = portrait.alt.replace(/\+[01345]/, "+" + awkn);
+            if (n < 5 || digi[mon].v2) {
+                if (!portrait.src.includes("birdramon")) {
+                    portrait.src = "img/portrait/" + digi[mon].images[n] + ".png";
+                }
+                portrait.alt = mon + "+" + n;
             }
         }
     }
@@ -775,21 +804,26 @@ function initVisualization() {
 
     function setLang(n) {
         var profiles = Array.from(document.getElementsByClassName("profile"));
-        // TODO: find out what the word for "blank" is in Japanese
-        var code = ["en", "jp"][n];
+        var code = ["en", "ja", "ko", "zh-TW"][n];
         for (var profile of profiles) {
             if (profile.id != "blank") {
                 var id = profile.id.replace("-clone", "");
                 var moniker = profile.getElementsByClassName("moniker")[0];
                 var info = profile.getElementsByClassName("info")[0];
                 var anchor = info.getElementsByTagName("a")[0];
-                if (code == "en") {
-                    moniker.innerHTML = digi[id].name.en.replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2");
-                    anchor.href = anchor.href.replace(/digimonlink[s|z]/, "digimonlinks");
+                if (code in digi[id].name) {
+                    if (code == "en") {
+                        moniker.innerHTML = digi[id].name[code].replace(/([a-z])([A-Z]+|mon)/g, "$1&shy;$2");
+                        anchor.href = anchor.href.replace(/digimonlink[sz]/, "digimonlinks");
+                    }
+                    else {
+                        moniker.innerHTML = digi[id].name[code];
+                        anchor.href = anchor.href.replace(/digimonlink[sz]/, "digimonlinkz");
+                    }
                 }
-                else if (code == "jp") {
-                    moniker.innerHTML = digi[id].name.jp;
-                    anchor.href = anchor.href.replace(/digimonlink[s|z]/, "digimonlinkz");
+                else {
+                    moniker.innerHTML = "???";
+                    anchor.href = anchor.href.replace(/digimonlink[sz]/, "digimonlinkz");
                 }
             }
         }
@@ -879,7 +913,6 @@ function initPlanner() {
         planner.push({
             "digi": Array.from(selectedDigi).sort(byEvol),
             "awkn": settings.awkn,
-            // "deduct": true,
             "note": ""
         });
         newPlan(planner.length - 1);
@@ -888,9 +921,7 @@ function initPlanner() {
     }
 
     function byEvol(a, b) { // TODO: fix mega order and sort numerically secondarily
-        var evols = ["in-training-i", "in-training-ii", "rookie", "champion", "ultimate", "mega"];
-        var rank = evols.indexOf(digi[a].evol) - evols.indexOf(digi[b].evol);
-        return rank;
+        return evols.indexOf(digi[a].evol) - evols.indexOf(digi[b].evol);
     }
 
     newPlan = function (n) {
@@ -914,11 +945,12 @@ function initPlanner() {
                 viewer.className = "viewer";
                 for (var mon of planner[n].digi) {
                     var photo = document.createElement("img");
+                        photo.className = "photo-" + Math.max(1, digi[mon].evol);
                         if (planner[n].awkn != 5 || digi[mon].v2) {
-                            photo.src = "img/mon/" + [0, 1, 1, 3, 4, 5][planner[n].awkn] + "/" + digi[mon].tempID + ".png";
+                            photo.src = "img/portrait/" + digi[mon].images[settings.awkn] + ".png";
                         }
                         else {
-                            photo.src = "img/mon/" + [0, 1, 1, 3, 4, 4][planner[n].awkn] + "/" + digi[mon].tempID + ".png";
+                            photo.src = "img/portrait/" + digi[mon].images[settings.awkn] + ".png";
                         }
                     viewer.appendChild(photo);
                 }
@@ -1097,10 +1129,12 @@ function initPlanner() {
 function initFooter() {
     var footAbout = document.getElementById("foot-about");
     var footFAQ = document.getElementById("foot-faq");
+    var footTiers = document.getElementById("foot-tiers");
     var footPort = document.getElementById("foot-port");
     var footClose = document.getElementById("foot-close");
     var toeAbout = document.getElementById("toe-about");
     var toeFAQ = document.getElementById("toe-faq");
+    var toeTiers = document.getElementById("toe-tiers");
     var toePort = document.getElementById("toe-port");
     var toeClose = document.getElementById("toe-close");
     var importer = document.getElementById("import");
@@ -1110,6 +1144,37 @@ function initFooter() {
     var tile = document.getElementById("tile");
     var reader = new FileReader();
     var input;
+
+    function showTiers() {
+        toeTiers.removeEventListener("click", showTiers);
+        toeTiers.removeEventListener("touchstart", showTiers);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "Desktop/tiers.json", true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                var tiers = JSON.parse(this.response);
+                for (var mon in tiers) {
+                    var profile = document.getElementById(mon);
+                    var signatures = profile.getElementsByClassName("signature-set")[0].children;
+                    for (var i = 0; i < tiers[mon].length; i++) {
+                        var tierBadge = document.createElement("span");
+                        tierBadge.style.float = "right";
+                        tierBadge.innerHTML = tiers[mon][i];
+                        signatures[i].appendChild(tierBadge);
+                    }
+
+                }
+    			var div = document.createElement("div");
+    			div.innerHTML = this.response;
+    			var message = div.getElementsByClassName("message")[0];
+    			message.style.fontSize = "12px";
+    			discussion.appendChild(message);
+    			discussion.addEventListener("click", collapseDiscussion);
+    		}
+    	};
+    	xhr.send();
+    }
 
     function exportPlanFrag() {
         var planfrag = {
@@ -1151,6 +1216,7 @@ function initFooter() {
         context.putImageData(imageData, 0, 0);
 
         var blobURL = canvasToBlobURL(canvas);
+        tile.classList.add("nonon"); // render exports pixelated
         tile.src = blobURL;
         toeTile.href = blobURL;
         toeTile.click();
@@ -1211,12 +1277,14 @@ function initFooter() {
             }
         }
         try {
+            tile.classList.add("nonon"); // render valid imports pixelated
             var planfrag = JSON.parse(chars);
             planner = planfrag.planner;
             fragCount = planfrag.fragCount;
             updatePlanFrag();
         }
         catch (e) {
+            tile.classList.remove("nonon"); // render invalid imports normally
             console.log("Invalid memblock.");
             console.log(e);
             context.moveTo(0, 0);
@@ -1301,20 +1369,23 @@ function initFooter() {
         }
     }
 
-    tile.id = "tile";
+    addTapListener(toeTiers, showTiers);
     if (toeTile.download != "memblock") { // for iOS safari
         addTapListener(toeTile, stay);
     }
     addTapListener(importer, importPlanFrag0);
     addTapListener(exporter, exportPlanFrag);
     addTapListener(deporter, deportLocalStorage);
+
     hide(footAbout);
     hide(footFAQ);
+    hide(footTiers);
     hide(footPort);
     hide(footClose);
     addTapListener(toeAbout, function () {
         show(footAbout);
         hide(footFAQ);
+        hide(footTiers);
         hide(footPort);
         show(footClose);
         updateLines();
@@ -1322,6 +1393,15 @@ function initFooter() {
     addTapListener(toeFAQ, function () {
         hide(footAbout);
         show(footFAQ);
+        hide(footTiers);
+        hide(footPort);
+        show(footClose);
+        updateLines();
+    });
+    addTapListener(toeTiers, function () {
+        hide(footAbout);
+        hide(footFAQ);
+        show(footTiers);
         hide(footPort);
         show(footClose);
         updateLines();
@@ -1329,6 +1409,7 @@ function initFooter() {
     addTapListener(toePort, function () {
         hide(footAbout);
         hide(footFAQ);
+        hide(footTiers);
         show(footPort);
         show(footClose);
         updateLines();
@@ -1336,6 +1417,7 @@ function initFooter() {
     addTapListener(toeClose, function () {
         hide(footAbout);
         hide(footFAQ);
+        hide(footTiers);
         hide(footPort);
         hide(footClose);
         updateLines();
@@ -1343,7 +1425,6 @@ function initFooter() {
 }
 
 function initLineListeners() {
-    var profileGroups = Array.from(document.getElementsByClassName("profile-group"));
     for (var profileGroup of profileGroups) {
         var scroller = profileGroup.parentNode;
         scroller.addEventListener("scroll", updateLines);

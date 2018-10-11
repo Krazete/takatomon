@@ -15,11 +15,11 @@
 	<meta name="description" content="A digivolution tree viewer and awakening path planner for Digimon Links.">
 	<title>Takatomon - Awakening Helper</title>
 	<link rel="shortcut icon" type="image/png" href="img/favicon.png">
-	<link href="index.css?" rel="stylesheet" type="text/css">
-	<script src="digi.js?"></script>
-	<script src="advent.js?"></script>
-	<script src="tree.js?"></script>
-	<script src="index.js?"></script>
+	<link href="index.css?oct10" rel="stylesheet" type="text/css">
+	<script src="digi.js?oct10"></script>
+	<script src="advent.js?oct10"></script>
+	<script src="tree.js?oct10"></script>
+	<script src="index.js?oct10"></script>
 </head>
 <body>
 	<div class="section" id="planner">
@@ -33,7 +33,10 @@
 			<div class="profile-group">
 				<div class="profile" id="blank">
 					<div class="card">
-						<img class="portrait" src="img/mon/empty.png" alt="empty">
+						<div class="portraiture">
+							<img class="backing" src="img/backing/empty.png" alt="empty">
+							<img class="frame" src="img/frame/empty.png" alt="empty">
+						</div>
 						<div class="moniker">Empty</div>
 					</div>
 				</div>
@@ -58,25 +61,25 @@
 			<div class="switchbox">
 				<div class="switchbox-label">Filter Tribe</div>
 				<div class="switch-set">
-					<img src="img/tribes/mirage.png" alt="mirage" class="switch mirage" id="tribe-mirage">
-					<img src="img/tribes/blazing.png" alt="blazing" class="switch blazing" id="tribe-blazing">
-					<img src="img/tribes/glacier.png" alt="glacier" class="switch glacier" id="tribe-glacier">
-					<img src="img/tribes/electric.png" alt="electric" class="switch electric" id="tribe-electric">
-					<img src="img/tribes/earth.png" alt="earth" class="switch earth" id="tribe-earth">
-					<img src="img/tribes/bright.png" alt="bright" class="switch bright" id="tribe-bright">
-					<img src="img/tribes/abyss.png" alt="abyss" class="switch abyss" id="tribe-abyss">
+					<img src="img/tribe/1.png" alt="mirage" class="switch mirage" id="tribe-1">
+					<img src="img/tribe/2.png" alt="blazing" class="switch blazing" id="tribe-2">
+					<img src="img/tribe/3.png" alt="glacier" class="switch glacier" id="tribe-3">
+					<img src="img/tribe/4.png" alt="electric" class="switch electric" id="tribe-4">
+					<img src="img/tribe/5.png" alt="earth" class="switch earth" id="tribe-5">
+					<img src="img/tribe/6.png" alt="bright" class="switch bright" id="tribe-6">
+					<img src="img/tribe/7.png" alt="abyss" class="switch abyss" id="tribe-7">
 				</div>
 			</div>
 			<div class="switchbox">
 				<div class="switchbox-label">Filter Skill</div>
 				<div class="switch-set">
-					<img src="img/tribes/mirage.png" alt="mirage" class="switch mirage" id="rival-mirage">
-					<img src="img/tribes/blazing.png" alt="blazing" class="switch blazing" id="rival-blazing">
-					<img src="img/tribes/glacier.png" alt="glacier" class="switch glacier" id="rival-glacier">
-					<img src="img/tribes/electric.png" alt="electric" class="switch electric" id="rival-electric">
-					<img src="img/tribes/earth.png" alt="earth" class="switch earth" id="rival-earth">
-					<img src="img/tribes/bright.png" alt="bright" class="switch bright" id="rival-bright">
-					<img src="img/tribes/abyss.png" alt="abyss" class="switch abyss" id="rival-abyss">
+					<img src="img/tribe/1.png" alt="mirage" class="switch mirage" id="attribute-1">
+					<img src="img/tribe/2.png" alt="blazing" class="switch blazing" id="attribute-2">
+					<img src="img/tribe/3.png" alt="glacier" class="switch glacier" id="attribute-3">
+					<img src="img/tribe/4.png" alt="electric" class="switch electric" id="attribute-4">
+					<img src="img/tribe/5.png" alt="earth" class="switch earth" id="attribute-5">
+					<img src="img/tribe/6.png" alt="bright" class="switch bright" id="attribute-6">
+					<img src="img/tribe/7.png" alt="abyss" class="switch abyss" id="attribute-7">
 					<div class="switch" id="effect-aoe">AoE</div>
 					<div class="switch" id="effect-st">ST</div>
 					<div class="switch" id="effect-support">Support</div>
@@ -177,6 +180,8 @@
 				<div class="slide-set" id="lang">
 					<div class="slide">English</div>
 					<div class="slide">Japanese</div>
+					<div class="slide">Korean</div>
+					<div class="slide">Chinese</div>
 				</div>
 				<div class="slidebox-label">Language</div>
 			</div>
@@ -236,6 +241,11 @@
 			<br>
 			A: This is a known bug. Autosaving happens when the page is closed, which is difficult to detect on mobile devices.
 		</div>
+		<div id="foot-tiers">
+			These tiers were taken from Growlmon.Net a few days before it shut down in September 2018.
+			<br>
+			They are slightly outdated and incomplete.
+		</div>
 		<div id="foot-port">
 			<span class="toe" id="import">Load memblock</span> (import planner and fragments).
 			<br><br>
@@ -243,7 +253,7 @@
 			<br><br>
 			<div id="tile-box">
 				<a download="memblock" id="toe-tile">
-					<img src="img/mon/none.png" alt="memblock" id="tile"></img>
+					<img src="img/backing/none.png" alt="memblock" id="tile"></img>
 				</a>
 			</div>
 			<br>
@@ -255,6 +265,8 @@
 		<span class="toe" id="toe-about">About</span>
 		|
 		<span class="toe" id="toe-faq">Help</span>
+		|
+		<span class="toe" id="toe-tiers">Old Tiers</span>
 		|
 		<span class="toe" id="toe-port">Port</span>
 	</div>

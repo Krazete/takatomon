@@ -8,7 +8,7 @@ gaps = [0, 13, 14, 14, 13, 14, 15];
 padding = 8;
 newsize = 130;
 
-tribes = {'mirage', 'blazing', 'glacier', 'earth', 'electric', 'abyss', 'bright'};
+tribes = [1, 2, 3, 5, 4, 7, 6];
 colors = [
     15, 15, 15; % #eee
     16,  0,  0; % #f00
@@ -19,9 +19,9 @@ colors = [
     16, 14,  0  % #fd0
 ] / 16;
 
-mkdir('../img/tribes/');
+mkdir('../img/tribe/');
 for x = 1:7
-    name = sprintf('../img/tribes/%s.png', tribes{x});
+    name = sprintf('../img/tribe/%d.png', tribes(x));
     ya = 57;
     yb = ya + size;
     xa = (x - 1) * size + sum(gaps(1:x)) + 1;
