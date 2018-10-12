@@ -530,9 +530,13 @@ function initAdvent() {
 
     function isAdvent(mon, now) {
         if (mon in advent) {
-            var start = advent[mon][0] - 43200000; // show advents half a day ahead of schedule
-            var end = advent[mon][1];
-            return start <= now && now <= end;
+            for (var timespan of advent[mon]) {
+                var start = timespan[0] - 43200000; // show advents half a day ahead of schedule
+                var end = timespan[1];
+                if (start <= now && now <= end) {
+                    return true;
+                }
+            }
         }
         return false;
     }
