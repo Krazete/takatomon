@@ -283,6 +283,14 @@ body.drag { /* for planner */
 .preview .frame {
     display: none;
 }
+@media (hover: hover) {
+    .card:hover .backing {
+        opacity: 0.25;
+    }
+    .card:hover .frame {
+        display: none;
+    }
+}
 
 .tribe {
     position: relative; /* to make background work */

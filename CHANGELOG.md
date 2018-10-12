@@ -132,7 +132,7 @@
 ## Design
 - switched information database
 - switched image database
-- - used new layered images to make previews fancier
+- - used new layered images to make hovered/previewed profiles fancier
 - edited faq
 ## Performance
 - fixed more compatibility issues
