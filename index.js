@@ -1215,10 +1215,7 @@ function initFooter() {
         }
         context.putImageData(imageData, 0, 0);
 
-        var blobURL = canvasToBlobURL(canvas);
-        tile.classList.add("nonon"); // render exports pixelated
-        tile.src = blobURL;
-        toeTile.href = blobURL;
+        paintTile(canvas, true);
         toeTile.click();
     }
 
@@ -1277,14 +1274,13 @@ function initFooter() {
             }
         }
         try {
-            tile.classList.add("nonon"); // render valid imports pixelated
             var planfrag = JSON.parse(chars);
             planner = planfrag.planner;
             fragCount = planfrag.fragCount;
             updatePlanFrag();
+            paintTile(canvas, true);
         }
         catch (e) {
-            tile.classList.remove("nonon"); // render invalid imports normally
             console.log("Invalid memblock.");
             console.log(e);
             context.moveTo(0, 0);
@@ -1294,9 +1290,23 @@ function initFooter() {
             context.lineWidth = Math.min(canvas.width, canvas.height) / 16;
             context.strokeStyle = "#fff";
             context.stroke();
+            paintTile(canvas, false);
         }
+    }
+
+    function paintTile(canvas, valid) {
         var blobURL = canvasToBlobURL(canvas);
         tile.src = blobURL;
+        toeTile.href = blobURL;
+        if (valid) {
+            var iso = new Date().toISOString().replace(/T.+|\D/g, "");
+            tile.classList.add("nonon");
+            toeTile.download = "memblock" + iso;
+        }
+        else {
+            tile.classList.remove("nonon");
+            toeTile.download = "invalid_memblock";
+        }
     }
 
     function canvasToBlobURL(canvas) {
@@ -1370,7 +1380,7 @@ function initFooter() {
     }
 
     addTapListener(toeTiers, showTiers);
-    if (toeTile.download != "memblock") { // for iOS safari
+    if (typeof toeTile.download == "undefined") { // for iOS safari
         addTapListener(toeTile, stay);
     }
     addTapListener(importer, importPlanFrag0);

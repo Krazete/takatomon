@@ -98,7 +98,7 @@
 - fixed some problems with safari and firefox
 - - #rgba, gradients, scrolling, and for-of loops were the main issues
 
-# [v4](https://github.com/Krazete/takatomon/tree/v4) (9/24/2018 - )
+# [v4](https://github.com/Krazete/takatomon/tree/v4) (9/24/2018 - 10/11/2018)
 ## Features
 - initialize planner
 - - can add, delete, view, annotate, and rearrange plans
@@ -119,7 +119,7 @@
 - edited about description
 - edited faq
 
-# [v5](https://github.com/Krazete/takatomon/tree/v5) ( - )
+# [v5](https://github.com/Krazete/takatomon/tree/v5) (10/12/2018 - )
 ## Features
 - initialized language option
 - initialized url parameters
@@ -128,6 +128,7 @@
 - removed tiers from skillsets
 - - added a separate tier list page
 - added magical and physical indicators to skillsets
+- added date to exported memblocks
 ## Design
 - switched information database
 - switched image database
