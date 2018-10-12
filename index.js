@@ -372,7 +372,7 @@ function initProfiles() {
                             }
                         }
                         portrait.alt = mon + "+0";
-                    portraiture.append(portrait);
+                    portraiture.appendChild(portrait);
                     var frame = document.createElement("img");
                         frame.className = "frame";
                         frame.src = "img/frame/" + evol + ".png";
