@@ -728,14 +728,6 @@ function initVisualization() {
             for (var node of tree.nodes) {
                 var profile = document.getElementById(node);
                 profile.classList.add("preview");
-                var card = profile.getElementsByClassName("card")[0];
-                var rect = card.getBoundingClientRect();
-                linecontext.clearRect(
-                    rect.left + window.scrollX + 1,
-                    rect.top + window.scrollY + 1,
-                    rect.width - 2,
-                    rect.height - 2
-                );
             }
             tree.forEachEdge(function (edge, JSONedge) {
                 var profile0 = document.getElementById(edge[0]);

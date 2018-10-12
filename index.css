@@ -261,10 +261,16 @@ body.drag { /* for planner */
     width: 100%;
     height: 100%;
 }
+.preview .backing {
+    opacity: 0.25;
+}
 .portrait {
     position: absolute;
     width: 100%;
     height: 100%;
+}
+.preview .portrait {
+    z-index: 1;
 }
 .frame {
     position: absolute;
@@ -272,6 +278,9 @@ body.drag { /* for planner */
     height: 100%;
     border-radius: 10%;
     pointer-events: none;
+}
+.preview .frame {
+    display: none;
 }
 
 .tribe {
@@ -292,6 +301,7 @@ body.drag { /* for planner */
 }
 .preview .moniker {
     position: relative; /* to make z-index work */
+    background: inherit;
     z-index: 1;
 }
 

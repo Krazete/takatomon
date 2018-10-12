@@ -132,6 +132,7 @@
 ## Design
 - switched information database
 - switched image database
+- - used new layered images to make previews fancier
 - edited faq
 ## Performance
 - fixed more compatibility issues
