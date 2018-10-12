@@ -227,6 +227,7 @@ body.drag { /* for planner */
     border: 1px solid #fff;
     border-radius: 50%;
     display: block;
+    z-index: 1;
 }
 .small.advent .card:after {
     width: 14px;
