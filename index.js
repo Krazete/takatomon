@@ -105,7 +105,7 @@ function update() {
             profileGroup.parentNode.scrollLeft = 0;
         }
     }
-    if (settings.sort == 2) {
+    if (settings.sort == 3) {
         untangleProfiles();
     }
     else {
@@ -676,11 +676,12 @@ function initVisualization() {
     }
 
     function setSort(n) {
-        if (n == 2) {
+        if (n == 3) {
             untangleProfiles();
         }
         else {
-            var basis = n ? byAlphabet : byDefault;
+            var bases = [byDefault, byAlphabet, byTribe];
+            var basis = bases[n];
             var keys = Object.keys(digi);
             keys.sort(basis);
             sortProfiles(keys);
@@ -699,10 +700,10 @@ function initVisualization() {
         return a - b;
     }
 
-    // function byTribe(a, b) { // TODO: delete this eventually
-    //     var tribeComparison = digi[a].tribe - digi[b].tribe;
-    //     return tribeComparison ? tribeComparison : byAlphabet(a, b);
-    // }
+    function byTribe(a, b) {
+        var tribeComparison = digi[a].tribe - digi[b].tribe;
+        return tribeComparison ? tribeComparison : byDefault(a, b);
+    }
 
     function setPreview(n) {
         for (var mon in digi) {
