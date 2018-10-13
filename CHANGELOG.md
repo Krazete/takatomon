@@ -129,6 +129,7 @@
 - - added a separate tier list page
 - added magical and physical indicators to skillsets
 - added date to exported memblocks
+- added linelayer visibility options to preview settings
 ## Design
 - switched information database
 - switched image database

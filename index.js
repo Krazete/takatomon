@@ -709,7 +709,13 @@ function initVisualization() {
         for (var mon in digi) {
             var profile = document.getElementById(mon);
             var card = profile.getElementsByClassName("card")[0];
-            if (n) {
+            if (n == 0 || n == 1) {
+                linelayer.classList.remove("hidden");
+            }
+            else { // should probably disable updateLines, but this works
+                linelayer.classList.add("hidden");
+            }
+            if (n == 1 || n == 3) {
                 card.addEventListener("mouseover", previewGemel);
                 card.addEventListener("touchstart", previewGemel);
                 card.addEventListener("mouseout", deviewGemel);
