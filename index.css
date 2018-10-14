@@ -117,7 +117,7 @@ body.drag { /* for planner */
     border: 1px solid #000;
     border-radius: 4px;
     margin: 52px 0 0 40px;
-    z-index: 1;
+    z-index: 2;
 }
 .small .frag-counter {
     width: 22px;
@@ -227,7 +227,7 @@ body.drag { /* for planner */
     border: 1px solid #fff;
     border-radius: 50%;
     display: block;
-    z-index: 1;
+    z-index: 2;
 }
 .small.advent .card:after {
     width: 14px;
@@ -301,7 +301,7 @@ body.drag { /* for planner */
     display: block;
 }
 .preview .tribe {
-    z-index: 1;
+    z-index: 2;
 }
 
 .moniker {
@@ -311,7 +311,7 @@ body.drag { /* for planner */
 .preview .moniker {
     position: relative; /* to make z-index work */
     background: inherit;
-    z-index: 1;
+    z-index: 2;
 }
 
 .signature-set {
