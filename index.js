@@ -343,6 +343,9 @@ function initProfiles() {
         var profile = document.createElement("div");
             profile.className = "profile";
             profile.id = mon;
+            if (!digi[mon].global) {
+                profile.classList.add("unreleased");
+            }
             if (digi[mon].fragments) {
                 var fragCounter = document.createElement("input");
                     fragCounter.className = "frag-counter";
@@ -830,7 +833,7 @@ function initVisualization() {
                     else {
                         moniker.innerHTML = digi[id].name[lang];
                     }
-                    if (lang == "ja") {
+                    if (lang == "ja" || !digi[id].global) {
                         anchor.href = anchor.href.replace(/digimonlink[sz]/, "digimonlinkz");
                     }
                     else {

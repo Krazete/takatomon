@@ -130,6 +130,7 @@
 - added magical and physical indicators to skillsets
 - added date to exported memblocks
 - added linelayer visibility options to preview settings
+- initialized opacity-based indicator for global digimon
 ## Design
 - switched information database
 - switched image database

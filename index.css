@@ -360,6 +360,11 @@ body.drag { /* for planner */
     display: block;
 }
 
+.unreleased .portraiture, .unreleased .tribe, .unreleased .moniker,
+.unreleased .signature-set, .unreleased .info {
+    opacity: 0.6;
+}
+
 /* Planner */
 
 .nopad {
