@@ -339,6 +339,10 @@ function initProfileGroups() {
 }
 
 function initProfiles() {
+    var date = new Date();
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
+
     function newProfile(mon) {
         var profile = document.createElement("div");
             profile.className = "profile";
@@ -372,6 +376,12 @@ function initProfiles() {
                             var r = Math.random();
                             if (r < 0.01) {
                                 portrait.src = "img/birdramon.png";
+                            }
+                        }
+                        if (month == 4 && day == 1) {
+                            var r = Math.floor(4 * Math.random());
+                            if (r > 0) {
+                                portrait.style.transform = "rotate(" + (90 * r) + "deg)";
                             }
                         }
                         portrait.alt = mon + "+0";
@@ -632,8 +642,7 @@ function initFiltration() {
         var okTribe = !filters.tribe.size || filters.tribe.has(digi[mon].tribe);
         var okSkill = digi[mon].skills.some(function (skill) {
             var okAttribute = !filters.attribute.size || filters.attribute.has(skill.attribute);
-            var effect = ["support", "st", "aoe"][skill.effect];
-            var okEffect = !filters.effect.size || filters.effect.has(effect);
+            var okEffect = !filters.effect.size || filters.effect.has(skill.effect);
             return okAttribute && okEffect;
         });
         var okTree = !filters.special.has("tree") || [gemelCore, gemel][settings.tree].nodes.has(parseInt(mon));
@@ -1012,6 +1021,7 @@ function initPlanner() {
         selectedDigi = new Set(plan.digi);
         setSlide("awkn", plan.awkn);
         update();
+        exitSearchMode();
     }
 
     // function toggleDeduction() { // TODO: this
@@ -1293,6 +1303,7 @@ function initFooter() {
             fragCount = planfrag.fragCount;
             updatePlanFrag();
             paintTile(canvas, true);
+            exitSearchMode();
         }
         catch (e) {
             console.log("Invalid memblock.");
@@ -1355,6 +1366,7 @@ function initFooter() {
         planner = [];
         fragCount = {};
         updatePlanFrag();
+        exitSearchMode();
 
         try {
             localStorage.clear();
