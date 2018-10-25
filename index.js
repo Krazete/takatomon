@@ -523,11 +523,11 @@ function initAdvent() {
             var profile = document.getElementById(mon);
             var card = profile.getElementsByClassName("card")[0];
             for (var timespan of advent[mon]) {
+                profile.classList.remove("advent");
+                profile.classList.remove("ongoing");
+                profile.classList.remove("coming");
                 if (now < timespan[1]) { // event has not ended
                     profile.classList.add("advent");
-                    if (filters.special.has("advent")) {
-                        show(profile);
-                    }
                     if (timespan[0] <= now) { // event is ongoing
                         profile.classList.add("ongoing");
                         card.dataset.advent = getCountdown(now, timespan[1]);
@@ -539,12 +539,7 @@ function initAdvent() {
                     }
                 }
                 else { // event has passed
-                    profile.classList.remove("advent");
-                    profile.classList.remove("ongoing");
-                    profile.classList.remove("coming");
-                    if (filters.special.has("advent")) {
-                        hide(profile);
-                    }
+                    card.removeAttribute("data-advent");
                 }
             }
         }
@@ -667,7 +662,7 @@ function initFiltration() {
         var okDNA2 = !filters.special.has("dna") || digi[mon].skills.length > 1;
         var okV2 = !filters.special.has("v2") || digi[mon].v2;
         var profile = document.getElementById(mon);
-        var okAdvent = !filters.special.has("advent") || profile.classList.contains("advent");
+        var okAdvent = !filters.special.has("advent") || mon in advent;
         var okSpecial = okTree && okDNA2 && okV2 && okAdvent;
         return okQuery && okTribe && okSkill && okSpecial;
     }
