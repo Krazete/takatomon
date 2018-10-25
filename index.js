@@ -540,6 +540,8 @@ function initAdvent() {
                 }
                 else { // event has passed
                     profile.classList.remove("advent");
+                    profile.classList.remove("ongoing");
+                    profile.classList.remove("coming");
                     if (filters.special.has("advent")) {
                         hide(profile);
                     }
