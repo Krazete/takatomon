@@ -521,16 +521,28 @@ function initAdvent() {
         var now = Date.now();
         for (var mon in advent) {
             var profile = document.getElementById(mon);
-            if (isAdvent(mon, now)) {
-                profile.classList.add("advent");
-                if (filters.special.has("advent")) {
-                    show(profile);
+            var card = profile.getElementsByClassName("card")[0];
+            for (var timespan of advent[mon]) {
+                if (now < timespan[1]) { // event has not ended
+                    profile.classList.add("advent");
+                    if (timespan[0] <= now) { // event is ongoing
+                        var delta = getDateDifference(now, timespan[1]);
+                        profile.classList.add("ongoing");
+                    }
+                    else { // event is coming
+                        profile.classList.add("coming");
+                        var delta = getDateDifference(now, timespan[0]);
+                    }
+                    card.dataset.advent = formatDelta(delta);
+                    if (filters.special.has("advent")) {
+                        show(profile);
+                    }
                 }
-            }
-            else {
-                profile.classList.remove("advent");
-                if (filters.special.has("advent")) {
-                    hide(profile);
+                else { // event has passed
+                    profile.classList.remove("advent");
+                    if (filters.special.has("advent")) {
+                        hide(profile);
+                    }
                 }
             }
         }
@@ -541,17 +553,25 @@ function initAdvent() {
         }
     }
 
-    function isAdvent(mon, now) {
-        if (mon in advent) {
-            for (var timespan of advent[mon]) {
-                var start = timespan[0] - 43200000; // show advents half a day ahead of schedule
-                var end = timespan[1];
-                if (start <= now && now <= end) {
-                    return true;
-                }
-            }
+    function getDateDifference(date0, date1) {
+        var timeDelta = date1 - date0;
+        var dayDelta = Math.floor(timeDelta / 86400000); // 24 * 60 * 60 * 1000
+        var hourDelta = Math.floor(timeDelta / 3600000 - dayDelta * 24);
+        var minuteDelta = Math.floor(timeDelta / 60000 - hourDelta * 60 - dayDelta * 1440);
+        return [dayDelta, hourDelta, minuteDelta];
+    }
+
+    function formatDelta(delta) {
+        if (delta[0] > 0) {
+            return delta[0] + "d";
         }
-        return false;
+        else if (delta[1] > 0) {
+            return delta[1] + "h";
+        }
+        else if (delta[2] > 0) {
+            return delta[2] + "m";
+        }
+        return "???";
     }
 
     updateAdvent(true);

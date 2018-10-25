@@ -131,6 +131,7 @@
 - added date to exported memblocks
 - added linelayer visibility options to preview settings
 - initialized opacity-based indicator for global digimon
+- changed advent indicator to advent countdown
 ## Design
 - switched information database
 - switched image database

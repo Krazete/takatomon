@@ -212,21 +212,19 @@ body.drag { /* for planner */
     color: #fff;
 }
 .advent .card:after {
-    content: '!';
+    content: attr(data-advent);
     position: absolute;
     top: -2px;
     right: -2px;
-    width: 16px;
-    height: 16px;
-    line-height: 16px;
-    background: #f80;
-    color: #fff;
-    font-size: 16px;
-    font-weight: bold;
-    text-align: center;
-    border: 1px solid #fff;
-    border-radius: 50%;
-    display: block;
+    width: -webkit-max-content;
+    width: -moz-max-content;
+    width: max-content;
+    height: 14px;
+    line-height: 14px;
+    font-size: 14px;
+    font-variant: small-caps;
+    padding: 0 2px;
+    border-radius: 4px;
     z-index: 2;
 }
 .small.advent .card:after {
@@ -240,6 +238,15 @@ body.drag { /* for planner */
     height: 18px;
     line-height: 18px;
     font-size: 18px;
+}
+.advent.ongoing .card:after {
+    background: #f40;
+    color: #fff;
+    border: 1px solid #fff;
+}
+.advent.coming .card:after {
+    background: #028;
+    color: #ccc;
 }
 
 .portraiture {
