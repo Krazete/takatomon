@@ -525,17 +525,17 @@ function initAdvent() {
             for (var timespan of advent[mon]) {
                 if (now < timespan[1]) { // event has not ended
                     profile.classList.add("advent");
+                    if (filters.special.has("advent")) {
+                        show(profile);
+                    }
                     if (timespan[0] <= now) { // event is ongoing
-                        var delta = getDateDifference(now, timespan[1]);
                         profile.classList.add("ongoing");
+                        card.dataset.advent = getCountdown(now, timespan[1]);
+                        break;
                     }
                     else { // event is coming
                         profile.classList.add("coming");
-                        var delta = getDateDifference(now, timespan[0]);
-                    }
-                    card.dataset.advent = formatDelta(delta);
-                    if (filters.special.has("advent")) {
-                        show(profile);
+                        card.dataset.advent = getCountdown(now, timespan[0]);
                     }
                 }
                 else { // event has passed
@@ -553,23 +553,19 @@ function initAdvent() {
         }
     }
 
-    function getDateDifference(date0, date1) {
-        var timeDelta = date1 - date0;
+    function getCountdown(now, later) {
+        var timeDelta = later - now;
         var dayDelta = Math.floor(timeDelta / 86400000); // 24 * 60 * 60 * 1000
         var hourDelta = Math.floor(timeDelta / 3600000 - dayDelta * 24);
         var minuteDelta = Math.floor(timeDelta / 60000 - hourDelta * 60 - dayDelta * 1440);
-        return [dayDelta, hourDelta, minuteDelta];
-    }
-
-    function formatDelta(delta) {
-        if (delta[0] > 0) {
-            return delta[0] + "d";
+        if (dayDelta > 0) {
+            return dayDelta + "d";
         }
-        else if (delta[1] > 0) {
-            return delta[1] + "h";
+        else if (hourDelta > 0) {
+            return hourDelta + "h";
         }
-        else if (delta[2] > 0) {
-            return delta[2] + "m";
+        else if (minuteDelta > 0) {
+            return minuteDelta + "m";
         }
         return "???";
     }
