@@ -15,11 +15,11 @@
 	<meta name="description" content="A digivolution tree viewer and awakening path planner for Digimon Links.">
 	<title>Takatomon - Awakening Helper</title>
 	<link rel="shortcut icon" type="image/png" href="img/favicon.png">
-	<link href="index.css?1540692280690" rel="stylesheet" type="text/css">
+	<link href="index.css?1540706480984" rel="stylesheet" type="text/css">
 	<script src="digi.js?1539636597083"></script>
 	<script src="advent.js?1539377863929"></script>
 	<script src="tree.js?oct10"></script>
-	<script src="index.js?1540692280690"></script>
+	<script src="index.js?1540706480984"></script>
 </head>
 <body>
 	<div class="section" id="planner">
@@ -50,9 +50,15 @@
 		<input type="text" placeholder="Search Digimon" id="search">
 		<div class="scroller switchbox-set">
 			<div class="switchbox">
-				<div class="switchbox-label">Special</div>
+				<div class="switchbox-label">Personal</div>
 				<div class="switch-set">
 					<div class="switch" id="special-tree">Tree</div>
+					<div class="switch" id="special-fragment">Fragments</div>
+				</div>
+			</div>
+			<div class="switchbox">
+				<div class="switchbox-label">Special</div>
+				<div class="switch-set">
 					<div class="switch" id="special-dna">DNA2</div>
 					<div class="switch" id="special-v2">V2</div>
 					<div class="switch" id="special-advent">Advent</div>
@@ -232,9 +238,9 @@
 			<br>
 			A: Those are Digimon that haven't yet been released in the global version of Digimon Links.
 			<br><br>
-			Q: What does the <i>Tree</i> option in the <i>Special</i> search filter do?
+			Q: What do the <i>Personal</i> search filter options do?
 			<br>
-			A: Enable this if you want the search results to display only Digimon of your currently selected digivolution tree.
+			A: Select <i>Tree</i> to limit results to your currently selected digivolution tree. Select <i>Fragments</i> to hide Digimon who require fragments of which you have none of.
 			<br><br>
 			Q: Why doesn't the <i>Untangled (Beta)</i> sort option untangle the lines fully?
 			<br>
@@ -273,10 +279,11 @@
 		|
 		<span class="toe" id="toe-port">Port</span>
 	</div>
-	<div id="news" data-version="blah">
+	<div id="news" data-version="blahblah">
 		<div>
 			Update Log (Oct 27)
 			<ul>
+				<li>Added fragment count filter to search menu.</li>
 				<li><b>Fixed autosave issues on mobile devices.</b>
 					<ul>
 						<li>This affected the planner, fragment counters, and settings.</li>

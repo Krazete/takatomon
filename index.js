@@ -646,11 +646,12 @@ function initFiltration() {
             return okAttribute && okEffect;
         });
         var okTree = !filters.special.has("tree") || [gemelCore, gemel][settings.tree].nodes.has(parseInt(mon));
+        var okFragment = !filters.special.has("fragment") || !digi[mon].fragments || mon in fragCount;
         var okDNA2 = !filters.special.has("dna") || digi[mon].skills.length > 1;
         var okV2 = !filters.special.has("v2") || digi[mon].v2;
         var profile = document.getElementById(mon);
         var okAdvent = !filters.special.has("advent") || mon in advent;
-        var okSpecial = okTree && okDNA2 && okV2 && okAdvent;
+        var okSpecial = okTree && okFragment && okDNA2 && okV2 && okAdvent;
         return okQuery && okTribe && okSkill && okSpecial;
     }
 

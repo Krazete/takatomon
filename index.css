@@ -519,10 +519,10 @@ body.drag { /* for planner */
 }
 
 .switchbox {
-    width: 25%;
     min-width: -webkit-max-content;
     min-width: -moz-max-content;
     min-width: max-content;
+    padding: 0 1%;
     display: inline-block;
 }
 
