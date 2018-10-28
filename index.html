@@ -15,11 +15,11 @@
 	<meta name="description" content="A digivolution tree viewer and awakening path planner for Digimon Links.">
 	<title>Takatomon - Awakening Helper</title>
 	<link rel="shortcut icon" type="image/png" href="img/favicon.png">
-	<link href="index.css?1540772144696" rel="stylesheet" type="text/css">
+	<link href="index.css?1540692280690" rel="stylesheet" type="text/css">
 	<script src="digi.js?1539636597083"></script>
 	<script src="advent.js?1539377863929"></script>
 	<script src="tree.js?oct10"></script>
-	<script src="index.js?1540428376709"></script>
+	<script src="index.js?1540692280690"></script>
 </head>
 <body>
 	<div class="section" id="planner">
@@ -272,6 +272,33 @@
 		<span class="toe" id="toe-tiers">Old Tiers</span>
 		|
 		<span class="toe" id="toe-port">Port</span>
+	</div>
+	<div id="news" data-version="blah">
+		<div>
+			Update Log (Oct 27)
+			<ul>
+				<li><b>Fixed autosave issues on mobile devices.</b>
+					<ul>
+						<li>This affected the planner, fragment counters, and settings.</li>
+					</ul>
+				</li>
+				<li>Replaced advent indicators with advent countdowns.
+				<li>The search menu advent filter now shows all advent Digimon.</li>
+				<li>Added an update log. Here are some several-week-old updates:
+					<ul>
+						<li>Fixed Chortos links (shouldn't lead to 404 pages anymore).</li>
+						<li>Fixed search menu bugs.</li>
+						<li>Removed tiers (click "Old Tiers" above if you need it).</li>
+						<li>Added physical/magical skill indicators.</li>
+						<li>Reduced opacity of Digimon unavailable in global Links.</li>
+						<li>Made untangle-sort work again.</li>
+						<li>Restored sort-by-tribe option.</li>
+						<li>Replaced Preview setting with Connections.</li>
+					</ul>
+				</li>
+			</ul>
+			Click to close.
+		</div>
 	</div>
 	<canvas id="linelayer"></canvas>
 </body>

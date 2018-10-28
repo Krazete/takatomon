@@ -293,6 +293,7 @@ function init() {
     initVisualization();
     initPlanner();
     initFooter();
+    initNews();
     initLineListeners();
     initParameter();
 }
@@ -1494,6 +1495,22 @@ function initParameter() { // fake ?key=value format
         }
     }
     history.replaceState({}, document.title, "/");
+}
+
+function initNews() {
+    var news = document.getElementById("news");
+    var versionRead = load("versionRead", 0);
+
+    function markAsRead() {
+        hide(news);
+        save("versionRead", news.dataset.version);
+        updateLines();
+    }
+
+    if (versionRead == news.dataset.version) {
+        markAsRead();
+    }
+    addTapListener(news, markAsRead);
 }
 
 window.addEventListener("DOMContentLoaded", init);

@@ -132,6 +132,7 @@
 - added linelayer visibility options to preview settings
 - initialized opacity-based indicator for global digimon
 - changed advent indicator to advent countdown
+- added an update log
 ## Design
 - switched information database
 - switched image database
