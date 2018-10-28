@@ -66,16 +66,6 @@ function save(key, value) {
     }
 }
 
-function addUnloadListener(f) {
-    function fNull() {
-        f();
-        return null;
-    }
-    window.addEventListener("beforeunload", fNull);
-    window.addEventListener("pagehide", fNull);
-    document.addEventListener("visibilitychange", fNull);
-}
-
 function load(key, defaultValue) {
     try {
         var valueJSON = window.localStorage.getItem(key);
@@ -465,6 +455,7 @@ function initProfiles() {
             fragCount[mon] = parseInt(this.value);
         }
         styleFragments(this);
+        save("fragCount", fragCount);
     }
 
     styleFragments = function (element) { // NOTE: used in updatePlanFrag
@@ -494,10 +485,6 @@ function initProfiles() {
         }
     }
 
-    function saveFragCount() {
-        save("fragCount", fragCount);
-    }
-
     for (var mon in digi) { // digi.js should already be sorted numerically
         var profile = newProfile(mon);
         var fragCounters = Array.from(profile.getElementsByClassName("frag-counter"));
@@ -513,7 +500,6 @@ function initProfiles() {
         addTapListener(card, selectProfile);
         profileGroups[digi[mon].evol].appendChild(profile);
     }
-    addUnloadListener(saveFragCount);
 }
 
 function initAdvent() {
@@ -894,6 +880,7 @@ function initVisualization() {
         }
         settings[key] = value;
         setters[key](value);
+        save(key, settings[key]);
     }
 
     function advanceSlide() {
@@ -910,16 +897,6 @@ function initVisualization() {
             var slidebox = slideSet.parentNode;
             hide(slidebox);
         }
-    }
-
-    function saveSettings() {
-        save("sort", settings.sort);
-        save("preview", settings.preview);
-        save("frag", settings.frag);
-        save("awkn", settings.awkn);
-        save("size", settings.size);
-        save("lang", settings.lang);
-        save("skill", settings.skill);
     }
 
     function deleteLegacyLocalStorage() { // TODO: delete this in the next version?
@@ -940,7 +917,6 @@ function initVisualization() {
         setSlide(key, value)
         addTapListener(slideSet, advanceSlide);
     }
-    addUnloadListener(saveSettings);
     deleteLegacyLocalStorage();
 }
 
@@ -1044,6 +1020,7 @@ function initPlanner() {
         var message = this.value;
         var n = this.parentNode.dataset.n;
         planner[n].note = message;
+        savePlanner();
     }
 
     function startDrag(e) {
@@ -1129,6 +1106,7 @@ function initPlanner() {
         window.removeEventListener("touchmove", drag);
         window.removeEventListener("mouseup", stopDrag);
         window.removeEventListener("touchend", stopDrag);
+        savePlanner();
     }
 
     function getX(e) {
@@ -1153,6 +1131,7 @@ function initPlanner() {
         else {
             addPlan.classList.add("noplan");
         }
+        savePlanner();
     }
 
     function savePlanner() {
@@ -1164,7 +1143,6 @@ function initPlanner() {
     }
     noplan();
     addTapListener(addPlan, addSelection);
-    addUnloadListener(savePlanner);
 }
 
 function initFooter() {
@@ -1416,6 +1394,8 @@ function initFooter() {
                 styleFragments(fragCounter);
             }
         }
+        save("planner", planner);
+        save("fragCount", fragCount);
     }
 
     addTapListener(toeTiers, showTiers);
