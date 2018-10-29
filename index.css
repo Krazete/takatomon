@@ -228,16 +228,14 @@ body.drag { /* for planner */
     z-index: 2;
 }
 .small.advent .card:after {
-    width: 14px;
-    height: 14px;
-    line-height: 14px;
-    font-size: 14px;
+    height: 12px;
+    line-height: 12px;
+    font-size: 12px;
 }
 .large.advent .card:after {
-    width: 18px;
-    height: 18px;
-    line-height: 18px;
-    font-size: 18px;
+    height: 16px;
+    line-height: 16px;
+    font-size: 16px;
 }
 .advent.ongoing .card:after {
     background: #f40;
