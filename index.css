@@ -17,7 +17,6 @@ body.drag { /* for planner */
 
 #news {
     background: #ccc;
-    padding: 4px;
     cursor: pointer;
 }
 #news > div {
@@ -25,6 +24,7 @@ body.drag { /* for planner */
     width: -moz-max-content;
     width: max-content;
     max-width: 100%;
+    padding: 4px;
     margin: auto;
 }
 @media (hover: hover) {
