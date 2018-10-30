@@ -2,7 +2,7 @@ function initNews() {
     var news = document.getElementById("news");
     var versionRead = localStorage.getItem("versionRead");
     var newsData = {
-        "version": "fixedcache", // for simplicity, keep this as a string
+        "version": "blahblah", // for simplicity, keep this as a string
         "title": "Update Log (Oct 27)",
         "log": [
             "Added fragment count filter to search menu.",
