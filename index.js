@@ -1511,6 +1511,10 @@ function initNews() {
     if (versionRead == news.dataset.version) {
         markAsRead();
     }
+    else {
+        show(news);
+        updateLines();
+    }
     addTapListener(news, markAsRead);
 }
 
