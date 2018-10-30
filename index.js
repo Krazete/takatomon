@@ -964,10 +964,10 @@ function initPlanner() {
                     var photo = document.createElement("img");
                         photo.className = "photo-" + Math.max(1, digi[mon].evol);
                         if (planner[n].awkn != 5 || digi[mon].v2) {
-                            photo.src = "img/portrait/" + digi[mon].images[settings.awkn] + ".png";
+                            photo.src = "img/portrait/" + digi[mon].images[planner[n].awkn] + ".png";
                         }
                         else {
-                            photo.src = "img/portrait/" + digi[mon].images[settings.awkn] + ".png";
+                            photo.src = "img/portrait/" + digi[mon].images[planner[n].awkn] + ".png";
                         }
                     viewer.appendChild(photo);
                 }
