@@ -34,6 +34,7 @@ body.drag { /* for planner */
 }
 
 .section {
+    position: relative; /* to make #clipper position work */
     box-shadow: inset 0 0 8px #000;
 }
 #selection {
@@ -80,6 +81,27 @@ body.drag { /* for planner */
 @media (hover: hover) {
     .bar-button:hover {
         background: #888;
+        color: #000;
+    }
+}
+
+#clipper {
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: #ccc;
+    color: #222;
+    border-radius: 4px;
+    margin: 4px;
+    padding: 4px;
+    cursor: pointer;
+}
+#clipper:after {
+    content: '\29C9';
+}
+@media (hover: hover) {
+    #clipper:hover {
+        background: #aaa;
         color: #000;
     }
 }

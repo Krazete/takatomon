@@ -289,6 +289,7 @@ function init() {
     initProfileGroups();
     initProfiles();
     initAdvent();
+    initClipboard();
     initFiltration();
     initVisualization();
     initPlanner();
@@ -554,6 +555,27 @@ function initAdvent() {
     }
 
     updateAdvent(true);
+}
+
+function initClipboard() {
+    var clipper = document.getElementById("clipper");
+
+    function saveToClipboard(text) {
+        var textarea = document.createElement("textarea");
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        textarea.remove();
+    }
+
+    function copySelectedDigi() {
+        var locationSearch = "?sd=" + Array.from(selectedDigi);
+        var text = location.origin + location.pathname + locationSearch;
+        saveToClipboard(text);
+    }
+
+    addTapListener(clipper, copySelectedDigi);
 }
 
 function initFiltration() {

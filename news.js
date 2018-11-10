@@ -2,26 +2,14 @@ function initNews() {
     var news = document.getElementById("news");
     var versionRead = localStorage.getItem("versionRead");
     var newsData = {
-        "version": "blahblah", // for simplicity, keep this as a string
-        "title": "Update Log (Oct 27)",
+        "version": "perm", // for simplicity, keep this as a string
+        "title": "Update Log (Nov 9)",
         "log": [
-            "Added fragment count filter to search menu.",
-            "<b>Fixed autosave issues on mobile devices.</b>",
+            "Added button to copy permalink of current selection.",
+            "[old] Fixed autosave on mobile.",
             [
-                "This affected the planner, fragment counters, and settings."
-            ],
-            "Replaced advent indicators with advent countdowns.",
-            "The search menu advent filter now shows all advent Digimon (not just ongoing quests).",
-            "Added an update log. Here are some several-week-old updates:",
-            [
-                "Fixed Chortos links (shouldnt lead to 404 pages anymore).",
-                "Fixed search menu bugs.",
-                "Removed tiers (click \"Old Tiers\" above if you need it).",
-                "Added physical/magical skill indicators.",
-                "Reduced opacity of Digimon unavailable in global Links.",
-                "Made untangle-sort work again.",
-                "Restored sort-by-tribe option.",
-                "Replaced Preview setting with Connections."
+                "In case anyone uses the planner/fragment counters on mobile.",
+                "This update log is still buggy though."
             ]
         ]
     };
