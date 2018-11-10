@@ -95,11 +95,15 @@ body.drag { /* for planner */
     margin: 4px;
     padding: 4px;
     cursor: pointer;
+    display: none;
 }
 #clipper:after {
     content: '\29C9';
 }
 @media (hover: hover) {
+    #clipper {
+        display: block;
+    }
     #clipper:hover {
         background: #aaa;
         color: #000;

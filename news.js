@@ -2,10 +2,13 @@ function initNews() {
     var news = document.getElementById("news");
     var versionRead = localStorage.getItem("versionRead");
     var newsData = {
-        "version": "perm", // for simplicity, keep this as a string
+        "version": "perma", // for simplicity, keep this as a string
         "title": "Update Log (Nov 9)",
         "log": [
             "Added button to copy permalink of current selection.",
+            [
+                "Desktop only."
+            ],
             "[old] Fixed autosave on mobile.",
             [
                 "In case anyone uses the planner/fragment counters on mobile.",
