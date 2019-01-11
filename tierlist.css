@@ -1,0 +1,37 @@
+table {
+    background: black;
+    width: 100%;
+    white-space: pre;
+}
+
+tr {
+    background: white;
+}
+
+tr:after {
+    content: attr(data-count) ' votes';
+}
+
+img {
+    width: 64px;
+}
+
+.star {
+    cursor: pointer;
+}
+
+.shadow {
+    filter: brightness(0);
+}
+
+.light {
+    position: relative;
+    margin-left: -64px;
+    z-index: 1;
+}
+
+.underlined {
+    border-bottom: 5px solid black;
+    border-radius: 0 0 5px 5px;
+    margin-bottom: -5px;
+}
