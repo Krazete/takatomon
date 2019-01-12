@@ -46,7 +46,7 @@ function rate() {
 
 function updateRating(mon) {
     var row = document.getElementById(mon);
-    var cell = row.cells[2];
+    var cell = row.cells[3];
 
     try {
         firebase.database().ref(mon).once('value').then(function (snapshot) {
@@ -141,6 +141,27 @@ function insertPortrait(cell, mon) {
     }
 }
 
+function insertSkill(cell, skill) {
+    var dna = document.createElement("div");
+    var attribute = document.createElement("img");
+    attribute.src = "img/tribe/" + skill.attribute + ".png";
+    dna.appendChild(attribute);
+    if (skill.physical) {
+        var physical = document.createElement("img");
+        physical.src = "img/skill/physical.png";
+        dna.appendChild(physical);
+    }
+    if (skill.magical) {
+        var magical = document.createElement("img");
+        magical.src = "img/skill/magical.png";
+        dna.appendChild(magical);
+    }
+    var effect = document.createElement("span");
+    effect.innerHTML = ["Support", "ST", "AoE"][skill.effect];
+    dna.appendChild(effect);
+    cell.appendChild(dna);
+}
+
 function insertStars(cell, mon) {
     for (var i = 0; i < 5; i++) {
         var star = document.createElement("span");
@@ -167,15 +188,25 @@ function initTierlist() {
     document.body.appendChild(table);
     for (var mon in digi) {
         if (digi[mon].evol >= 5) {
-            var row = table.insertRow();
-            row.id = mon;
-            var cell0 = row.insertCell();
-            insertMoniker(cell0, mon);
-            var cell1 = row.insertCell();
-            insertPortrait(cell1, mon);
-            var cell2 = row.insertCell();
-            insertStars(cell2, mon);
-            updateRating(mon)
+            for (var skill of digi[mon].skills) {
+                var row = table.insertRow();
+                row.id = [
+                    mon,
+                    skill.attribute,
+                    skill.physical,
+                    skill.magical,
+                    skill.effect
+                ].join("-");
+                var cell0 = row.insertCell();
+                insertMoniker(cell0, mon);
+                var cell1 = row.insertCell();
+                insertPortrait(cell1, mon);
+                var cell2 = row.insertCell();
+                insertSkill(cell2, skill);
+                var cell3 = row.insertCell();
+                insertStars(cell3, mon);
+                updateRating(row.id);
+            }
         }
     }
 }
