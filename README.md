@@ -19,6 +19,7 @@ A digivolution tree viewer for [Digimon Links](https://digimonlinkz-en.bn-ent.ne
 - /u/Noah040718 - Plugin Calculator
 - /u/Chortos-2 - URL Parameter Preselection
 - /u/justhereforpogotbh - Language Option
+- HVS Liam - Community Tier List
 ### Not-Yet-Implemented Ideas
 - /u/mviper13 - Fragment Calculator
 - /u/JudgemasterCid - Mutant Inclusion
