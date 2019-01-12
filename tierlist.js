@@ -184,6 +184,19 @@ function insertStars(cell, mon) {
 }
 
 function initTierlist() {
+    var meta = document.getElementById("meta-score");
+    var metarow = meta.insertRow();
+    metarow.id = "meta";
+    var metacell0 = metarow.insertCell();
+    metacell0.innerHTML = "EVALUATION";
+    var metacell1 = metarow.insertCell();
+    metacell1.innerHTML = "This page was created on January 11, 2019 partly as an experiment."
+    var metacell2 = metarow.insertCell();
+    metacell2.innerHTML = "How would you rate this community tier list thus far?";
+    var metacell3 = metarow.insertCell();
+    insertStars(metacell3, "meta");
+    updateRating("meta");
+
     var table = document.createElement("table");
     document.body.appendChild(table);
     for (var mon in digi) {
