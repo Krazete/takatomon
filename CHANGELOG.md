@@ -127,13 +127,14 @@
 - - preset fragment counters with fc key
 - removed tiers from skillsets
 - - added a separate tier list page
-- added magical and physical indicators to skillsets
+- added magical and physical indicators to skillsets and filters
 - added date to exported memblocks
 - added linelayer visibility options to preview settings
 - initialized opacity-based indicator for global digimon
 - changed advent indicator to advent countdown
 - initialized update log
 - initialized fragment counter filter
+- initialized community tier list
 ## Design
 - switched information database
 - switched image database

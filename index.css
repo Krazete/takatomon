@@ -610,6 +610,12 @@ body.drag { /* for planner */
 .switch.abyss.selected {
     filter: drop-shadow(0 0 2px #f29);
 }
+.switch.physical.selected {
+    filter: drop-shadow(0 0 2px #f80);
+}
+.switch.magical.selected {
+    filter: drop-shadow(0 0 2px #f0f);
+}
 @media (hover: hover) {
     .switch:hover {
         filter: drop-shadow(0 0 2px #fff);
@@ -634,6 +640,12 @@ body.drag { /* for planner */
     }
     .switch.abyss:hover {
         filter: drop-shadow(0 0 2px #f29);
+    }
+    .switch.physical:hover {
+        filter: drop-shadow(0 0 2px #f80);
+    }
+    .switch.magical:hover {
+        filter: drop-shadow(0 0 2px #f0f);
     }
 }
 

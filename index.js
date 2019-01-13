@@ -24,6 +24,7 @@ var filters = { // only global because of advent
     "tribe": new Set(),
     "attribute": new Set(),
     "effect": new Set(),
+    "type": new Set(),
     "special": new Set() // NOTE: used in updateAdvent
 };
 var exitSearchMode;
@@ -606,6 +607,7 @@ function initFiltration() {
         filters.tribe.clear();
         filters.attribute.clear();
         filters.effect.clear();
+        filters.type.clear();
         filters.special.clear();
         searchMode = false;
         update();
@@ -664,7 +666,8 @@ function initFiltration() {
         var okSkill = digi[mon].skills.some(function (skill) {
             var okAttribute = !filters.attribute.size || filters.attribute.has(skill.attribute);
             var okEffect = !filters.effect.size || filters.effect.has(skill.effect);
-            return okAttribute && okEffect;
+            var okType = !filters.type.size || filters.type.has(1) && skill.physical || filters.type.has(2) && skill.magical;
+            return okAttribute && okEffect && okType;
         });
         var okTree = !filters.special.has("tree") || [gemelCore, gemel][settings.tree].nodes.has(parseInt(mon));
         var okFragment = !filters.special.has("fragment") || !digi[mon].fragments || mon in fragCount;
