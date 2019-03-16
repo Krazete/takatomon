@@ -105,7 +105,7 @@ function update() {
 }
 
 function updateClones() {
-    var selection = profileGroups[8];
+    var selection = profileGroups[7];
     selection.innerHTML = "";
 
     function deselectProfile() {
@@ -503,14 +503,14 @@ function initProfiles() {
         addTapListener(card, selectProfile);
         if (digi[mon].evol == 5) {
             new Gemel(mon);
-            if (prev(mon).some(e => digi[e].evol != 5)) {
+            if (
+                prev(mon).every(e => digi[e].evol != 5) ||
+                next(mon).some(e => next(e).some(a => a == mon))
+            ) {
                 profileGroups[5].appendChild(profile);
             }
-            else if (prev(mon).some(e => prev(e).some(a => digi[a].evol != 5 && a != mon))) {
-                profileGroups[6].appendChild(profile);
-            }
             else {
-                profileGroups[7].appendChild(profile);
+                profileGroups[6].appendChild(profile);
             }
         }
         else {
