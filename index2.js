@@ -1534,7 +1534,7 @@ function initParameter() { // fake ?key=value format
             }
         }
     }
-    history.replaceState({}, document.title, "/");
+    // history.replaceState({}, document.title, "/");
 }
 
 window.addEventListener("DOMContentLoaded", init);
