@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-108437510-2"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'UA-108437510-2');
+	</script>
+	<meta charset="utf-8">
+	<meta name="google" content="notranslate">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="A digivolution tree viewer and awakening path planner for Digimon Links.">
+	<title>Takatomon - Awakening Helper</title>
+	<link rel="shortcut icon" type="image/png" href="img/favicon.png">
+	<link href="index.css?1547411468658" rel="stylesheet" type="text/css">
+	<script src="digi.js?1551480120000"></script>
+	<script src="advent.js?1546644941000"></script>
+	<script src="tree.js?oct10"></script>
+	<script src="index2.js?1547411468658"></script>
+	<!-- <script src="news.js?1541821460236"></script> -->
+</head>
+<body>
+	<div class="section" id="planner">
+		<div class="scroller nopad">
+			<div id="plan-group"></div>
+		</div>
+		<div class="bar-button" id="add-plan">Save Selection</div>
+	</div>
+	<div class="section" id="selection">
+		<div class="scroller">
+			<div class="profile-group">
+				<div class="profile" id="blank">
+					<div class="card">
+						<div class="portraiture">
+							<img class="backing" src="img/backing/empty.png" alt="empty">
+							<img class="frame" src="img/frame/empty.png" alt="empty">
+						</div>
+						<div class="moniker">Empty</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="clipper"></div>
+		<div class="bar-button" id="enter-search">
+			Search
+		</div>
+	</div>
+	<div class="section" id="filtration">
+		<input type="text" placeholder="Search Digimon" id="search">
+		<div class="scroller switchbox-set">
+			<div class="switchbox">
+				<div class="switchbox-label">Personal</div>
+				<div class="switch-set">
+					<div class="switch" id="special-tree">Tree</div>
+					<div class="switch" id="special-fragment">Fragments</div>
+				</div>
+			</div>
+			<div class="switchbox">
+				<div class="switchbox-label">Special</div>
+				<div class="switch-set">
+					<div class="switch" id="special-dna">DNA2</div>
+					<div class="switch" id="special-v2">V2</div>
+					<div class="switch" id="special-advent">Advent</div>
+				</div>
+			</div>
+			<div class="switchbox">
+				<div class="switchbox-label">Filter Tribe</div>
+				<div class="switch-set">
+					<img src="img/tribe/1.png" alt="mirage" class="switch mirage" id="tribe-1">
+					<img src="img/tribe/2.png" alt="blazing" class="switch blazing" id="tribe-2">
+					<img src="img/tribe/3.png" alt="glacier" class="switch glacier" id="tribe-3">
+					<img src="img/tribe/4.png" alt="electric" class="switch electric" id="tribe-4">
+					<img src="img/tribe/5.png" alt="earth" class="switch earth" id="tribe-5">
+					<img src="img/tribe/6.png" alt="bright" class="switch bright" id="tribe-6">
+					<img src="img/tribe/7.png" alt="abyss" class="switch abyss" id="tribe-7">
+				</div>
+			</div>
+			<div class="switchbox">
+				<div class="switchbox-label">Filter Skill</div>
+				<div class="switch-set">
+					<img src="img/tribe/1.png" alt="mirage" class="switch mirage" id="attribute-1">
+					<img src="img/tribe/2.png" alt="blazing" class="switch blazing" id="attribute-2">
+					<img src="img/tribe/3.png" alt="glacier" class="switch glacier" id="attribute-3">
+					<img src="img/tribe/4.png" alt="electric" class="switch electric" id="attribute-4">
+					<img src="img/tribe/5.png" alt="earth" class="switch earth" id="attribute-5">
+					<img src="img/tribe/6.png" alt="bright" class="switch bright" id="attribute-6">
+					<img src="img/tribe/7.png" alt="abyss" class="switch abyss" id="attribute-7">
+					<div class="switch" id="effect-2">AoE</div>
+					<div class="switch" id="effect-1">ST</div>
+					<div class="switch" id="effect-0">Support</div>
+					<img src="img/skill/physical.png" alt="physical" class="switch physical" id="type-1">
+					<img src="img/skill/magical.png" alt="magical" class="switch magical" id="type-2">
+				</div>
+			</div>
+		</div>
+		<div class="bar-button" id="exit-search">
+			Cancel
+		</div>
+	</div>
+	<div class="section" id="in-training-i">
+		<div class="scroller">
+			<div class="evol-label">In Training I</div>
+			<div class="profile-group"></div>
+		</div>
+	</div>
+	<div class="section" id="in-training-ii">
+		<div class="scroller">
+			<div class="evol-label">In Training II</div>
+			<div class="profile-group"></div>
+		</div>
+	</div>
+	<div class="section" id="rookie">
+		<div class="scroller">
+			<div class="evol-label">Rookie</div>
+			<div class="profile-group"></div>
+		</div>
+	</div>
+	<div class="section" id="champion">
+		<div class="scroller">
+			<div class="evol-label">Champion</div>
+			<div class="profile-group"></div>
+		</div>
+	</div>
+	<div class="section" id="ultimate">
+		<div class="scroller">
+			<div class="evol-label">Ultimate</div>
+			<div class="profile-group"></div>
+		</div>
+	</div>
+	<div class="section" id="mega">
+		<div class="scroller">
+			<div class="evol-label">Mega</div>
+			<div class="profile-group"></div>
+		</div>
+		<div class="scroller">
+			<div class="profile-group"></div>
+		</div>
+		<div class="scroller">
+			<div class="profile-group"></div>
+		</div>
+	</div>
+	<div class="section" id="visualization">
+		<div class="scroller slidebox-set">
+			<div class="slidebox">
+				<div class="slide-set" id="tree">
+					<div class="slide">Intersect<wbr>ion</div>
+					<div class="slide">Union</div>
+				</div>
+				<div class="slidebox-label">Tree Mode</div>
+			</div>
+			<div class="slidebox">
+				<div class="slide-set" id="sort">
+					<div class="slide">Game Default</div>
+					<div class="slide">Alphabet<wbr>ical</div>
+					<div class="slide">Tribe</div>
+					<div class="slide">Untangled (Beta)</div>
+				</div>
+				<div class="slidebox-label">Sort Basis</div>
+			</div>
+			<div class="slidebox">
+				<div class="slide-set" id="preview">
+					<div class="slide">On</div>
+					<div class="slide">On+</div>
+					<div class="slide">Off</div>
+					<div class="slide">Off+</div>
+				</div>
+				<div class="slidebox-label">Connections</div>
+			</div>
+			<div class="slidebox">
+				<div class="slide-set" id="frag">
+					<div class="slide">Off</div>
+					<div class="slide">On</div>
+				</div>
+				<div class="slidebox-label">Fragments</div>
+			</div>
+			<div class="slidebox">
+				<div class="slide-set" id="awkn">
+					<div class="slide">+0</div>
+					<div class="slide">+1</div>
+					<div class="slide">+2</div>
+					<div class="slide">+3</div>
+					<div class="slide">+4</div>
+					<div class="slide">+4/V2</div>
+				</div>
+				<div class="slidebox-label">Awakening</div>
+			</div>
+			<div class="slidebox">
+				<div class="slide-set" id="size">
+					<div class="slide">Medium</div>
+					<div class="slide">Large</div>
+					<div class="slide">Small</div>
+				</div>
+				<div class="slidebox-label">Card Size</div>
+			</div>
+			<div class="slidebox">
+				<div class="slide-set" id="lang">
+					<div class="slide">English</div>
+					<div class="slide">Korean</div>
+					<div class="slide">Chinese</div>
+					<div class="slide">Japanese</div>
+				</div>
+				<div class="slidebox-label">Language</div>
+			</div>
+			<div class="slidebox">
+				<div class="slide-set" id="skill">
+					<div class="slide">Mega Only</div>
+					<div class="slide">All</div>
+				</div>
+				<div class="slidebox-label">Skills</div>
+			</div>
+		</div>
+	</div>
+	<div class="section" id="footer">
+		<div id="foot-about">
+			This website was created for the mobile game
+			<i><a href="https://digimonlinkz-en.bn-ent.net" target="_blank">Digimon Links</a></i>
+			to ease the viewing of digivolution lines and to assist with the awakening process.
+			<br>
+			Data and assets are automatically gathered after every game update thanks to
+			<a href="https://chortos.selfip.net/~astiob/">Chortos-2</a>,
+			so this website is always up-to-date.
+			<br><br>
+			To see the latest updates or send a bug report, visit this project's
+			<a href="https://github.com/Krazete/takatomon" target="_blank">GitHub repository</a>.
+			<br>
+			You can also send me a message through
+			<a href="mailto:krazete@gmail.com">krazete@gmail.com</a>,
+			<a href="https://reddit.com/u/krazete" target="_blank">Reddit</a>, or
+			<a href="https://paypal.me/krazete" target="_blank" id="paypal">PayPal</a>.
+		</div>
+		<div id="foot-faq">
+			<b><i>
+			Found a bug? Report it through
+			<a href="mailto:krazete@gmail.com">krazete@gmail.com</a>,
+			<a href="https://reddit.com/u/krazete" target="_blank">Reddit</a>, or
+			<a href="https://github.com/Krazete/takatomon/issues" target="_blank">GitHub</a>
+			and mention which browser you're using.
+			</i></b>
+			<br><br>
+			Q: What's that number in the top right corner of some Digimon cards?
+			<br>
+			A: That's an Advent Schedule countdown. Blue indicates the <u>D</u>ays, <u>H</u>ours, or <u>M</u>inutes until that Digimon's advent quest begins; orange shows when a current advent will end.
+			<br><br>
+			Q: Why are some Digimon cards semitransparent?
+			<br>
+			A: Those are Digimon that haven't yet been released in the global version of Digimon Links.
+			<br><br>
+			Q: What do the <i>Personal</i> search filter options do?
+			<br>
+			A: Select <i>Tree</i> to limit results to your currently selected digivolution tree. Select <i>Fragments</i> to hide Digimon who require fragments of which you have none of.
+			<br><br>
+			Q: Why doesn't the <i>Untangled (Beta)</i> sort option untangle the lines fully?
+			<br>
+			A: Sorry, I don't know how to improve it. A greedy algorithm is the best I can do for now.
+			<br><br>
+			Q: Why can't I use the <i>Connections+</i> feature in search mode?
+			<br>
+			A: For clarity. Viewing digivolution routes in search mode would present an incomplete and misleading tree.
+		</div>
+		<div id="foot-tiers">
+			The tiers above were taken from Growlmon.Net a few days before it shut down in September 2018.
+			<br>
+			They are slightly outdated and incomplete.
+		</div>
+		<div id="foot-port">
+			<span class="toe" id="import">Load memblock</span> (import planner and fragments).
+			<br><br>
+			<span class="toe" id="export">Save memblock</span> (export planner and fragments).
+			<br><br>
+			<div id="tile-box">
+				<a download="memblock" id="toe-tile">
+					<img src="img/backing/none.png" alt="memblock" id="tile"></img>
+				</a>
+			</div>
+			<br>
+			<span class="toe" id="deport">Reset everything</span> (clear selection, settings, planner, and fragments; also saves a memblock just in case).
+		</div>
+		<div id="foot-close">
+			<div class="bar-button" id="toe-close">Close</div>
+		</div>
+		<span class="toe" id="toe-about">About</span>
+		|
+		<span class="toe" id="toe-faq">Help</span>
+		|
+		<span class="toe" id="toe-tiers">Old Tiers</span>
+		|
+		<a target="_blank" href="tierlist.html">New Tiers</a>
+		|
+		<span class="toe" id="toe-port">Port</span>
+	</div>
+	<!-- <div id="news"></div> -->
+	<canvas id="linelayer"></canvas>
+</body>
+</html>
