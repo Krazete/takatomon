@@ -105,7 +105,7 @@ function update() {
 }
 
 function updateClones() {
-    var selection = profileGroups[6];
+    var selection = profileGroups[7];
     selection.innerHTML = "";
 
     function deselectProfile() {
@@ -191,9 +191,8 @@ function untangleProfiles() { // TODO: improve this algorithm
 
 function sortProfiles(sortedDigi) {
     for (var mon of sortedDigi) {
-        var profileGroup = profileGroups[digi[mon].evol];
         var profile = document.getElementById(mon);
-        profileGroup.appendChild(profile);
+        profile.parentElement.appendChild(profile);
     }
     updateLines();
 }
@@ -322,11 +321,13 @@ function initProfileGroups() {
     for (var evol of evols) {
         var section = document.getElementById(evol);
         var evolLabel = section.getElementsByClassName("evol-label")[0];
-        var profileGroup = section.getElementsByClassName("profile-group")[0];
+        var profileGroup = section.getElementsByClassName("profile-group");
         if (evolLabel) {
             addTapListener(evolLabel, selectProfileGroup);
         }
-        profileGroups.push(profileGroup);
+        for (subProfileGroup of profileGroup) {
+            profileGroups.push(subProfileGroup);
+        }
     }
 }
 
@@ -500,7 +501,21 @@ function initProfiles() {
             fragCounter.addEventListener("input", setFragments);
         }
         addTapListener(card, selectProfile);
-        profileGroups[digi[mon].evol].appendChild(profile);
+        if (digi[mon].evol == 5) {
+            new Gemel(mon);
+            if (
+                prev(mon).every(e => digi[e].evol != 5) ||
+                next(mon).some(e => next(e).some(a => a == mon))
+            ) {
+                profileGroups[5].appendChild(profile);
+            }
+            else {
+                profileGroups[6].appendChild(profile);
+            }
+        }
+        else {
+            profileGroups[digi[mon].evol].appendChild(profile);
+        }
     }
 }
 
