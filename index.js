@@ -105,7 +105,7 @@ function update() {
 }
 
 function updateClones() {
-    var selection = profileGroups[7];
+    var selection = profileGroups[8];
     selection.innerHTML = "";
 
     function deselectProfile() {
@@ -488,6 +488,14 @@ function initProfiles() {
         }
     }
 
+    function isInitialMega(mon) {
+        return prev(mon).every(function (e) {
+            return digi[e].evol != 5 || prev(e).some(function (a) {
+                return a == mon;
+            });
+        });
+    }
+
     for (var mon in digi) { // digi.js should already be sorted numerically
         var profile = newProfile(mon);
         var fragCounters = Array.from(profile.getElementsByClassName("frag-counter"));
@@ -503,14 +511,16 @@ function initProfiles() {
         addTapListener(card, selectProfile);
         if (digi[mon].evol == 5) {
             new Gemel(mon);
-            if (
-                prev(mon).every(e => digi[e].evol != 5) ||
-                next(mon).some(e => next(e).some(a => a == mon))
-            ) {
+            if (isInitialMega(mon)) {
                 profileGroups[5].appendChild(profile);
             }
-            else {
+            else if (prev(mon).some(function (e) {
+                return isInitialMega(e);
+            })) {
                 profileGroups[6].appendChild(profile);
+            }
+            else {
+                profileGroups[7].appendChild(profile);
             }
         }
         else {
