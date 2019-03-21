@@ -145,13 +145,13 @@
 - - fixed advent time format
 - fixed autosaving issue on mobile devices
 
-# [v6](https://github.com/Krazete/takatomon/tree/v5) (3/16/2019 - )
+# [v6](https://github.com/Krazete/takatomon/tree/v6) (3/16/2019 - )
 # Design
 - split mega row into two
 # Performance
 - converted into a progressive web app
 - - added manifest
-- - added more favicons
+- - added more favicon versions
 - - added service worker
 
 _Changes are pushed incrementally, so all versions of Takatomon have overlapping timelines._  
