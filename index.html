@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
 <head>
-	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<!-- Google Analytics -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-108437510-2"></script>
 	<script>
 		window.dataLayer = window.dataLayer || [];
@@ -9,6 +9,7 @@
 		gtag('js', new Date());
 		gtag('config', 'UA-108437510-2');
 	</script>
+	<!-- Progressive Web App -->
 	<link rel="manifest" href="manifest.json">
 	<script>
 		if ("serviceWorker" in navigator) {
@@ -22,13 +23,22 @@
 			}
 		}
 	</script>
+	<link rel="apple-touch-icon" sizes="180x180" href="/img/favicon/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/img/favicon/favicon-16x16.png">
+	<link rel="mask-icon" href="/img/favicon/safari-pinned-tab.svg" color="#0f1824">
+	<link rel="shortcut icon" href="/img/favicon/favicon.ico">
+	<meta name="apple-mobile-web-app-title" content="Takatomon">
+	<meta name="application-name" content="Takatomon">
+	<meta name="msapplication-TileColor" content="#0f1824">
+	<meta name="msapplication-config" content="/img/favicon/browserconfig.xml">
+	<meta name="theme-color" content="#0f1824">
+	<!-- Main Stuff -->
 	<meta charset="utf-8">
-	<meta name="theme-color" content="black">
 	<meta name="google" content="notranslate">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="A digivolution tree viewer and awakening path planner for Digimon Links.">
 	<title>Takatomon - Awakening Helper</title>
-	<link rel="shortcut icon" type="image/png" href="img/favicon.png">
 	<link href="index.css?1547411468658" rel="stylesheet" type="text/css">
 	<script src="digi.js?1551480120000"></script>
 	<script src="advent.js?1546644941000"></script>
