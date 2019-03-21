@@ -9,6 +9,19 @@
 		gtag('js', new Date());
 		gtag('config', 'UA-108437510-2');
 	</script>
+	<link rel="manifest" href="pwa/manifest.json">
+	<script>
+		if ("serviceWorker" in navigator) {
+			if (navigator.serviceWorker.controller) {
+				console.log("[PWA Builder] Active service worker found, no need to register.");
+			}
+			else {
+				navigator.serviceWorker.register("pwa/serviceworker.js").then(function (e) {
+					console.log("[PWA Builder] Service worker has been registered for scope: " + e.scope);
+				});
+			}
+		}
+	</script>
 	<meta charset="utf-8">
 	<meta name="google" content="notranslate">
 	<meta name="viewport" content="width=device-width, initial-scale=1">

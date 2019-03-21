@@ -1,0 +1,17 @@
+{
+	"name" : "Takatomon",
+	"short_name" : "Takatomon",
+	"description" : "A digivolution tree viewer and awakening path planner for Digimon Links.",
+	"start_url" : "/",
+	"scope": "/",
+	"background_color" : "#0f1824",
+	"theme_color" : "#0f1824",
+	"display" : "standalone",
+	"orientation": "any",
+	"icons" : [
+		{
+			"src": "img/favicon.png",
+			"sizes": "64x64"
+		}
+	]
+}
