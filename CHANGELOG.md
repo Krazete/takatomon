@@ -119,7 +119,7 @@
 - edited about description
 - edited faq
 
-# [v5](https://github.com/Krazete/takatomon/tree/v5) (10/12/2018 - )
+# [v5](https://github.com/Krazete/takatomon/tree/v5) (10/12/2018 - 3/15/2019)
 ## Features
 - initialized language option
 - initialized url parameters
@@ -134,7 +134,7 @@
 - changed advent indicator to advent countdown
 - initialized update log
 - initialized fragment counter filter
-- initialized community tier list
+- initialized tier
 ## Design
 - switched information database
 - switched image database
@@ -144,6 +144,15 @@
 - fixed more compatibility issues
 - - fixed advent time format
 - fixed autosaving issue on mobile devices
+
+# [v6](https://github.com/Krazete/takatomon/tree/v5) (3/16/2019 - )
+# Design
+- split mega row into two
+# Performance
+- converted into a progressive web app
+- - added manifest
+- - added more favicons
+- - added service worker
 
 _Changes are pushed incrementally, so all versions of Takatomon have overlapping timelines._  
 _The dates shown approximately mark when the defining changes were pushed and made available to the public._
