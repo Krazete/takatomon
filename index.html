@@ -6,8 +6,8 @@
 	<script>
 		window.dataLayer = window.dataLayer || [];
 		function gtag(){dataLayer.push(arguments);}
-		gtag('js', new Date());
-		gtag('config', 'UA-108437510-2');
+		gtag("js", new Date());
+		gtag("config", "UA-108437510-2");
 	</script>
 	<!-- Progressive Web App -->
 	<link rel="manifest" href="manifest.json">
@@ -22,16 +22,39 @@
 				});
 			}
 		}
+		let installer;
+		window.addEventListener("beforeinstallprompt", function (e) {
+			e.preventDefault();
+			installer = e;
+			var prepwa = document.getElementById("pre-toe-pwa");
+			var pwa = document.getElementById("toe-pwa");
+			prepwa.classList.remove("hidden");
+			pwa.classList.remove("hidden");
+			pwa.addEventListener("click", function () {
+				prepwa.classList.add("hidden");
+				pwa.classList.add("hidden");
+				installer.prompt();
+				installer.userChoice.then(function (choice) {
+					if (choice.outcome == "accepted") {
+						console.log("A2HS prompt accepted.");
+					}
+					else {
+						console.log("A2HS prompt dismissed.");
+					}
+					installer = null;
+				});
+			});
+		});
 	</script>
-	<link rel="apple-touch-icon" sizes="180x180" href="/img/favicon/apple-touch-icon.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="/img/favicon/favicon-16x16.png">
-	<link rel="mask-icon" href="/img/favicon/safari-pinned-tab.svg" color="#0f1824">
-	<link rel="shortcut icon" href="/img/favicon/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
+	<link rel="mask-icon" href="img/favicon/safari-pinned-tab.svg" color="#0f1824">
+	<link rel="shortcut icon" href="img/favicon/favicon.ico">
 	<meta name="apple-mobile-web-app-title" content="Takatomon">
 	<meta name="application-name" content="Takatomon">
 	<meta name="msapplication-TileColor" content="#0f1824">
-	<meta name="msapplication-config" content="/img/favicon/browserconfig.xml">
+	<meta name="msapplication-config" content="img/favicon/browserconfig.xml">
 	<meta name="theme-color" content="#0f1824">
 	<!-- Main Stuff -->
 	<meta charset="utf-8">
@@ -314,6 +337,8 @@
 		<a target="_blank" href="tierlist.html">New Tiers</a>
 		|
 		<span class="toe" id="toe-port">Port</span>
+		<span class="hidden" id="pre-toe-pwa">|</span>
+		<span class="toe hidden" id="toe-pwa">Install</span>
 	</div>
 	<!-- <div id="news"></div> -->
 	<canvas id="linelayer"></canvas>
