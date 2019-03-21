@@ -146,9 +146,9 @@
 - fixed autosaving issue on mobile devices
 
 # [v6](https://github.com/Krazete/takatomon/tree/v6) (3/16/2019 - )
-# Design
+## Design
 - split mega row into two
-# Performance
+## Performance
 - converted into a progressive web app
 - - added manifest
 - - added more favicon versions
