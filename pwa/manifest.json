@@ -4,14 +4,20 @@
 	"description" : "A digivolution tree viewer and awakening path planner for Digimon Links.",
 	"start_url" : "/",
 	"scope": "/",
-	"background_color" : "#0f1824",
-	"theme_color" : "#0f1824",
+	"background_color" : "black",
+	"theme_color" : "black",
 	"display" : "standalone",
 	"orientation": "any",
 	"icons" : [
 		{
 			"src": "img/favicon.png",
-			"sizes": "64x64"
+			"sizes": "64x64",
+			"type": "image/png"
+		},
+		{
+			"src": "img/favicon.png",
+			"sizes": "512x512",
+			"type": "image/png"
 		}
 	]
 }
