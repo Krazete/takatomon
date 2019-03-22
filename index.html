@@ -30,17 +30,17 @@
 			prepwa.classList.remove("hidden");
 			pwa.classList.remove("hidden");
 			pwa.addEventListener("click", function () {
-				prepwa.classList.add("hidden");
-				pwa.classList.add("hidden");
 				installer.prompt();
 				installer.userChoice.then(function (choice) {
 					if (choice.outcome == "accepted") {
 						console.log("A2HS prompt accepted.");
+						prepwa.classList.add("hidden");
+						pwa.classList.add("hidden");
+						installer = null;
 					}
 					else {
 						console.log("A2HS prompt dismissed.");
 					}
-					installer = null;
 				});
 			});
 		});
