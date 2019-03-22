@@ -148,6 +148,7 @@
 # [v6](https://github.com/Krazete/takatomon/tree/v6) (3/16/2019 - )
 ## Design
 - split mega row into two
+- changed favicon from agumon head to gallantmon shield
 ## Performance
 - converted into a progressive web app
 - - added manifest
