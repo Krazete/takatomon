@@ -15,6 +15,16 @@ body.drag { /* for planner */
     pointer-events: none;
 }
 
+#pwa {
+    position: -webkit-sticky; /* for iOS */
+    position: sticky;
+    top: 0;
+    width: 100%;
+    text-align: center;
+    padding: 4px 0;
+    z-index: 3;
+}
+
 #news {
     background: #ccc;
     cursor: pointer;

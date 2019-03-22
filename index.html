@@ -26,12 +26,9 @@
 		window.addEventListener("beforeinstallprompt", function (e) {
 			e.preventDefault();
 			installer = e;
-			var prepwa = document.getElementById("pre-toe-pwa");
-			var pwa = document.getElementById("toe-pwa");
-			prepwa.classList.remove("hidden");
+			var pwa = document.getElementById("pwa");
 			pwa.classList.remove("hidden");
 			pwa.addEventListener("click", function () {
-				prepwa.classList.add("hidden");
 				pwa.classList.add("hidden");
 				installer.prompt();
 				installer.userChoice.then(function (choice) {
@@ -70,6 +67,7 @@
 	<!-- <script src="news.js?1541821460236"></script> -->
 </head>
 <body>
+	<div class="bar-button hidden" id="pwa">Add to Home Screen?</div>
 	<div class="section" id="planner">
 		<div class="scroller nopad">
 			<div id="plan-group"></div>
@@ -337,8 +335,6 @@
 		<a target="_blank" href="tierlist.html">New Tiers</a>
 		|
 		<span class="toe" id="toe-port">Port</span>
-		<span class="hidden" id="pre-toe-pwa">|</span>
-		<span class="toe hidden" id="toe-pwa">Install</span>
 	</div>
 	<!-- <div id="news"></div> -->
 	<canvas id="linelayer"></canvas>
