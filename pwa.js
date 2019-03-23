@@ -1,5 +1,6 @@
 function initPWA() {
     var pwa = document.getElementById("pwa");
+    var installer;
 
     function endPrompt(choice) {
         if (choice.outcome == "accepted") {
@@ -8,6 +9,7 @@ function initPWA() {
         else {
             console.log("A2HS prompt dismissed.");
         }
+        installer = null;
     }
 
     function clickPrompt() {
@@ -16,8 +18,9 @@ function initPWA() {
         installer.userChoice.then(endPrompt);
     }
 
-    function showPrompt(installer) {
-        installer.preventDefault();
+    function showPrompt(e) {
+        e.preventDefault();
+        installer = e;
         pwa.classList.remove("hidden");
         pwa.addEventListener("click", clickPrompt);
     }
