@@ -11,38 +11,6 @@
 	</script>
 	<!-- Progressive Web App -->
 	<link rel="manifest" href="manifest.json?resetattempt2">
-	<script>
-		if ("serviceWorker" in navigator) {
-			if (navigator.serviceWorker.controller) {
-				console.log("[PWA Builder] Active service worker found, no need to register.");
-			}
-			else {
-				navigator.serviceWorker.register("serviceworker.js").then(function (e) {
-					console.log("[PWA Builder] Service worker has been registered for scope: " + e.scope);
-				});
-			}
-		}
-		let installer;
-		window.addEventListener("beforeinstallprompt", function (e) {
-			e.preventDefault();
-			installer = e;
-			var pwa = document.getElementById("pwa");
-			pwa.classList.remove("hidden");
-			pwa.addEventListener("click", function () {
-				pwa.classList.add("hidden");
-				installer.prompt();
-				installer.userChoice.then(function (choice) {
-					if (choice.outcome == "accepted") {
-						console.log("A2HS prompt accepted.");
-					}
-					else {
-						console.log("A2HS prompt dismissed.");
-					}
-					installer = null;
-				});
-			});
-		});
-	</script>
 	<link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png?resetattempt2">
 	<link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png?resetattempt2">
 	<link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png?resetattempt2">
@@ -53,6 +21,7 @@
 	<meta name="msapplication-TileColor" content="#b40403">
 	<meta name="msapplication-config" content="img/favicon/browserconfig.xml?resetattempt2">
 	<meta name="theme-color" content="#000000">
+	<script src="pwa.js?resetattempt2"></script>
 	<!-- Main Stuff -->
 	<meta charset="utf-8">
 	<meta name="google" content="notranslate">
