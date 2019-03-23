@@ -10,12 +10,12 @@
 	"orientation": "any",
     "icons": [
         {
-            "src": "img/favicon/android-chrome-192x192.png",
+            "src": "img/favicon/android-chrome-192x192.png?v=6",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "img/favicon/android-chrome-512x512.png",
+            "src": "img/favicon/android-chrome-512x512.png?v=6",
             "sizes": "512x512",
             "type": "image/png"
         }
