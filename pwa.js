@@ -1,6 +1,7 @@
 function initPWA() {
     var pwa = document.getElementById("pwa");
     var installer;
+    var pwatimer = localStorage.getItem("pwatimer") || 0;
 
     function endPrompt(choice) {
         if (choice.outcome == "accepted") {
@@ -11,6 +12,7 @@ function initPWA() {
         }
         installer = null;
         window.removeEventListener("beforeinstallprompt", showPrompt);
+        localStorage.setItem("pwatimer", Date.now());
     }
 
     function clickPrompt() {
@@ -37,7 +39,9 @@ function initPWA() {
         }
     }
 
-    window.addEventListener("beforeinstallprompt", showPrompt);
+    if (Date.now() - pwatimer >= 31536000000) { /* don't ask for a year */
+        window.addEventListener("beforeinstallprompt", showPrompt);
+    }
 }
 
 window.addEventListener("load", initPWA);
