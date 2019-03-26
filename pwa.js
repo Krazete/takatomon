@@ -10,6 +10,7 @@ function initPWA() {
             console.log("A2HS prompt dismissed.");
         }
         installer = null;
+        window.removeEventListener("beforeinstallprompt", showPrompt);
     }
 
     function clickPrompt() {
