@@ -373,9 +373,7 @@ function initProfiles() {
                         }
                         if (month == 4 && day == 1) {
                             var r = Math.floor(4 * Math.random());
-                            if (r > 0) {
-                                portrait.style.transform = "rotate(" + (90 * r) + "deg)";
-                            }
+                            portrait.style.transform = "rotate(" + (90 * r) + "deg)" + (Math.random() < 0.5 ? "" : " scaleX(-1)");
                         }
                         portrait.alt = mon + "+0";
                     portraiture.appendChild(portrait);
