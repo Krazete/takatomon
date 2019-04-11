@@ -321,11 +321,12 @@ function initProfileGroups() {
     for (var evol of evols) {
         var section = document.getElementById(evol);
         var evolLabel = section.getElementsByClassName("evol-label")[0];
-        var profileGroup = section.getElementsByClassName("profile-group");
+        var profileGroup = Array.from(section.getElementsByClassName("profile-group"));
         if (evolLabel) {
             addTapListener(evolLabel, selectProfileGroup);
         }
         for (subProfileGroup of profileGroup) {
+            console.log(section, evolLabel, profileGroup);
             profileGroups.push(subProfileGroup);
         }
     }
