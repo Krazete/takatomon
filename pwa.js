@@ -33,7 +33,7 @@ function initPWA() {
             console.log("[PWA Builder] Active service worker found, no need to register.");
         }
         else {
-            navigator.serviceWorker.register("serviceworker.js").then(function (e) {
+            navigator.serviceWorker.register("nullsw.js").then(function (e) {
                 console.log("[PWA Builder] Service worker has been registered for scope: " + e.scope);
             });
         }
