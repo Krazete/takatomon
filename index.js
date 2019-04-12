@@ -283,6 +283,7 @@ function drawLine(a, b, color, width) {
 /* Initialization */
 
 function init() {
+    window.removeEventListener("DOMContentLoaded", init);
     blank = document.getElementById("blank");
     linelayer = document.getElementById("linelayer");
     linecontext = linelayer.getContext("2d");
@@ -326,7 +327,6 @@ function initProfileGroups() {
             addTapListener(evolLabel, selectProfileGroup);
         }
         for (subProfileGroup of profileGroup) {
-            console.log(section, evolLabel, profileGroup);
             profileGroups.push(subProfileGroup);
         }
     }
