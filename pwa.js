@@ -29,7 +29,7 @@ function initPWA() {
     }
 
     if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("serviceworker.js").then(function (e) {
+        navigator.serviceWorker.register("nullsw.js").then(function (e) {
             console.log("[PWA] Service Worker registered for " + e.scope + ".");
         });
     }
