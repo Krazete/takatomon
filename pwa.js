@@ -29,14 +29,9 @@ function initPWA() {
     }
 
     if ("serviceWorker" in navigator) {
-        // if (navigator.serviceWorker.controller) {
-        //     console.log("[PWA Builder] Active service worker found, no need to register.");
-        // }
-        // else {
-            navigator.serviceWorker.register("nullsw.js").then(function (e) {
-                console.log("[PWA Builder] Service worker has been registered for scope: " + e.scope);
-            });
-        // }
+        navigator.serviceWorker.register("serviceworker.js").then(function (e) {
+            console.log("[PWA] Service Worker registered for " + e.scope + ".");
+        });
     }
 
     if (Date.now() - pwatimer >= 31536000000) { /* don't ask for a year */
